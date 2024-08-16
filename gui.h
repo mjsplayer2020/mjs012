@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.178(囲みモード：河の牌モード表示)
+ * バージョン     ： 0.1.2.0.181(囲みモード：LINE_SUTEHAI_COUNT_MAX導入)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/08/09 18:59:09
+ * 最終更新日     ： 2024/08/16 21:40:08
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -90,6 +90,9 @@
 #define NAKI_MENTSU_XSIZE         150   // 鳴き面子の幅サイズ
 
 // ゲームモードの表示位置(手牌関連・囲みモード)
+
+#define LINE_SUTEHAI_COUNT_MAX      6   // 1行あたりの捨牌数
+
 #define TEHAI_RIGHT_X_START       540   // RIGHTの手牌X開始位置
 #define TEHAI_RIGHT_Y_START       100   // RIGHTの手牌Y開始位置
 #define TEHAI_RIGHT_NAKI_X_START  380   // RIGHTの鳴牌開始位置

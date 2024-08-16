@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.180(囲みモード：鳴き牌表示(LEFT,RIGHTユーザ))
+ * バージョン     ： 0.1.2.0.181(囲みモード：LINE_SUTEHAI_COUNT_MAX導入)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.cpp
  * クラス名       ： MJSDisplay
@@ -12,7 +12,7 @@
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/12 11:23:39
+ * 最終更新日     ： 2024/08/16 21:40:08
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -1849,26 +1849,26 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 	if ( ( tk->kyoku[kyoku_index].act_stat[actid] == PLYACTTSUMO || tk->kyoku[kyoku_index].act_stat[actid] == PLYTSUMOAGARI ) &&
 	       tk->kyoku[kyoku_index].act_ply[actid]  == pnum ){
 
-			// 手牌パーツの表示(Right)
-			if( pnum == 0){
-				dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,    // 01-02:X,Y座標
+		// 手牌パーツの表示(Right)
+		if( pnum == 0){
+			dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,    // 01-02:X,Y座標
 				                        tk->ply_act_tehaicount[pnum],    // 03:手牌数
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
 					                    tk->kyoku[kyoku_index].act_hai[actid],
 					                    tk->kyoku[kyoku_index].act_aka[actid],
 					                    EXCEPT_VALUE);
-			// 手牌パーツの表示(UP)
-			}else if( pnum == 1){
-				dparts->DispActTehaiParts_up( TEHAI_UP_X_START, TEHAI_UP_Y_START,
+		// 手牌パーツの表示(UP)
+		}else if( pnum == 1){
+			dparts->DispActTehaiParts_up( TEHAI_UP_X_START, TEHAI_UP_Y_START,
 					                   tk->ply_act_tehaicount[pnum], 
 					                   tk->ply_act_tehaitbl[pnum],
 					                   tk->ply_act_tehai_tbl_aka[pnum], 
 					                   tk->kyoku[kyoku_index].act_hai[actid],
 					                   tk->kyoku[kyoku_index].act_aka[actid],
 					                   EXCEPT_VALUE);
-			// 手牌パーツの表示(Left)
-			}else if( pnum == 2){
+		// 手牌パーツの表示(Left)
+		}else if( pnum == 2){
 				dparts->DispActTehaiParts_left( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,                // 01-02:X,Y座標
 				                        tk->ply_act_tehaicount[pnum],    // 03:手牌数
 					                   tk->ply_act_tehaitbl[pnum],
@@ -1876,8 +1876,8 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                   tk->kyoku[kyoku_index].act_hai[actid],
 					                   tk->kyoku[kyoku_index].act_aka[actid],
 					                   EXCEPT_VALUE);
-			// 手牌パーツの表示(Down)
-			}else if( pnum == 3){
+		// 手牌パーツの表示(Down)
+		}else if( pnum == 3){
 				dparts->DispActTehaiParts(gui->tehai_x, gui->tehai_y,
 				                       tk->ply_act_tehaicount[pnum], 
 					                   tk->ply_act_tehaitbl[pnum],
@@ -1888,22 +1888,62 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                   EXCEPT_VALUE,
 					                   EXCEPT_VALUE,
 					                   false);
-			}
+		}
 
 	// ----------------------------------------
 	// 2.手牌表示：自摸時リーチ宣言
 	// ----------------------------------------
 	}else if( tk->kyoku[kyoku_index].act_stat[actid] == PLYACTRIICH && tk->kyoku[kyoku_index].act_ply[actid] == pnum ){
 
+		// 手牌パーツの表示(Right)
+		if( pnum == 0){
+			dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,    // 01-02:X,Y座標
+				                        tk->ply_act_tehaicount[pnum],    // 03:手牌数
+					                    tk->ply_act_tehaitbl[pnum],
+					                    tk->ply_act_tehai_tbl_aka[pnum], 
+					                    tk->kyoku[kyoku_index].act_hai[actid-1],
+					                    tk->kyoku[kyoku_index].act_aka[actid-1],
+					                    EXCEPT_VALUE);
+		// 手牌パーツの表示(UP)
+		}else if( pnum == 1){
+			dparts->DispActTehaiParts_up( TEHAI_UP_X_START, TEHAI_UP_Y_START,
+					                   tk->ply_act_tehaicount[pnum], 
+					                   tk->ply_act_tehaitbl[pnum],
+					                   tk->ply_act_tehai_tbl_aka[pnum], 
+					                   tk->kyoku[kyoku_index].act_hai[actid-1],
+					                   tk->kyoku[kyoku_index].act_aka[actid-1],
+					                   EXCEPT_VALUE);
+		// 手牌パーツの表示(Left)
+		}else if( pnum == 2){
+			dparts->DispActTehaiParts_left( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,                // 01-02:X,Y座標
+				                        tk->ply_act_tehaicount[pnum],    // 03:手牌数
+					                   tk->ply_act_tehaitbl[pnum],
+					                   tk->ply_act_tehai_tbl_aka[pnum], 
+					                   tk->kyoku[kyoku_index].act_hai[actid-1],
+					                   tk->kyoku[kyoku_index].act_aka[actid-1],
+					                   EXCEPT_VALUE);
+		// 手牌パーツの表示(Down)
+		}else if( pnum == 3){
+			dparts->DispActTehaiParts(gui->tehai_x, gui->tehai_y,
+				                       tk->ply_act_tehaicount[pnum], 
+					                   tk->ply_act_tehaitbl[pnum],
+					                   tk->ply_act_tehai_tbl_aka[pnum], 
+					                   tk->kyoku[kyoku_index].act_hai[actid-1],
+					                   tk->kyoku[kyoku_index].act_aka[actid-1],
+					                   EXCEPT_VALUE,
+					                   EXCEPT_VALUE,
+					                   EXCEPT_VALUE,
+					                   false);
+		}
 
 	// ----------------------------------------
 	// 3.手牌表示：自摸捨牌時
 	// ----------------------------------------
 	}else if( tk->kyoku[kyoku_index].act_ply[actid] == pnum && tk->kyoku[kyoku_index].act_stat[actid] == PLYACTSUTE){
 
-			// 手牌パーツの表示(Right)
-			if( pnum == 0){
-				dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,    // 01-02:X,Y座標
+		// 手牌パーツの表示(Right)
+		if( pnum == 0){
+			dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,    // 01-02:X,Y座標
 				                        tk->ply_act_tehaicount[pnum],    // 03:手牌数
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1911,9 +1951,9 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                    tk->ply_act_tsumo_aka[pnum],
 					                    tk->ply_tbl_com_sutehai_statnum[pnum]);
 
-			// 手牌パーツの表示(UP)
-			}else if( pnum == 1){
-				dparts->DispActTehaiParts_up(  TEHAI_UP_X_START, TEHAI_UP_Y_START,
+		// 手牌パーツの表示(UP)
+		}else if( pnum == 1){
+			dparts->DispActTehaiParts_up(  TEHAI_UP_X_START, TEHAI_UP_Y_START,
 					                   tk->ply_act_tehaicount[pnum], 
 					                   tk->ply_act_tehaitbl[pnum],
 					                   tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1921,9 +1961,9 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                   tk->ply_act_tsumo_aka[pnum],
 					                   tk->ply_tbl_com_sutehai_statnum[pnum]);
 
-			// 手牌パーツの表示(Left)
-			}else if( pnum == 2){
-				dparts->DispActTehaiParts_left(  TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,                // 01-02:X,Y座
+		// 手牌パーツの表示(Left)
+		}else if( pnum == 2){
+			dparts->DispActTehaiParts_left(  TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,                // 01-02:X,Y座
 				                        tk->ply_act_tehaicount[pnum],    // 03:手牌数
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1931,9 +1971,9 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                    tk->ply_act_tsumo_aka[pnum],
 					                    tk->ply_tbl_com_sutehai_statnum[pnum]);
 
-			// 手牌パーツの表示(Down)
-			}else if( pnum == 3){
-				dparts->DispActTehaiParts(gui->tehai_x, gui->tehai_y,
+		// 手牌パーツの表示(Down)
+		}else if( pnum == 3){
+			dparts->DispActTehaiParts(gui->tehai_x, gui->tehai_y,
 				                       tk->ply_act_tehaicount[pnum], 
 					                   tk->ply_act_tehaitbl[pnum],
 					                   tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1943,7 +1983,27 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                   EXCEPT_VALUE,
 					                   EXCEPT_VALUE,
 					                   false);
-			}
+		}
+
+	// -----------------------------------------------------------
+	// 5.手牌表示：鳴き捨牌時
+	// -----------------------------------------------------------
+	}else if( tk->kyoku[kyoku_index].act_stat[actid] == PLYACTNAKISUTE &&
+	          tk->kyoku[kyoku_index].act_ply[actid]  == pnum       ){
+
+		// 手牌パーツの表示(Right)
+		if( pnum == 0){
+
+		// 手牌パーツの表示(UP)
+		}else if( pnum == 1){
+
+		// 手牌パーツの表示(UP)
+		}else if( pnum == 2){
+
+		// 手牌パーツの表示(UP)
+		}else if( pnum == 3){
+
+		}
 
 	// ----------------------------------------
 	// 7.手牌表示：それ以外の手牌表示(自摸なし・捨牌なし)
@@ -2110,7 +2170,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 			    tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i] == MINKAN  || 
 			    tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i] == ANKAN   ){
 
+				// ----------------------------------------
 				// 手牌パーツの表示(Right)
+				// ----------------------------------------
 				if( pnum == 0){
 
 					// 鳴き面子の表示
@@ -2121,7 +2183,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 					                     tk->kyoku[kyoku_index].naki_hai[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 
+				// ----------------------------------------
 				// 手牌パーツの表示(UP)
+				// ----------------------------------------
 				}else if( pnum == 1){
 
 					// 鳴き面子の表示
@@ -2132,7 +2196,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 					                     tk->kyoku[kyoku_index].naki_hai[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 
+				// ----------------------------------------
 				// 手牌パーツの表示(Left)
+				// ----------------------------------------
 				}else if( pnum == 2){
 
 					dparts->DispActSarashiParts_left( 
@@ -2142,7 +2208,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 					                     tk->kyoku[kyoku_index].naki_hai[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 
+				// ----------------------------------------
 				// 手牌パーツの表示(Down：ライナーと共通)
+				// ----------------------------------------
 				}else if( pnum == 3){
 
 					dparts->DispActSarashiParts( TEHAI_DOWN_NAKI_X_START - tmp_nakimen_count*100, 
@@ -2153,7 +2221,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 
 				}
 
+				// ----------------------------------------
 				// 鳴き面子の表示位置移動
+				// ----------------------------------------
 				tmp_nakimen_count++;
 
 			// ----------------------------------------
@@ -2161,7 +2231,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 			// ----------------------------------------
 			}else if(tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i] == MINSHUN){
 
+				// ----------------------------------------
 				// 手牌パーツの表示(Right)
+				// ----------------------------------------
 				if( pnum == 0){
 
 					// 鳴き面子の表示
@@ -2172,7 +2244,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 
+				// ----------------------------------------
 				// 手牌パーツの表示(UP)
+				// ----------------------------------------
 				}else if( pnum == 1){
 
 					// 鳴き面子の表示
@@ -2183,9 +2257,12 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 
+				// ----------------------------------------
 				// 手牌パーツの表示(Left)
+				// ----------------------------------------
 				}else if( pnum == 2){
 
+					// 鳴き面子の表示
 					dparts->DispActSarashiParts_left( 
 					                     TEHAI_LEFT_NAKI_X_START + tmp_nakimen_count*LHAI_XSIZE, 
 					                     TEHAI_LEFT_NAKI_Y_START,  
@@ -2193,18 +2270,24 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 
+				// ----------------------------------------
 				// 手牌パーツの表示(Down：ライナーと共通)
+				// ----------------------------------------
 				}else if( pnum == 3){
 
-					dparts->DispActSarashiParts( TEHAI_DOWN_NAKI_X_START - tmp_nakimen_count*100, 
-					                             TEHAI_DOWN_NAKI_Y_START, 
+					// 鳴き面子の表示
+					dparts->DispActSarashiParts( 
+					                     TEHAI_DOWN_NAKI_X_START - tmp_nakimen_count*100, 
+					                     TEHAI_DOWN_NAKI_Y_START, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 
 				}
 
+				// ----------------------------------------
 				// 鳴き面子の表示位置移動
+				// ----------------------------------------
 				tmp_nakimen_count++;
 
 			// ----------------------------------------
@@ -2212,29 +2295,67 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum,
 			// ----------------------------------------
 			}else if(tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i] == KAKAN){
 
-				// 手牌パーツの表示(Right)
-				if( pnum == 0){
+				// ----------------------------------------
+				// 加槓の晒し牌番号の確認
+				// ----------------------------------------
+				for(int tmp_j = 0; tmp_j < tk->kyoku[kyoku_index].naki_count[pnum]; tmp_j++){
 
+					// 既存晒し面子と同じならば
+					if (tk->kyoku[kyoku_index].naki_hai[pnum][tmp_j] == tk->kyoku[kyoku_index].naki_hai[pnum][tmp_i]){
 
-				// 手牌パーツの表示(UP)
-				}else if( pnum == 1){
+						// ----------------------------------------
+						// 手牌パーツの表示(Right)
+						// ----------------------------------------
+						if( pnum == 0){
+							// 鳴き面子の表示
+							dparts->DispActSarashiParts_right( 
+					                     TEHAI_RIGHT_NAKI_X_START + (3-tmp_j)*LHAI_XSIZE, 
+				                         TEHAI_RIGHT_NAKI_Y_START,
+					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
+						// ----------------------------------------
+						// 手牌パーツの表示(UP)
+						// ----------------------------------------
+						}else if( pnum == 1){
+							// 鳴き面子の表示
+							dparts->DispActSarashiParts_up( 
+					                     TEHAI_UP_X_START - 120 + HAI_XSIZE*2 + tmp_j*75, 
+				                         TEHAI_UP_Y_START,
+					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
+						// ----------------------------------------
+						// 手牌パーツの表示(Left)
+						// ----------------------------------------
+						}else if( pnum == 2){
+							// 鳴き面子の表示
+							dparts->DispActSarashiParts_left( 
+					                     TEHAI_LEFT_NAKI_X_START + tmp_j*LHAI_XSIZE, 
+					                     TEHAI_LEFT_NAKI_Y_START,  
+					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
+						// ----------------------------------------
+						// 手牌パーツの表示(Down：ライナーと共通)
+						// ----------------------------------------
+						}else if( pnum == 3){
+							// 鳴き面子の表示
+							dparts->DispActSarashiParts( 
+					                     TEHAI_DOWN_NAKI_X_START - tmp_j*100, 
+					                     TEHAI_DOWN_NAKI_Y_START, 
+					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
+					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
+						}
 
+						// 加槓があるので、ここで抜ける。(抜けないと加槓で重複処理になってしまう)
+						break;
 
-				// 手牌パーツの表示(Left)
-				}else if( pnum == 2){
-
-
-				// 手牌パーツの表示(Down：ライナーと共通)
-				}else if( pnum == 3){
-
-
+					}
 				}
-
 			}
-
-
 		}
-
 	}
 
 }
@@ -4302,9 +4423,7 @@ void MJSDisplay::DispActTehaiCom(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, in
 	       tk->kyoku[kyoku_index].act_stat[actid] == PLYTSUMOAGARI ) &&
 	       tk->kyoku[kyoku_index].act_ply[actid]  == pnum ){
 
-		// クライアントゲームモードがPLYモード又はGUIモードの場合
-		// if ( gui->cli_game_mode == GUI_MJAI_GAMEMODE_GUI_MODE || 
-		//     gui->cli_game_mode == GUI_MJAI_GAMEMODE_PLY_MODE ){
+		// 裏表示であるかどうか
 		if ( tk->com_no_chk_tehai_flg == true ){
 
 			// 伏せられた手牌表示(自摸有)
@@ -4331,9 +4450,7 @@ void MJSDisplay::DispActTehaiCom(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, in
 	}else if( tk->kyoku[kyoku_index].act_stat[actid] == PLYACTRIICH &&
 	          tk->kyoku[kyoku_index].act_ply[actid]  == pnum        ){
 
-		// クライアントゲームモードがPLYモード又はGUIモードの場合
-		//if ( gui->cli_game_mode == GUI_MJAI_GAMEMODE_GUI_MODE || 
-		//     gui->cli_game_mode == GUI_MJAI_GAMEMODE_PLY_MODE ){
+		// 裏表示であるかどうか
 		if ( tk->com_no_chk_tehai_flg == true ){
 
 			// 伏せられた手牌表示(自摸有)

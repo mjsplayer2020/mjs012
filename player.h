@@ -82,7 +82,7 @@ class MJSPlayer{
 	int ply_zikaze;                          // プレーヤの自風牌の牌番号
 
 	// 赤牌情報
-	int max_aka_count[AKA_TYPE_MAX_COUNT];     // 最大赤牌枚数
+	int max_aka_count[AKA_TYPE_MAX_COUNT];   // 最大赤牌枚数
 
 	// -----------------------------
 	// 手牌情報
@@ -91,7 +91,7 @@ class MJSPlayer{
 	// 手牌情報
 	int tehai[PAI_MAX];                      // 手牌ヒストグラム
 	int tehai_count;                         // 手牌枚数
-	int aka_count[AKA_TYPE_MAX_COUNT];         // 赤牌枚数
+	int aka_count[AKA_TYPE_MAX_COUNT];       // 赤牌枚数
 
 	// 手牌テーブル
 	int  tehaitbl[TEHAI_MAX];                // 牌テーブル
@@ -260,9 +260,9 @@ class MJSPlayer{
 
 	// 3-1.自摸処理
 	void PlyActTsumo(int tmp_tsumo_hai, bool tmp_tsumo_aka);          // 自摸時捨牌決定(メイン)
-	void PlyChkAISutehai();                                                              // (サブ)戦略を含めた捨牌設定
-	void PlyChkTehaiOri();                                                               // (サブ)手牌オリ確認
-	void PlyCountTsumo();                                                                // 自摸枚数をカウント
+	void PlyChkAISutehai();                                           // (サブ)戦略を含めた捨牌設定
+	void PlyChkTehaiOri();                                            // (サブ)手牌オリ確認
+	void PlyCountTsumo();                                             // 自摸枚数をカウント
 
 	// 3-1.(サブ処理)アクション確認
 	void PlyChkAnkan(int tmp_tsumo_hai, bool tmp_tsumo_aka);          // 暗槓確認
@@ -289,8 +289,8 @@ class MJSPlayer{
 	void PlyActKakan(int tmp_naki_hai, int tmp_naki_aka_count);       // 加槓アクション
 
 	// 4-1.他プレーヤの確認処理
-	void PlyChkOthPlyTsumo();                                                       // 他プレーヤの自摸
-	void PlyChkOthPlyRiichi(int tmp_ply_id);                                        // 他プレーヤのリーチ宣言
+	void PlyChkOthPlyTsumo();                                         // 他プレーヤの自摸
+	void PlyChkOthPlyRiichi(int tmp_ply_id);                          // 他プレーヤのリーチ宣言
 	void PlyChkNaki(int suteply, int hai);                            // 鳴き確認
 
 	// 4-2.鳴きアクション処理

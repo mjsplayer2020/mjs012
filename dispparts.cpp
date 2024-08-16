@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.180(囲みモード：鳴き牌表示(LEFT,RIGHTユーザ))
+ * バージョン     ： 0.1.2.0.181(囲みモード：LINE_SUTEHAI_COUNT_MAX導入)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.cpp
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/12 11:23:39
+ * 最終更新日     ： 2024/08/16 21:40:08
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -1064,7 +1064,7 @@ void MJSDisplayParts::DispActSarashiParts(int x, int y, LBMen naki_stat, int hai
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// 晒し面子のパーツ表示(全て)
+// 晒し面子のパーツ表示：全鳴き面子表示
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispAllSarashiParts(int base_x, int base_y, int naki_count, LBMen naki_stat[], int naki_hai[], int naki_idx[], int naki_aka[]){
 
@@ -1124,9 +1124,6 @@ void MJSDisplayParts::DispAllSarashiParts(int base_x, int base_y, int naki_count
 		}
 
 	}
-
-
-
 
 }
 
@@ -1241,28 +1238,28 @@ void MJSDisplayParts::DispActKawaParts_up(int x, int y, int kawa_tbl_count, int 
 	// ----------------------------------------
 	int  tmp_x;
 	int  tmp_y;
-	int  line_hai_count = 0;
-	int  tmp_sute_idx = 0;
-	int  tmp_kawa_mode = 0;
+	int  line_sutehai_count = 0;
+	int  tmp_sute_idx   = 0;
+	int  tmp_kawa_mode  = 0;
 	bool riichi_flg = false;
 
 	// ----------------------------------------
 	// 捨牌表示(1段目あふれ分)
 	// ----------------------------------------
-	if( kawa_tbl_count > 18){
+	if( kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*3){
 
 		// 変数定義
 		tmp_x = x-HAI_XSIZE*1;
 		tmp_y = y;
 
 		// 牌枚数
-		line_hai_count = kawa_tbl_count - 18;
+		line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX*3;
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+18;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX*3;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1291,24 +1288,24 @@ void MJSDisplayParts::DispActKawaParts_up(int x, int y, int kawa_tbl_count, int 
 	// ----------------------------------------
 	// 捨牌表示(1段目)
 	// ----------------------------------------
-	if( kawa_tbl_count > 12){
+	if( kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*2){
 
 		// 変数定義
 		tmp_x = x+HAI_XSIZE*5;
 		tmp_y = y;
 
 		// 牌枚数
-		if(kawa_tbl_count > 18){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*3){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count - 12;
+			line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX*2;
 		}
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+12;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX*2;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1337,24 +1334,24 @@ void MJSDisplayParts::DispActKawaParts_up(int x, int y, int kawa_tbl_count, int 
 	// ----------------------------------------
 	// 捨牌表示(2段目)
 	// ----------------------------------------
-	if( kawa_tbl_count > 6){
+	if( kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX){
 
 		// 変数定義
 		tmp_x = x+HAI_XSIZE*5;
 		tmp_y = y+HAI_YSIZE*1;
 
 		// 牌枚数
-		if(kawa_tbl_count > 12){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*2){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count - 6;
+			line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX;
 		}
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+6;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1390,14 +1387,14 @@ void MJSDisplayParts::DispActKawaParts_up(int x, int y, int kawa_tbl_count, int 
 		tmp_y = y+HAI_YSIZE*2;
 
 		// 牌枚数
-		if(kawa_tbl_count > 6){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count;
+			line_sutehai_count = kawa_tbl_count;
 		}
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
 			tmp_sute_idx = tmp_i;
@@ -1440,7 +1437,7 @@ void MJSDisplayParts::DispActKawaParts_down(int x, int y, int kawa_tbl_count, in
 	// ----------------------------------------
 	int  tmp_x;
 	int  tmp_y;
-	int  line_hai_count = 0;
+	int  line_sutehai_count = 0;
 	int  tmp_sute_idx = 0;
 	int  tmp_kawa_mode = 0;
 	bool riichi_flg = false;
@@ -1455,14 +1452,14 @@ void MJSDisplayParts::DispActKawaParts_down(int x, int y, int kawa_tbl_count, in
 		tmp_y = y;
 
 		// 牌枚数
-		if(kawa_tbl_count > 6){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count;
+			line_sutehai_count = kawa_tbl_count;
 		}
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
 			tmp_sute_idx = tmp_i;
@@ -1493,24 +1490,24 @@ void MJSDisplayParts::DispActKawaParts_down(int x, int y, int kawa_tbl_count, in
 	// ----------------------------------------
 	// 捨牌表示(2段目)
 	// ----------------------------------------
-	if(kawa_tbl_count > 6){
+	if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX){
 
 		// 変数定義
 		tmp_x = x;
 		tmp_y = y+HAI_YSIZE*1;
 
 		// 牌枚数
-		if(kawa_tbl_count > 12){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*2){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count - 6;
+			line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX;
 		}
 
 		// 捨牌表示(2段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+6;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1538,42 +1535,42 @@ void MJSDisplayParts::DispActKawaParts_down(int x, int y, int kawa_tbl_count, in
 	// ----------------------------------------
 	// 捨牌表示(3段目)
 	// ----------------------------------------
-	if(kawa_tbl_count > 12){
+	if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*2){
 
 		// 変数定義
 		tmp_x = x;
 		tmp_y = y+HAI_YSIZE*2;
 
 		// 牌枚数
-		if(kawa_tbl_count > 18){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*3){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count - 12;
+			line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX*2;
 		}
 
 		// 捨牌表示(3段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+12;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX*2;
 
 			// 牌モード確認
-			if( kawa_mode[tmp_i+12] >= RIICHI_STAT_NUM ){
-				tmp_kawa_mode =  kawa_mode[tmp_i+12] - RIICHI_STAT_NUM;
+			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
+				tmp_kawa_mode =  kawa_mode[tmp_sute_idx] - RIICHI_STAT_NUM;
 				riichi_flg = true;
 			}else{
-				tmp_kawa_mode =  kawa_mode[tmp_i+12];
+				tmp_kawa_mode =  kawa_mode[tmp_sute_idx];
 				riichi_flg = false;
 			}
 
 			// 捨牌表示
 			if(riichi_flg == true){
 				// 捨牌表示 - リーチ牌
-				DispLHai( tmp_x, y+7+HAI_YSIZE*2, kawa_tbl[tmp_i+12], kawa_tbl_aka[tmp_i+12], false, tmp_kawa_mode, 0);
+				DispLHai( tmp_x, y+7+HAI_YSIZE*2, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], false, tmp_kawa_mode, 0);
 				tmp_x = tmp_x + LHAI_XSIZE;
 			}else{
 				// 捨牌表示 - 通常
-				DispHai( tmp_x, y+HAI_YSIZE*2,    kawa_tbl[tmp_i+12], kawa_tbl_aka[tmp_i+12], false, tmp_kawa_mode, 0);
+				DispHai( tmp_x, y+HAI_YSIZE*2,    kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], false, tmp_kawa_mode, 0);
 				tmp_x = tmp_x + HAI_XSIZE;
 			}
 
@@ -1583,38 +1580,38 @@ void MJSDisplayParts::DispActKawaParts_down(int x, int y, int kawa_tbl_count, in
 	// ----------------------------------------
 	// 捨牌表示(3段目あふれ分)
 	// ----------------------------------------
-	if(kawa_tbl_count > 18){
+	if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*3){
 
 		// 変数定義
 		tmp_x = x + HAI_XSIZE*6;
 		tmp_y = y+HAI_YSIZE*3;
 
 		// 牌枚数
-		line_hai_count = kawa_tbl_count - 18;
+		line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX*3;
 
 		// 捨牌表示(3段目あふれ分)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+18;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX*3;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_i+18] >= RIICHI_STAT_NUM ){
-				tmp_kawa_mode =  kawa_mode[tmp_i+18] - RIICHI_STAT_NUM;
+				tmp_kawa_mode =  kawa_mode[tmp_sute_idx] - RIICHI_STAT_NUM;
 				riichi_flg = true;
 			}else{
-				tmp_kawa_mode =  kawa_mode[tmp_i+18];
+				tmp_kawa_mode =  kawa_mode[tmp_sute_idx];
 				riichi_flg = false;
 			}
 
 			// 捨牌表示
 			if(riichi_flg == true){
 				// 捨牌表示 - リーチ牌
-				DispLHai( tmp_x, tmp_y+7, kawa_tbl[tmp_i+18], kawa_tbl_aka[tmp_i+18], false, tmp_kawa_mode, 0);
+				DispLHai( tmp_x, tmp_y+7, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], false, tmp_kawa_mode, 0);
 				tmp_x = tmp_x + LHAI_XSIZE;
 			}else{
 				// 捨牌表示 - 通常
-				DispHai( tmp_x, tmp_y,    kawa_tbl[tmp_i+18], kawa_tbl_aka[tmp_i+18], false, tmp_kawa_mode, 0);
+				DispHai( tmp_x, tmp_y,    kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], false, tmp_kawa_mode, 0);
 				tmp_x = tmp_x + HAI_XSIZE;
 			}
 
@@ -1634,7 +1631,7 @@ void MJSDisplayParts::DispActKawaParts_left(int x, int y, int kawa_tbl_count, in
 	// ----------------------------------------
 	int  tmp_x;
 	int  tmp_y;
-	int  line_hai_count = 0;
+	int  line_sutehai_count = 0;
 	int  tmp_sute_idx = 0;
 	int  tmp_kawa_mode = 0;
 	bool riichi_flg = false;
@@ -1649,14 +1646,14 @@ void MJSDisplayParts::DispActKawaParts_left(int x, int y, int kawa_tbl_count, in
 		tmp_y = y;
 
 		// 牌枚数
-		if(kawa_tbl_count > 6){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count;
+			line_sutehai_count = kawa_tbl_count;
 		}
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
 			tmp_sute_idx = tmp_i;
@@ -1686,24 +1683,24 @@ void MJSDisplayParts::DispActKawaParts_left(int x, int y, int kawa_tbl_count, in
 	// ----------------------------------------
 	// 捨牌表示(2段目)
 	// ----------------------------------------
-	if( kawa_tbl_count > 6){
+	if( kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX){
 
 		// 変数定義
 		tmp_x = x-LHAI_XSIZE*1;
 		tmp_y = y;
 
 		// 牌枚数
-		if(kawa_tbl_count > 12){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*2){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count-6;
+			line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX;
 		}
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+6;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1731,24 +1728,24 @@ void MJSDisplayParts::DispActKawaParts_left(int x, int y, int kawa_tbl_count, in
 	// ----------------------------------------
 	// 捨牌表示(3段目)
 	// ----------------------------------------
-	if( kawa_tbl_count > 12){
+	if( kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*2){
 
 		// 変数定義
 		tmp_x = x-LHAI_XSIZE*2;
 		tmp_y = y;
 
 		// 牌枚数
-		if(kawa_tbl_count > 18){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX*3){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count-12;
+			line_sutehai_count = kawa_tbl_count - LINE_SUTEHAI_COUNT_MAX*2;
 		}
 
 		// 捨牌表示(1段目)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = tmp_i+12;
+			tmp_sute_idx = tmp_i + LINE_SUTEHAI_COUNT_MAX*2;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1785,7 +1782,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 	// ----------------------------------------
 	int  tmp_x;
 	int  tmp_y;
-	int  line_hai_count = 0;
+	int  line_sutehai_count = 0;
 	int  tmp_sute_idx = 0;
 	int  tmp_kawa_mode = 0;
 	bool riichi_flg = false;
@@ -1797,15 +1794,15 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 	if( kawa_tbl_count > 0){
 
 		// 行の牌枚数
-		if(kawa_tbl_count > 6){
-			line_hai_count = 6;
+		if(kawa_tbl_count > LINE_SUTEHAI_COUNT_MAX){
+			line_sutehai_count = LINE_SUTEHAI_COUNT_MAX;
 		}else{
-			line_hai_count = kawa_tbl_count;
+			line_sutehai_count = kawa_tbl_count;
 		}
 
 		// 行リーチ確認
 		disp_riichi_flg = false;
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 			if( kawa_mode[tmp_i] >= RIICHI_STAT_NUM ){
 				disp_riichi_flg = true;
 				break;
@@ -1814,7 +1811,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 
 		// 変数定義
 		tmp_x = x;
-		tmp_y = y + LHAI_YSIZE*(6-line_hai_count);  // 空白分だけ下げる
+		tmp_y = y + LHAI_YSIZE*(LINE_SUTEHAI_COUNT_MAX-line_sutehai_count);  // 空白分だけ下げる
 
 		// リーチ位置の修正
 		if( disp_riichi_flg == true ){
@@ -1822,10 +1819,10 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 		}
 
 		// 捨牌表示(Rightプレーヤ)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = 0 + line_hai_count - tmp_i - 1;
+			tmp_sute_idx = 0 + line_sutehai_count - tmp_i - 1;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1858,14 +1855,14 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 
 		// 行の牌枚数
 		if(kawa_tbl_count > 12){
-			line_hai_count = 6;
+			line_sutehai_count = 6;
 		}else{
-			line_hai_count = kawa_tbl_count - 6;
+			line_sutehai_count = kawa_tbl_count - 6;
 		}
 
 		// 行リーチ確認
 		disp_riichi_flg = false;
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 			if( kawa_mode[tmp_i+6] >= RIICHI_STAT_NUM ){
 				disp_riichi_flg = true;
 				break;
@@ -1874,7 +1871,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 
 		// 変数定義
 		tmp_x = x + LHAI_XSIZE*1;
-		tmp_y = y + LHAI_YSIZE*(6-line_hai_count);  // 空白分だけ下げる
+		tmp_y = y + LHAI_YSIZE*(LINE_SUTEHAI_COUNT_MAX-line_sutehai_count);  // 空白分だけ下げる
 
 		// リーチ位置の修正
 		if( disp_riichi_flg == true ){
@@ -1882,10 +1879,10 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 		}
 
 		// 捨牌表示(Rightプレーヤ)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = 6 + line_hai_count - tmp_i - 1;
+			tmp_sute_idx = LINE_SUTEHAI_COUNT_MAX + line_sutehai_count - tmp_i - 1;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1919,14 +1916,14 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 
 		// 行の牌枚数
 		if(kawa_tbl_count > 18){
-			line_hai_count = 6;
+			line_sutehai_count = 6;
 		}else{
-			line_hai_count = kawa_tbl_count - 12;
+			line_sutehai_count = kawa_tbl_count - 12;
 		}
 
 		// 行リーチ確認
 		disp_riichi_flg = false;
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 			if( kawa_mode[tmp_i+12] >= RIICHI_STAT_NUM ){
 				disp_riichi_flg = true;
 				break;
@@ -1935,7 +1932,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 
 		// 変数定義
 		tmp_x = x + LHAI_XSIZE*2;
-		tmp_y = y + LHAI_YSIZE*(6-line_hai_count);  // 空白分だけ下げる
+		tmp_y = y + LHAI_YSIZE*(LINE_SUTEHAI_COUNT_MAX-line_sutehai_count);  // 空白分だけ下げる
 
 		// リーチ位置の修正
 		if( disp_riichi_flg == true ){
@@ -1943,10 +1940,10 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 		}
 
 		// 捨牌表示(Rightプレーヤ)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = 12 + line_hai_count - tmp_i - 1;
+			tmp_sute_idx = LINE_SUTEHAI_COUNT_MAX*2 + line_sutehai_count - tmp_i - 1;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -1978,11 +1975,11 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 	if( kawa_tbl_count > 18){
 
 		// 行の牌枚数
-		line_hai_count = kawa_tbl_count - 18;
+		line_sutehai_count = kawa_tbl_count - 18;
 
 		// 行リーチ確認
 		disp_riichi_flg = false;
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 			if( kawa_mode[tmp_i+18] >= RIICHI_STAT_NUM ){
 				disp_riichi_flg = true;
 				break;
@@ -1991,7 +1988,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 
 		// 変数定義
 		tmp_x = x + LHAI_XSIZE*3;
-		tmp_y = y + LHAI_YSIZE*(6-line_hai_count);  // 空白分だけ下げる
+		tmp_y = y + LHAI_YSIZE*(LINE_SUTEHAI_COUNT_MAX-line_sutehai_count);  // 空白分だけ下げる
 
 		// リーチ位置の修正
 		if( disp_riichi_flg == true ){
@@ -1999,10 +1996,10 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 		}
 
 		// 捨牌表示(Rightプレーヤ)
-		for(int tmp_i = 0; tmp_i < line_hai_count; tmp_i++){
+		for(int tmp_i = 0; tmp_i < line_sutehai_count; tmp_i++){
 
 			// 捨牌INDEXの定義
-			tmp_sute_idx = 18 + line_hai_count - tmp_i - 1;
+			tmp_sute_idx = LINE_SUTEHAI_COUNT_MAX*3 + line_sutehai_count - tmp_i - 1;
 
 			// 牌モード確認
 			if( kawa_mode[tmp_sute_idx] >= RIICHI_STAT_NUM ){
@@ -2164,6 +2161,7 @@ void MJSDisplayParts::DispActSarashiParts_up(int x, int y, LBMen naki_stat, int 
 	// ----------------------------------------
 	}else if(naki_stat == KAKAN){
 
+		// 晒し牌の表示(オープン4枚目)
 		if( tmp_aka_count > 0 ){
 			DispHai( x-HAI_XSIZE*3, y, hai_index, true, true, 0, 0);
 		}else{
@@ -2196,11 +2194,6 @@ void MJSDisplayParts::DispActSarashiParts_left(int x, int y, LBMen naki_stat, in
 
 	// 変数の初期化
 	int tmp_aka_count = aka_count;
-
-	// ----------------------------------------
-	// (デバグ用)赤牌枚数
-	// ----------------------------------------
-
 
 	// ----------------------------------------
 	// ポン牌の表示
@@ -2272,9 +2265,9 @@ void MJSDisplayParts::DispActSarashiParts_left(int x, int y, LBMen naki_stat, in
 		DispLHai( x, y+LHAI_YSIZE*3, 0, false, false, 0, 0);
 
 	// ----------------------------------------
-	// 加槓牌の表示
+	// 明槓牌の表示
 	// ----------------------------------------
-	}else if(naki_stat == KAKAN){
+	}else if(naki_stat == MINKAN){
 
 		// 晒し牌の表示(オープン1枚目)
 		if( tmp_aka_count > 0 ){
@@ -2299,6 +2292,18 @@ void MJSDisplayParts::DispActSarashiParts_left(int x, int y, LBMen naki_stat, in
 
 		// 晒し牌の表示(オープン4枚目)
 		if( tmp_aka_count > 3 ){
+			DispLHai( x, y+LHAI_YSIZE*3, hai_index, true, true, 0, 0);
+		}else{
+			DispLHai( x, y+LHAI_YSIZE*3, hai_index, false, true, 0, 0);
+		}
+
+	// ----------------------------------------
+	// 加槓牌の表示
+	// ----------------------------------------
+	}else if(naki_stat == KAKAN){
+
+		// 晒し牌の表示(オープン4枚目)
+		if( tmp_aka_count > 0 ){
 			DispLHai( x, y+LHAI_YSIZE*3, hai_index, true, true, 0, 0);
 		}else{
 			DispLHai( x, y+LHAI_YSIZE*3, hai_index, false, true, 0, 0);
@@ -2396,10 +2401,49 @@ void MJSDisplayParts::DispActSarashiParts_right(int x, int y, LBMen naki_stat, i
 			DispLHai( x, y+LHAI_YSIZE*3, 0,         false, false, 0, 0);
 
 	// ----------------------------------------
+	// 明槓牌の表示
+	// ----------------------------------------
+	}else if(naki_stat == MINKAN){
+
+		// 晒し牌の表示(オープン1枚目)
+		if( tmp_aka_count > 0 ){
+			DispLHai( x, y  , hai_index, true,  false, 0, 0);
+		}else{
+			DispLHai( x, y  , hai_index, false, false, 0, 0);
+		}
+
+		// 晒し牌の表示(オープン2枚目)
+		if( tmp_aka_count > 1 ){
+			DispLHai( x, y+LHAI_YSIZE*1, hai_index, true,  false, 0, 0);
+		}else{
+			DispLHai( x, y+LHAI_YSIZE*1, hai_index, false, false, 0, 0);
+		}
+
+		// 晒し牌の表示(オープン3枚目)
+		if( tmp_aka_count > 2 ){
+			DispLHai( x, y+LHAI_YSIZE*2 , hai_index, true,  false, 0, 0);
+		}else{
+			DispLHai( x, y+LHAI_YSIZE*2 , hai_index, false, false, 0, 0);
+		}
+
+		// 晒し牌の表示(オープン4枚目)
+		if( tmp_aka_count > 3 ){
+			DispLHai( x, y+LHAI_YSIZE*3, hai_index, true,  false, 0, 0);
+		}else{
+			DispLHai( x, y+LHAI_YSIZE*3, hai_index, false, false, 0, 0);
+		}
+
+	// ----------------------------------------
 	// 加槓牌の表示
 	// ----------------------------------------
 	}else if(naki_stat == KAKAN){
 
+		// 晒し牌の表示(オープン4枚目)
+		if( tmp_aka_count > 0 ){
+			DispLHai( x, y+LHAI_YSIZE*3, hai_index, true,  false, 0, 0);
+		}else{
+			DispLHai( x, y+LHAI_YSIZE*3, hai_index, false, false, 0, 0);
+		}
 
 	// ----------------------------------------
 	// 頭牌の表示
