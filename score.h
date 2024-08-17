@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(Ver0.1.2：ログビュアー実装版)
- * バージョン     ： 0.1.2.0.165(役情報パラメータの不要分削除)
+ * バージョン     ： 0.1.2.0.182(和了牌が赤牌場合に赤ドラ加算されない不具合の解消)
  * プログラム名   ： mjs.exe
  * ファイル名     ： score.h
  * クラス名       ： MJSScoreクラス
  * 処理概要       ： 得点計算クラス(新)
  * Ver0.1.2作成日 ： 2023/11/04 09:10:01
- * 最終更新日     ： 2024/05/19 12:51:50
+ * 最終更新日     ： 2024/08/17 11:36:15
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -252,9 +252,9 @@ class MJSScore{
 	LBAgariTehai  agari_stat, // 和了形式
 	int  agari_ply_num,       // 和了プレーヤ
 	int  furikomi_ply_num,    // 振込プレーヤ
-	bool tsumoagari_flg,      // 自摸和了の有無*/
+	bool tsumoagari_flg,      // 自摸和了の有無
 	int  agari_hai,           // 和了牌
-	int  agari_aka,           // 和了牌の赤牌有無
+	bool  agari_aka,          // 和了牌の赤牌有無
 	int  tehai_hist[],        // 和了時の手牌ヒストグラム
 	int  aka_count[],         // 手牌の赤牌枚数
 	int  atama_hai,           // 頭牌
@@ -272,16 +272,30 @@ class MJSScore{
 	int  act_ply[]            // アクションプレーヤー
 	);
 
-	// 得点確認(メイン処理)
-	// void SetResultAgariScore(MJSYakuinfo *yk);              // 和了得点設定(最終得点設定)→削除向け
-
 	// 得点確認(サブ処理)
 	void Chk_initAgariScore(MJSYakuinfo *yk);               // 01:初期化処理
-	void Chk_preAgariScore(MJSYakuinfo *yk);                // 02:事前和了情報の設定
+
+	void Chk_preAgariScore(                                 // 02:事前和了情報の設定
+	MJSYakuinfo *yk,                                        // 和了役情報構造体
+	int  atama_hai,                                         // 頭牌
+	int  men_count,                                         // 面子数
+	LBMen men_stat[],                                       // 面子状態
+	int  men_hai[],                                         // 面子牌
+	int  men_idx[],                                         // 面子INDEX
+	int  nakimen_count,                                     // 鳴き面子数
+	LBMen nakimen_stat[],                                   // 鳴き面子状態
+	int  nakimen_hai[],                                     // 鳴き面子牌
+	int  nakimen_idx[],                                     // 鳴き面子INDEX
+	int  nakimen_aka[],                                     // 鳴き面子赤牌枚数
+	int  act_count,                                         // actidの合計数
+	LBTkSt  act_stat[],                                     // アクション状態
+	int  act_ply[]                                          // アクションプレーヤー
+	);
+
 	void Chk_mentsu(MJSYakuinfo *yk);                       // 03:面子確認
 	void Chk_tehai_count(MJSYakuinfo *yk);                  // 04:手牌枚数確認
 	void Chk_fu(MJSYakuinfo *yk);                           // 05:符計算
-	void Chk_yaku(MJSYakuinfo *yk, int tehai_hist[]);      // 06:役確認
+	void Chk_yaku(MJSYakuinfo *yk, int tehai_hist[]);       // 06:役確認
 	void Chk_score(MJSYakuinfo *yk);                        // 07:得点計算
 
 	// 得点確認(サブ処理・七対子・国士)
@@ -290,7 +304,6 @@ class MJSScore{
 
 	// 得点計算サブ処理
 	void Chk_kyokuscore(MJSYakuinfo *yk);                   // 07-01:局の得点収支
-	void Chk_totalscore(MJSYakuinfo *yk);                   // 07-02:合計得点の加算
 
 	// ドラ処理
 	void Chk_tehai_dora_count(int rinshan, bool ura_chk);   // ドラ枚数の確認

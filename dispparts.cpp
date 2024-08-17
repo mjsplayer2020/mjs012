@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.181(囲みモード：LINE_SUTEHAI_COUNT_MAX導入)
+ * バージョン     ： 0.1.2.0.182(囲みモード：鳴き捨牌時のアクション手牌表示)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.cpp
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/16 21:40:08
+ * 最終更新日     ： 2024/08/17 11:36:15
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -360,10 +360,6 @@ void MJSDisplayParts::DispFps(int x, int y, float mFps, int total_frame_count, i
 
 	// FPSフレーム表示
 	DrawFormatString(x, y, GetColor(255,255,255), "TotalFrCnt:%6d FrCnt:%4d FPS：%03.1f", total_frame_count, frame_count, mFps);
-
-	// wsprintfはfloat型に対応していない
-	// wsprintf(tmp_disp_msg, "FPS：%3.1f FrameCount:%8d", mFps, frame_count);
-	// DispString( 730, 750, tmp_disp_msg );
 
 }
 

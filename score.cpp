@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(Ver0.1.2：ログビュアー実装版)
- * バージョン     ： 0.1.2.0.166(Gameクラスメインステータス変数の変更)
+ * バージョン     ： 0.1.2.0.182(和了牌が赤牌場合に赤ドラ加算されない不具合の解消)
  * プログラム名   ： mjs.exe
  * ファイル名     ： score.h
  * クラス名       ： MJSScoreクラス
  * 処理概要       ： 得点計算クラス(新)
  * Ver0.1.2作成日 ： 2023/11/04 09:10:01
- * 最終更新日     ： 2024/05/19 17:37:05
+ * 最終更新日     ： 2024/08/17 11:36:15
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -420,25 +420,141 @@ void MJSScore::SetBaseScoreTable(){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// メイン処理：和了得点設定(最終得点設定)
-/* ---------------------------------------------------------------------------------------------- */
-/* void MJSScore::SetResultAgariScore(MJSYakuinfo *yk){
-
-	// 終局サブ関数
-	Chk_initAgariScore(yk);      // 01:初期化処理
-	Chk_preAgariScore(yk);       // 02:事前和了情報の設定
-	Chk_mentsu(yk);              // 03:面子確認
-	Chk_tehai_count(yk);         // 04:手牌枚数確認
-	Chk_fu(yk);                  // 05:符計算
-	Chk_yaku(yk);                // 06:役確認
-
-}
-*/
-
-/* ---------------------------------------------------------------------------------------------- */
 // メイン処理：和了得点設定(一時確認)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSScore::ChkAgariScoreInfo(MJSYakuinfo *yk){
+
+}
+
+/* ---------------------------------------------------------------------------------------------- */
+// メイン処理：和了得点設定
+/* ---------------------------------------------------------------------------------------------- */
+void MJSScore::SetAgari(
+	MJSYakuinfo *yk,          // 和了役情報構造体
+	int  kyoku,               // 局番号
+	int  ie[],                // プレーヤの家情報
+	int  dora_count,          // 表ドラ牌枚数
+	int  dora[],              // 表ドラ牌情報
+	int  uradora_count,       // 裏ドラ牌枚数
+	int  uradora[],           // 裏ドラ牌情報
+	LBAgariTehai  agari_stat, // 和了形式
+	int  agari_ply_num,       // 和了プレーヤ
+	int  furikomi_ply_num,    // 振込プレーヤ
+	bool tsumoagari_flg,      // 自摸和了の有無
+	int  agari_hai,           // 和了牌
+	bool agari_aka,           // 和了牌の赤牌有無
+	int  tehai_hist[],        // 和了時の手牌ヒストグラム
+	int  aka_count[],         // 手牌の赤牌枚数
+	int  atama_hai,           // 頭牌
+	int  men_count,           // 面子数
+	LBMen men_stat[],         // 面子状態
+	int  men_hai[],           // 面子牌
+	int  men_idx[],           // 面子INDEX
+	int  nakimen_count,       // 鳴き面子数
+	LBMen nakimen_stat[],     // 鳴き面子状態
+	int  nakimen_hai[],       // 鳴き面子牌
+	int  nakimen_idx[],       // 鳴き面子INDEX
+	int  nakimen_aka[],       // 鳴き面子赤牌枚数
+	int  act_count,           // actidの合計数
+	LBTkSt  act_stat[],       // アクション状態
+	int  act_ply[]            // アクションプレーヤー
+	){
+
+	// -----------------------------
+	// 事前定義
+	// -----------------------------
+	SetYakuInfo();
+	SetBaseScoreTable();
+
+	// -----------------------------
+	// メイン処理
+	// -----------------------------
+
+	// 01:初期化処理
+	Chk_initAgariScore(yk);
+
+	// -----------------------------
+	// score構造体に和了情報設定
+	// -----------------------------
+	yk->agari_stat        = agari_stat;           // 和了形式
+	yk->agari_ply_num     = agari_ply_num;
+	yk->furikomi_ply_num  = furikomi_ply_num;
+	yk->tsumo_agari_flg   = tsumoagari_flg;
+	yk->agari_hai         = agari_hai;
+	yk->agari_aka         = agari_aka;
+
+	// -----------------------------
+	// 局情報の設定
+	// -----------------------------
+
+	// 流局フラグ
+	yk->ryukyoku_flg = false;
+
+	// 親フラグの設定
+	if( ie[agari_ply_num] == 0 ){
+		yk->agari_ply_oya_flg = true;
+	}else{
+		yk->agari_ply_oya_flg = false;
+	}
+
+	// 面前フラグの設定
+	if(nakimen_count == 0){
+		yk->menzen_flg = true;
+	}else{
+		yk->menzen_flg = false;
+	}
+
+	// 場風時風の設定
+	yk->agari_ply_bakaze = 31;
+	yk->agari_ply_zikaze = 31+ie[agari_ply_num];
+
+	// -----------------------------
+	// 赤牌設定
+	// -----------------------------
+
+	// 作業用変数の設定
+	yk->agari_aka_count[0] = aka_count[0];
+	yk->agari_aka_count[1] = aka_count[1];
+	yk->agari_aka_count[2] = aka_count[2];
+
+	// 和了牌の加算
+	if(agari_aka == true){
+		yk->agari_aka_count[(agari_hai-5)/10]++;
+	}
+
+	// 02:事前和了情報の設定
+	Chk_preAgariScore(yk,
+	atama_hai,
+	men_count,
+	men_stat,
+	men_hai,
+	men_idx,
+	nakimen_count,
+	nakimen_stat,
+	nakimen_hai,
+	nakimen_idx,
+	nakimen_aka,
+	act_count,
+	act_stat,
+	act_ply);
+
+	// 和了形式ごとの符計算
+	if(yk->agari_stat == AGARI_NORMAL){
+		// 通常形式の
+		Chk_mentsu(yk);            // 03:面子確認
+		Chk_tehai_count(yk);       // 04:手牌枚数確認
+		Chk_fu(yk);                // 05:符計算
+	}else if(yk->agari_stat == AGARI_CHITOI){
+		Chk_chitoi_mentsu(yk);
+	}else if(yk->agari_stat == AGARI_KOKUSHI){
+		Chk_kokushi_mentsu(yk);
+	}
+
+	// 06:役確認
+	Chk_yaku(yk, tehai_hist);
+
+	// 07:得点計算
+	Chk_score(yk);
 
 }
 
@@ -495,37 +611,31 @@ void MJSScore::Chk_initAgariScore(MJSYakuinfo *yk){
 /* ---------------------------------------------------------------------------------------------- */
 // 02:事前和了情報の設定
 /* ---------------------------------------------------------------------------------------------- */
-void MJSScore::Chk_preAgariScore(MJSYakuinfo *yk){
-/*
+void MJSScore::Chk_preAgariScore(
+	MJSYakuinfo *yk,
+	int  atama_hai,           // 頭牌
+	int  men_count,           // 面子数
+	LBMen men_stat[],         // 面子状態
+	int  men_hai[],           // 面子牌
+	int  men_idx[],           // 面子INDEX
+	int  nakimen_count,       // 鳴き面子数
+	LBMen nakimen_stat[],     // 鳴き面子状態
+	int  nakimen_hai[],       // 鳴き面子牌
+	int  nakimen_idx[],       // 鳴き面子INDEX
+	int  nakimen_aka[],       // 鳴き面子赤牌枚数
+	int  act_count,           // actidの合計数
+	LBTkSt  act_stat[],       // アクション状態
+	int  act_ply[]            // アクションプレーヤー
+	){
+
+
 	// -----------------------------
-	// 局情報の設定
+	// 作業用変数の定義
 	// -----------------------------
-
-	// 流局フラグ
-	yk->ryukyoku_flg = false;
-
-	// 場風時風の設定
-	yk->agari_ply_bakaze = 31;
-	yk->agari_ply_zikaze = 31+yk->ie[yk->agari_ply_num];
-
-	// 親フラグの設定
-	if(yk->agari_ply_num == yk->kyoku_oya){
-		yk->agari_ply_oya_flg = true;
-	}else{
-		yk->agari_ply_oya_flg = false;
-	}
-
-	// 面前フラグの設定
-	if(yk->naki_count[yk->agari_ply_num] == 0){
-		yk->menzen_flg = true;
-	}else{
-		yk->menzen_flg = false;
-	}
-*/
-
-
-
-/*
+	// 赤牌
+	int tmp_aka_man;
+	int tmp_aka_pin;
+	int tmp_aka_sou;
 
 	// -----------------------------
 	// 和了プレーヤーの和了自摸回数・リーチ状態確認(初期化)
@@ -542,18 +652,18 @@ void MJSScore::Chk_preAgariScore(MJSYakuinfo *yk){
 	// -----------------------------
 
 	// アクションの確認
-	for(int tmp_i = 0; tmp_i < yk->act_count+1; tmp_i++){
+	for(int tmp_i = 0; tmp_i < act_count+1; tmp_i++){
 
 		// 自摸回数カウント
-		if(yk->act_stat[tmp_i] == PLYACTTSUMO &&
-		   yk->act_ply[tmp_i]  == yk->agari_ply_num ){
+		if(act_stat[tmp_i] == PLYACTTSUMO &&
+		   act_ply[tmp_i]  == yk->agari_ply_num ){
 			// 自摸カウント
 			yk->agari_ply_tsumo_count++;
 		}
 
 		// リーチ確認
-		if(yk->act_stat[tmp_i] == PLYACTRIICH &&
-		   yk->act_ply[tmp_i]  == yk->agari_ply_num ){
+		if(act_stat[tmp_i] == PLYACTRIICH &&
+		   act_ply[tmp_i]  == yk->agari_ply_num ){
 
 			// リーチモード変更
 			yk->riichi_flg=true;
@@ -566,16 +676,17 @@ void MJSScore::Chk_preAgariScore(MJSYakuinfo *yk){
 				// リーチモード変更
 				yk->w_riichi_flg=false;
 			}	
-	
+
 			// リーチ巡目の設定
 			yk->agari_ply_riichi_count = yk->agari_ply_tsumo_count;
 
 		}
 
 		// リーチ一発確認(自摸和了)
-		if (yk->act_stat[tmp_i] == PLYTSUMOAGARI && 
-			yk->riichi_flg == true &&
-		    yk->act_ply[tmp_i]  == yk->agari_ply_num ){
+		if (act_stat[tmp_i] == PLYTSUMOAGARI && 
+			yk->riichi_flg    == true &&
+		    yk->agari_ply_num == act_ply[tmp_i]){
+
 			// 次巡であれば一発
 			if(yk->agari_ply_riichi_count + 1 == yk->agari_ply_tsumo_count){
 				// リーチモード変更
@@ -587,9 +698,9 @@ void MJSScore::Chk_preAgariScore(MJSYakuinfo *yk){
 		}
 
 		// リーチ一発確認(ロン和了)
-		if (yk->act_stat[tmp_i] == PLYACTRON && 
+		if (act_stat[tmp_i] == PLYACTRON && 
 			yk->riichi_flg == true &&
-		    yk->act_ply[tmp_i]  == yk->agari_ply_num ){
+		    act_ply[tmp_i]  == yk->agari_ply_num ){
 			// 次巡であれば一発
 			if(yk->agari_ply_riichi_count == yk->agari_ply_tsumo_count){
 				// リーチモード変更
@@ -601,49 +712,22 @@ void MJSScore::Chk_preAgariScore(MJSYakuinfo *yk){
 		}
 
 	}
-*/
-
-}
-
-/* ---------------------------------------------------------------------------------------------- */
-// 03:面子確認
-/* ---------------------------------------------------------------------------------------------- */
-void MJSScore::Chk_mentsu(MJSYakuinfo *yk){
-
-	// -----------------------------
-	// 変数定義
-	// -----------------------------
-
-	// 赤牌作業用
-	int tmp_aka_man;
-	int tmp_aka_pin;
-	int tmp_aka_sou;
-
-	yk->agari_aka_count[0] = 0;
-	yk->agari_aka_count[1] = 0;
-	yk->agari_aka_count[2] = 0;
 
 	// -----------------------------
 	// 赤牌初期化
 	// -----------------------------
 
 	// 作業用変数の設定
-/*	tmp_aka_man = tk->ply_act_aka_count[yk->agari_ply_num][0];
-	tmp_aka_pin = tk->ply_act_aka_count[yk->agari_ply_num][1];
-	tmp_aka_sou = tk->ply_act_aka_count[yk->agari_ply_num][2];
-*/
+	tmp_aka_man = yk->agari_aka_count[0];
+	tmp_aka_pin = yk->agari_aka_count[1];
+	tmp_aka_sou = yk->agari_aka_count[2];
 
-	tmp_aka_man = 0;
-	tmp_aka_pin = 0;
-	tmp_aka_sou = 0;
-
-/*
 	// -----------------------------
 	// 雀頭情報の設定
 	// -----------------------------
 
 	// 雀頭設定
-	yk->agari_ata_hai = tk->atama_hai;
+	yk->agari_ata_hai = atama_hai;
 
 	// 和了牌の面子番号設定
 	if (yk->agari_ata_hai == yk->agari_hai){
@@ -686,7 +770,202 @@ void MJSScore::Chk_mentsu(MJSYakuinfo *yk){
 		}
 	}
 
-*/
+	// -----------------------------
+	// 手牌面子の設定
+	// -----------------------------
+
+	// 面子数設定
+	yk->agari_men_count = men_count;
+
+	for(int tmp_i = 0; tmp_i < yk->agari_men_count; tmp_i++){
+
+		// -----------------------------
+		// メンツ情報の格納
+		// -----------------------------
+
+		yk->agari_men_stat[tmp_i]      = men_stat[tmp_i];  
+		yk->agari_men_hai[tmp_i]       = men_hai[tmp_i];   
+		yk->agari_men_aka_count[tmp_i] = 0;                      // 赤牌の初期化
+
+		// -----------------------------
+		// 暗刻処理
+		// -----------------------------
+		if ( yk->agari_men_stat[tmp_i] == ANKO){
+
+			// 萬子処理
+			if(yk->agari_men_hai[tmp_i] == 5){
+				if(tmp_aka_man>3){
+					yk->agari_men_aka_count[tmp_i]=3;
+					tmp_aka_man=tmp_aka_man-3;
+				}else{
+					yk->agari_men_aka_count[tmp_i]=tmp_aka_man;
+					tmp_aka_man=0;
+				}
+			}
+
+			// 筒子処理
+			if(yk->agari_men_hai[tmp_i] == 15){
+				if(tmp_aka_pin>2){
+					yk->agari_men_aka_count[tmp_i]=3;
+					tmp_aka_pin=tmp_aka_pin-3;
+				}else{
+					yk->agari_men_aka_count[tmp_i]=tmp_aka_pin;
+					tmp_aka_pin=0;
+				}
+			}
+
+			// 索子処理
+			if(yk->agari_men_hai[tmp_i] == 25){
+				if(tmp_aka_sou>2){
+					yk->agari_men_aka_count[tmp_i]=3;
+					tmp_aka_sou=tmp_aka_sou-3;
+				}else{
+					yk->agari_men_aka_count[tmp_i]=tmp_aka_sou;
+					tmp_aka_sou=0;
+				}
+			}
+
+			// 和了牌の面子番号設定 - 暗刻の場合
+			if ( yk->agari_men_hai[tmp_i] == yk->agari_hai){
+
+				// 面子番号の設定
+				yk->agari_men_num_agari_hai = tmp_i;
+
+				// ロン和了の面子番号は鳴きメンツに変更する
+				if(yk->tsumo_agari_flg == false){
+					yk->agari_men_stat[tmp_i] = MINKO;
+				}
+
+			}
+		}
+
+		// -----------------------------
+		// 順子処理
+		// -----------------------------
+		if ( yk->agari_men_stat[tmp_i] == SHUNTSU){
+
+			// 萬子処理
+			if(yk->agari_men_hai[tmp_i] == 3 || 
+			   yk->agari_men_hai[tmp_i] == 4 ||
+			   yk->agari_men_hai[tmp_i] == 5){
+
+				// 赤牌があるなら
+				if(tmp_aka_man>0){
+					yk->agari_men_aka_count[tmp_i]++;
+					tmp_aka_man--;
+				}
+			}
+
+			// 筒子処理
+			if(yk->agari_men_hai[tmp_i] == 13 || 
+			   yk->agari_men_hai[tmp_i] == 14 ||
+			   yk->agari_men_hai[tmp_i] == 15){
+
+				// 赤牌があるなら
+				if(tmp_aka_pin>0){
+					yk->agari_men_aka_count[tmp_i]++;
+					tmp_aka_pin--;
+				}
+			}
+
+			// 索子処理
+			if(yk->agari_men_hai[tmp_i] == 23 || 
+			   yk->agari_men_hai[tmp_i] == 24 ||
+			   yk->agari_men_hai[tmp_i] == 25){
+
+				// 赤牌があるなら
+				if(tmp_aka_sou>0){
+					yk->agari_men_aka_count[tmp_i]++;
+					tmp_aka_sou--;
+				}
+			}
+
+			// 和了牌の面子番号設定 - 順子の場合
+			if ( yk->agari_men_hai[tmp_i]   == yk->agari_hai || 
+			     yk->agari_men_hai[tmp_i]+1 == yk->agari_hai || 
+			     yk->agari_men_hai[tmp_i]+2 == yk->agari_hai ){
+
+				// 面子番号の設定
+				yk->agari_men_num_agari_hai = tmp_i;
+
+				// ロン和了の面子番号は鳴きメンツに変更する
+				if(yk->tsumo_agari_flg == false){
+					yk->agari_men_stat[tmp_i] = MINSHUN;
+				}
+			}
+
+		}
+
+	}
+
+
+	// -----------------------------
+	// 晒し面子(鳴き面子)の設定
+	// -----------------------------
+
+	// 晒し面子の追加
+	for(int tmp_i = 0; tmp_i < nakimen_count; tmp_i++){
+
+		// カカン確認
+		if( nakimen_stat[tmp_i] == KAKAN){
+
+			// カカン面子設定
+			for(int tmp_j = 0; tmp_j < nakimen_count; tmp_j++){
+
+				// カカンした暗刻であれば
+				if(yk->agari_men_hai[tmp_j] == nakimen_hai[tmp_i]){
+
+					// メンツ情報の格納(カカン)
+					yk->agari_men_stat[tmp_j] = MINKAN;
+
+					// 赤牌+1加算
+					if( nakimen_aka[tmp_j] > 0){
+						yk->agari_men_aka_count[tmp_j]++;
+					}
+
+				}
+			}
+
+		// カカン以外
+		}else{
+
+			// メンツ情報の格納
+			yk->agari_men_stat[yk->agari_men_count]       = nakimen_stat[tmp_i];
+			yk->agari_men_hai[yk->agari_men_count]        = nakimen_idx[tmp_i];
+			yk->agari_men_aka_count[yk->agari_men_count]  = nakimen_aka[tmp_i];
+			yk->agari_men_count++;
+
+		}
+
+	}
+
+}
+
+/* ---------------------------------------------------------------------------------------------- */
+// 03:面子確認
+/* ---------------------------------------------------------------------------------------------- */
+void MJSScore::Chk_mentsu(MJSYakuinfo *yk){
+
+	// -----------------------------
+	// 変数定義
+	// -----------------------------
+
+	// 赤牌作業用
+	int tmp_aka_man;
+	int tmp_aka_pin;
+	int tmp_aka_sou;
+
+	yk->agari_aka_count[0] = 0;
+	yk->agari_aka_count[1] = 0;
+	yk->agari_aka_count[2] = 0;
+
+	// -----------------------------
+	// 赤牌初期化
+	// -----------------------------
+
+	tmp_aka_man = 0;
+	tmp_aka_pin = 0;
+	tmp_aka_sou = 0;
 
 	// -----------------------------
 	// 待ち形式の確認
@@ -1529,7 +1808,6 @@ void MJSScore::Chk_yaku(MJSYakuinfo *yk, int  tehai_hist[]){
 void MJSScore::Chk_score(MJSYakuinfo *yk){
 
 	Chk_kyokuscore(yk);
-	Chk_totalscore(yk);
 
 }
 
@@ -1769,23 +2047,11 @@ void MJSScore::Chk_kyokuscore(MJSYakuinfo *yk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// 07-02:得点計算・サブ
-/* ---------------------------------------------------------------------------------------------- */
-void MJSScore::Chk_totalscore(MJSYakuinfo *yk){
-
-/*
-	// 局終了得点の設定
-	for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-		tk->ply_kyoku_end_score[tmp_i] = tk>ply_kyoku_start_score[tmp_i] + yk->kyoku_score[tmp_i];
-	}
-*/
-
-}
-
-/* ---------------------------------------------------------------------------------------------- */
 // ドラ枚数の確認
 /* ---------------------------------------------------------------------------------------------- */
 // void MJSOldScore::Chk_tehai_dora_count(MJSTkinfo *tk, int kyoku_index, int rinshan, bool ura_chk){
+
+
 
 /* ---------------------------------------------------------------------------------------------- */
 // ドラ表示牌→ドラ牌の変換
@@ -2182,7 +2448,7 @@ void MJSScore::ChkYakuPinfu(MJSYakuinfo *yk){
 void MJSScore::ChkYakuTanyao(MJSYakuinfo *yk){
 
 	/* ----------------------------------------------------------------------- */
-	// タンヤオ
+	// 10: タンヤオ
 	/* ----------------------------------------------------------------------- */
 	if (yk->mentsu_count_chunchan == 5){
 
@@ -2364,7 +2630,7 @@ void MJSScore::ChkYakuDaisushi(MJSYakuinfo *yk){
 	}
 
 	// -----------------------------------------------------------------------
-	// 07: 大四喜和
+	// 役満07: 大四喜和
 	// -----------------------------------------------------------------------
 
 	if (( yk->anko_hist[TONNUM] > 0 ) &&
@@ -2386,7 +2652,7 @@ void MJSScore::ChkYakuKokushi(MJSYakuinfo *yk){
 /*
 	// 手配形式が国士であるのか？
 	if(yk->agari_stat == AGARI_KOKUSHI){
-		//13面確認
+		// 13面確認
 		if ( yk->ply_act_tehai[yk->agari_hai] > 0){
 			// 役flg有効化
 			yk->yakuman_flg[KOKUSHI13MEN] = true;
@@ -2407,7 +2673,7 @@ void MJSScore::ChkYakuChuren(MJSYakuinfo *yk, int tehai_hist[]){
 	bool agari_flg;
 
 	/* ----------------------------------------------------------------------- */
-	// 03: 九連宝燈・萬子
+	// 役満03: 九連宝燈・萬子
 	/* ----------------------------------------------------------------------- */
 
 	// 和了フラグ初期化
@@ -2440,7 +2706,7 @@ void MJSScore::ChkYakuChuren(MJSYakuinfo *yk, int tehai_hist[]){
 	}
 
 	/* ----------------------------------------------------------------------- */
-	// 03: 九連宝燈・筒子
+	// 役満03: 九連宝燈・筒子
 	/* ----------------------------------------------------------------------- */
 
 	// 和了フラグ初期化
@@ -2473,7 +2739,7 @@ void MJSScore::ChkYakuChuren(MJSYakuinfo *yk, int tehai_hist[]){
 	}
 
 	/* ----------------------------------------------------------------------- */
-	// 03: 九連宝燈・索子
+	// 役満03: 九連宝燈・索子
 	/* ----------------------------------------------------------------------- */
 
 	// 和了フラグ初期化
@@ -2615,427 +2881,6 @@ void MJSScore::SetHowanpaiScore(MJSYakuinfo *yk){
 			yk->kyoku_score[tmp_num] = -3000;
 		}
 	}
-
-	// 得点の加算
-	// Chk_totalscore(tk, kyoku_index);
-
-}
-
-/* ---------------------------------------------------------------------------------------------- */
-// 事前情報登録
-/* ---------------------------------------------------------------------------------------------- */
-void MJSScore::SetAgari(
-	MJSYakuinfo *yk,          // 和了役情報構造体
-	int  kyoku,               // 局番号
-	int  ie[],                // プレーヤの家情報
-	int  dora_count,          // 表ドラ牌枚数
-	int  dora[],              // 表ドラ牌情報
-	int  uradora_count,       // 裏ドラ牌枚数
-	int  uradora[],           // 裏ドラ牌情報
-	LBAgariTehai  agari_stat, // 和了形式
-	int  agari_ply_num,       // 和了プレーヤ
-	int  furikomi_ply_num,    // 振込プレーヤ
-	bool tsumoagari_flg,      // 自摸和了の有無
-	int  agari_hai,           // 和了牌
-	int  agari_aka,           // 和了牌の赤牌有無
-	int  tehai_hist[],        // 和了時の手牌ヒストグラム
-	int  aka_count[],         // 手牌の赤牌枚数
-	int  atama_hai,           // 頭牌
-	int  men_count,           // 面子数
-	LBMen men_stat[],         // 面子状態
-	int  men_hai[],           // 面子牌
-	int  men_idx[],           // 面子INDEX
-	int  nakimen_count,       // 鳴き面子数
-	LBMen nakimen_stat[],     // 鳴き面子状態
-	int  nakimen_hai[],       // 鳴き面子牌
-	int  nakimen_idx[],       // 鳴き面子INDEX
-	int  nakimen_aka[],       // 鳴き面子赤牌枚数
-	int  act_count,           // actidの合計数
-	LBTkSt  act_stat[],       // アクション状態
-	int  act_ply[]            // アクションプレーヤー
-	){
-
-	// -----------------------------
-	// 事前定義
-	// -----------------------------
-	SetYakuInfo();
-	SetBaseScoreTable();
-
-	// メイン処理
-	Chk_initAgariScore(yk);        // 01:初期化処理
-	// Chk_preAgariScore(yk);         // 02:事前和了情報の設定
-
-	// -----------------------------
-	// 作業用変数の定義
-	// -----------------------------
-	// 赤牌
-	int tmp_aka_man;
-	int tmp_aka_pin;
-	int tmp_aka_sou;
-
-	// -----------------------------
-	// score構造体に和了情報設定
-	// -----------------------------
-	yk->agari_stat        = agari_stat;           // 和了形式
-	yk->agari_ply_num     = agari_ply_num;
-	yk->furikomi_ply_num  = furikomi_ply_num;
-	yk->tsumo_agari_flg   = tsumoagari_flg;
-	yk->agari_hai         = agari_hai;
-	yk->agari_aka         = agari_aka;
-
-	// -----------------------------
-	// 局情報の設定
-	// -----------------------------
-
-	// 流局フラグ
-	yk->ryukyoku_flg = false;
-
-	// 場風時風の設定
-	yk->agari_ply_bakaze = 31;
-	yk->agari_ply_zikaze = 31+ie[agari_ply_num];
-
-	// 親フラグの設定
-	if( ie[agari_ply_num] == 0 ){
-		yk->agari_ply_oya_flg = true;
-	}else{
-		yk->agari_ply_oya_flg = false;
-	}
-
-	// 面前フラグの設定
-	if(nakimen_count == 0){
-		yk->menzen_flg = true;
-	}else{
-		yk->menzen_flg = false;
-	}
-
-	// -----------------------------
-	// 和了プレーヤーの和了自摸回数・リーチ状態確認(初期化)
-	// -----------------------------
-
-	yk->riichi_flg          = false;
-	yk->ippatsu_riichi_flg  = false;
-	yk->w_riichi_flg        = false;
-	yk->agari_ply_tsumo_count  = 0;
-	yk->agari_ply_riichi_count = 0;
-
-	// -----------------------------
-	// 赤牌設定
-	// -----------------------------
-
-	// 作業用変数の設定
-	yk->agari_aka_count[0] = aka_count[0];
-	yk->agari_aka_count[1] = aka_count[1];
-	yk->agari_aka_count[2] = aka_count[2];
-
-	// -----------------------------
-	// 和了プレーヤーの和了自摸回数・リーチ状態確認(メイン処理)
-	// -----------------------------
-
-	// アクションの確認
-	for(int tmp_i = 0; tmp_i < act_count+1; tmp_i++){
-
-		// 自摸回数カウント
-		if(act_stat[tmp_i] == PLYACTTSUMO &&
-		   act_ply[tmp_i]  == yk->agari_ply_num ){
-			// 自摸カウント
-			yk->agari_ply_tsumo_count++;
-		}
-
-		// リーチ確認
-		if(act_stat[tmp_i] == PLYACTRIICH &&
-		   act_ply[tmp_i]  == yk->agari_ply_num ){
-
-			// リーチモード変更
-			yk->riichi_flg=true;
-
-			// ダブルリーチ確認
-			if(yk->agari_ply_tsumo_count == 1){
-				// リーチモード変更
-				yk->w_riichi_flg=true;
-			}else{
-				// リーチモード変更
-				yk->w_riichi_flg=false;
-			}	
-
-			// リーチ巡目の設定
-			yk->agari_ply_riichi_count = yk->agari_ply_tsumo_count;
-
-		}
-
-		// リーチ一発確認(自摸和了)
-		if (act_stat[tmp_i] == PLYTSUMOAGARI && 
-			yk->riichi_flg    == true &&
-		    yk->agari_ply_num == act_ply[tmp_i]){
-
-			// 次巡であれば一発
-			if(yk->agari_ply_riichi_count + 1 == yk->agari_ply_tsumo_count){
-				// リーチモード変更
-				yk->ippatsu_riichi_flg=true;
-			}else{
-				// リーチモード変更
-				yk->ippatsu_riichi_flg=false;
-			}
-		}
-
-		// リーチ一発確認(ロン和了)
-		if (act_stat[tmp_i] == PLYACTRON && 
-			yk->riichi_flg == true &&
-		    act_ply[tmp_i]  == yk->agari_ply_num ){
-			// 次巡であれば一発
-			if(yk->agari_ply_riichi_count == yk->agari_ply_tsumo_count){
-				// リーチモード変更
-				yk->ippatsu_riichi_flg=true;
-			}else{
-				// リーチモード変更
-				yk->ippatsu_riichi_flg=false;
-			}
-		}
-
-	}
-
-	// -----------------------------
-	// 赤牌初期化
-	// -----------------------------
-
-	// 作業用変数の設定
-	tmp_aka_man = aka_count[0];
-	tmp_aka_pin = aka_count[1];
-	tmp_aka_sou = aka_count[2];
-
-	// -----------------------------
-	// 雀頭情報の設定
-	// -----------------------------
-
-	// 雀頭設定
-	yk->agari_ata_hai = atama_hai;
-
-	// 和了牌の面子番号設定
-	if (yk->agari_ata_hai == yk->agari_hai){
-
-		// 面子番号は仮置きの「999」とする
-		yk->agari_men_num_agari_hai = 999;
-
-	}
-
-	// 赤牌設定
-	yk->agari_ata_aka = 0;
-
-	if(yk->agari_ata_hai == 5){
-		if(tmp_aka_man>2){
-			yk->agari_ata_aka=2;
-			tmp_aka_man=tmp_aka_man-2;
-		}else{
-			yk->agari_ata_aka=tmp_aka_man;
-			tmp_aka_man=0;
-		}
-	}
-
-	if(yk->agari_ata_hai == 15){
-		if(tmp_aka_pin>2){
-			yk->agari_ata_aka=2;
-			tmp_aka_pin=tmp_aka_pin-2;
-		}else{
-			yk->agari_ata_aka=tmp_aka_pin;
-			tmp_aka_pin=0;
-		}
-	}
-
-	if(yk->agari_ata_hai == 25){
-		if(tmp_aka_sou>2){
-			yk->agari_ata_aka=tmp_aka_sou=2;
-			tmp_aka_sou=tmp_aka_sou-2;
-		}else{
-			yk->agari_ata_aka=tmp_aka_sou;
-			tmp_aka_sou=0;
-		}
-	}
-
-	// -----------------------------
-	// 手牌面子の設定
-	// -----------------------------
-
-	// 面子数設定
-	yk->agari_men_count = men_count;
-
-	for(int tmp_i = 0; tmp_i < men_count; tmp_i++){
-
-		// -----------------------------
-		// メンツ情報の格納
-		// -----------------------------
-
-		yk->agari_men_stat[tmp_i]      = men_stat[tmp_i];  
-		yk->agari_men_hai[tmp_i]       = men_hai[tmp_i];   
-		yk->agari_men_aka_count[tmp_i] = 0;                      // 赤牌の初期化
-
-		// -----------------------------
-		// 暗刻処理
-		// -----------------------------
-		if ( yk->agari_men_stat[tmp_i] == ANKO){
-
-			// 萬子処理
-			if(yk->agari_men_hai[tmp_i] == 5){
-				if(tmp_aka_man>3){
-					yk->agari_men_aka_count[tmp_i]=3;
-					tmp_aka_man=tmp_aka_man-3;
-				}else{
-					yk->agari_men_aka_count[tmp_i]=tmp_aka_man;
-					tmp_aka_man=0;
-				}
-			}
-
-			// 筒子処理
-			if(yk->agari_men_hai[tmp_i] == 15){
-				if(tmp_aka_pin>2){
-					yk->agari_men_aka_count[tmp_i]=3;
-					tmp_aka_pin=tmp_aka_pin-3;
-				}else{
-					yk->agari_men_aka_count[tmp_i]=tmp_aka_pin;
-					tmp_aka_pin=0;
-				}
-			}
-
-			// 索子処理
-			if(yk->agari_men_hai[tmp_i] == 25){
-				if(tmp_aka_sou>2){
-					yk->agari_men_aka_count[tmp_i]=3;
-					tmp_aka_sou=tmp_aka_sou-3;
-				}else{
-					yk->agari_men_aka_count[tmp_i]=tmp_aka_sou;
-					tmp_aka_sou=0;
-				}
-			}
-
-			// 和了牌の面子番号設定 - 暗刻の場合
-			if ( yk->agari_men_hai[tmp_i] == yk->agari_hai){
-
-				// 面子番号の設定
-				yk->agari_men_num_agari_hai = tmp_i;
-
-				// ロン和了の面子番号は鳴きメンツに変更する
-				if(yk->tsumo_agari_flg == false){
-					yk->agari_men_stat[tmp_i] = MINKO;
-				}
-
-			}
-		}
-
-		// -----------------------------
-		// 順子処理
-		// -----------------------------
-		if ( yk->agari_men_stat[tmp_i] == SHUNTSU){
-
-			// 萬子処理
-			if(yk->agari_men_hai[tmp_i] == 3 || 
-			   yk->agari_men_hai[tmp_i] == 4 ||
-			   yk->agari_men_hai[tmp_i] == 5){
-
-				// 赤牌があるなら
-				if(tmp_aka_man>0){
-					yk->agari_men_aka_count[tmp_i]++;
-					tmp_aka_man--;
-				}
-			}
-
-			// 筒子処理
-			if(yk->agari_men_hai[tmp_i] == 13 || 
-			   yk->agari_men_hai[tmp_i] == 14 ||
-			   yk->agari_men_hai[tmp_i] == 15){
-
-				// 赤牌があるなら
-				if(tmp_aka_pin>0){
-					yk->agari_men_aka_count[tmp_i]++;
-					tmp_aka_pin--;
-				}
-			}
-
-			// 索子処理
-			if(yk->agari_men_hai[tmp_i] == 23 || 
-			   yk->agari_men_hai[tmp_i] == 24 ||
-			   yk->agari_men_hai[tmp_i] == 25){
-
-				// 赤牌があるなら
-				if(tmp_aka_sou>0){
-					yk->agari_men_aka_count[tmp_i]++;
-					tmp_aka_sou--;
-				}
-			}
-
-			// 和了牌の面子番号設定 - 順子の場合
-			if ( yk->agari_men_hai[tmp_i]   == yk->agari_hai || 
-			     yk->agari_men_hai[tmp_i]+1 == yk->agari_hai || 
-			     yk->agari_men_hai[tmp_i]+2 == yk->agari_hai ){
-
-				// 面子番号の設定
-				yk->agari_men_num_agari_hai = tmp_i;
-
-				// ロン和了の面子番号は鳴きメンツに変更する
-				if(yk->tsumo_agari_flg == false){
-					yk->agari_men_stat[tmp_i] = MINSHUN;
-				}
-			}
-
-		}
-
-	}
-
-
-	// -----------------------------
-	// 晒し面子(鳴き面子)の設定
-	// -----------------------------
-
-	// 晒し面子の追加
-	for(int tmp_i = 0; tmp_i < nakimen_count; tmp_i++){
-
-		// カカン確認
-		if( nakimen_stat[tmp_i] == KAKAN){
-
-			// カカン面子設定
-			for(int tmp_j = 0; tmp_j < nakimen_count; tmp_j++){
-
-				// カカンした暗刻であれば
-				if(yk->agari_men_hai[tmp_j] == nakimen_hai[tmp_i]){
-
-					// メンツ情報の格納(カカン)
-					yk->agari_men_stat[tmp_j] = MINKAN;
-
-					// 赤牌+1加算
-					if( nakimen_aka[tmp_j] > 0){
-						yk->agari_men_aka_count[tmp_j]++;
-					}
-
-				}
-			}
-
-		// カカン以外
-		}else{
-
-			// メンツ情報の格納
-			yk->agari_men_stat[yk->agari_men_count]       = nakimen_stat[tmp_i];
-			yk->agari_men_hai[yk->agari_men_count]        = nakimen_idx[tmp_i];
-			yk->agari_men_aka_count[yk->agari_men_count]  = nakimen_aka[tmp_i];
-			yk->agari_men_count++;
-
-		}
-
-	}
-
-	// -----------------------------
-	// 後続メイン処理
-	// -----------------------------
-
-	// 通常形式の場合
-	if(yk->agari_stat == AGARI_NORMAL){
-		Chk_mentsu(yk);            // 03:面子確認
-		Chk_tehai_count(yk);       // 04:手牌枚数確認
-		Chk_fu(yk);                // 05:符計算
-	}else if(yk->agari_stat == AGARI_CHITOI){
-		Chk_chitoi_mentsu(yk);
-	}else if(yk->agari_stat == AGARI_KOKUSHI){
-		Chk_kokushi_mentsu(yk);
-	}
-
-	Chk_yaku(yk, tehai_hist);      // 06:役確認
-	Chk_score(yk);                 // 07:得点計算
 
 }
 
