@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
- * プログラム概要 ： Newさくら麻雀(Ver0.1.2：ログビュアー実装版)
- * バージョン     ： 0.1.2.0.182(和了牌が赤牌場合に赤ドラ加算されない不具合の解消)
+ * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
+ * バージョン     ： 0.1.2.0.183(和了時面子情報表示の修正)
  * プログラム名   ： mjs.exe
- * ファイル名     ： score.h
+ * ファイル名     ： score.cpp
  * クラス名       ： MJSScoreクラス
  * 処理概要       ： 得点計算クラス(新)
  * Ver0.1.2作成日 ： 2023/11/04 09:10:01
- * 最終更新日     ： 2024/08/17 11:36:15
+ * 最終更新日     ： 2024/08/18 11:40:12
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -567,13 +567,13 @@ void MJSScore::Chk_initAgariScore(MJSYakuinfo *yk){
 	yk->agari_men_num_agari_hai = 999;
 
 	// ドラ
-	yk->agari_dora_count=0; 
-	yk->agari_uradora_count=0;
+	yk->agari_dora_count = 0; 
+	yk->agari_uradora_count = 0;
 
 	// 赤牌
-	yk->agari_aka_count[0]=0;
-	yk->agari_aka_count[1]=0;
-	yk->agari_aka_count[2]=0;
+	yk->agari_aka_count[0] = 0;
+	yk->agari_aka_count[1] = 0;
+	yk->agari_aka_count[2] = 0;
 
 	// 面子数
 	yk->mentsu_count_shuntsu = 0;
@@ -627,7 +627,6 @@ void MJSScore::Chk_preAgariScore(
 	LBTkSt  act_stat[],       // アクション状態
 	int  act_ply[]            // アクションプレーヤー
 	){
-
 
 	// -----------------------------
 	// 作業用変数の定義
@@ -898,7 +897,6 @@ void MJSScore::Chk_preAgariScore(
 
 	}
 
-
 	// -----------------------------
 	// 晒し面子(鳴き面子)の設定
 	// -----------------------------
@@ -906,16 +904,16 @@ void MJSScore::Chk_preAgariScore(
 	// 晒し面子の追加
 	for(int tmp_i = 0; tmp_i < nakimen_count; tmp_i++){
 
-		// カカン確認
+		// 加槓確認
 		if( nakimen_stat[tmp_i] == KAKAN){
 
-			// カカン面子設定
+			// 加槓面子設定
 			for(int tmp_j = 0; tmp_j < nakimen_count; tmp_j++){
 
-				// カカンした暗刻であれば
+				// 加槓した暗刻であれば
 				if(yk->agari_men_hai[tmp_j] == nakimen_hai[tmp_i]){
 
-					// メンツ情報の格納(カカン)
+					// メンツ情報の格納(加槓)
 					yk->agari_men_stat[tmp_j] = MINKAN;
 
 					// 赤牌+1加算
@@ -926,7 +924,7 @@ void MJSScore::Chk_preAgariScore(
 				}
 			}
 
-		// カカン以外
+		// 加槓以外
 		}else{
 
 			// メンツ情報の格納
@@ -1012,7 +1010,7 @@ void MJSScore::Chk_mentsu(MJSYakuinfo *yk){
 
 		}
 
-	// シャポン待ち確認
+	// シャンポン待ち確認
 	}else if( yk->agari_men_stat[yk->agari_men_num_agari_hai] == ANKO  ||
               yk->agari_men_stat[yk->agari_men_num_agari_hai] == MINKO ){
 				yk->agari_machi_stat = TOITSU;
@@ -1806,15 +1804,6 @@ void MJSScore::Chk_yaku(MJSYakuinfo *yk, int  tehai_hist[]){
 // 07:得点計算
 /* ---------------------------------------------------------------------------------------------- */
 void MJSScore::Chk_score(MJSYakuinfo *yk){
-
-	Chk_kyokuscore(yk);
-
-}
-
-/* ---------------------------------------------------------------------------------------------- */
-// 07-01:得点計算・サブ
-/* ---------------------------------------------------------------------------------------------- */
-void MJSScore::Chk_kyokuscore(MJSYakuinfo *yk){
 
 	// -----------------------------
 	// 得点 - 和了得点

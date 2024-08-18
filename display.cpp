@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
- * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.182(囲みモード：鳴き捨牌時のアクション手牌表示)
+ * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
+ * バージョン     ： 0.1.2.0.183(和了時面子情報表示の修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.cpp
  * クラス名       ： MJSDisplay
@@ -12,7 +12,7 @@
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/17 11:36:15
+ * 最終更新日     ： 2024/08/18 11:40:12
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -2463,7 +2463,6 @@ void MJSDisplay::DispKyokuEnd(MJSTkinfo *tk, MJSGui *gui, int kyoku_index){
 		DispKyokuEndTehai(tk, kyoku_index);
 
 		// 和了役の詳細情報
-		// DispKyokuEndYakuari(tk, kyoku_index);
 		DispKyokuEndYakuInfo(tk, kyoku_index);
 
 		// 翻情報表示
@@ -2797,13 +2796,122 @@ void MJSDisplay::DispKyokuEndYakuInfo(MJSTkinfo *tk, int kyoku_index){
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplay::DispKyokuEndMentsuInfoNormal(MJSTkinfo *tk, int kyoku_index){
 
-	// 赤牌枚数
-	int tmp_aka_count=0;
-
 	// ----------------------------------------
 	// 和了時の雀頭情報
 	// ----------------------------------------
+	// 牌表示
+		dparts->DispActSarashiParts(
+			AGARI_INFO_X1, 
+			PLY_YSTART+70,
+			ATAMA,
+			tk->kyoku[kyoku_index].yk.agari_ata_hai,
+			tk->kyoku[kyoku_index].yk.agari_ata_aka);
 
+	// 和了牌変色
+	if (tk->kyoku[kyoku_index].yk.agari_men_num_agari_hai == EXCEPT_VALUE){
+		// 赤牌表示
+		if(tk->kyoku[kyoku_index].yk.agari_ata_aka>0){
+			dparts->DispHai( AGARI_INFO_X1, PLY_YSTART+70, tk->kyoku[kyoku_index].yk.agari_ata_hai, true,  false, DISP_HAI_COLOR_NUM_BLUE, 0);
+		}else{
+			dparts->DispHai( AGARI_INFO_X1, PLY_YSTART+70, tk->kyoku[kyoku_index].yk.agari_ata_hai, false, false, DISP_HAI_COLOR_NUM_BLUE, 0);
+		}
+	}
+
+	// 雀頭・符
+	DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+70, GetColor(255,255,255), "雀頭");
+	DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+87, GetColor(255,255,255), "%2d符", tk->kyoku[kyoku_index].yk.atamaFu);
+
+	// 赤牌枚数
+	DrawFormatString(AGARI_INFO_X1_2,PLY_YSTART+70, GetColor(255,255,255), "赤%d枚", tk->kyoku[kyoku_index].yk.agari_ata_aka);
+
+	// 一九字・中張牌の種別
+	if( tk->kyoku[kyoku_index].yk.agari_ata_19zi == 0){
+		DrawFormatString(AGARI_INFO_X1_2,PLY_YSTART+87, GetColor(255,255,255), "中張牌");
+	}else if(tk->kyoku[kyoku_index].yk.agari_ata_19zi == 1){
+		DrawFormatString(AGARI_INFO_X1_2,PLY_YSTART+87, GetColor(255,255,255), "一九字");
+	}else if(tk->kyoku[kyoku_index].yk.agari_ata_19zi == 2){
+		DrawFormatString(AGARI_INFO_X1_2,PLY_YSTART+87, GetColor(255,255,255), "役牌　");
+	}
+
+	// ----------------------------------------
+	// 和了時の面子情報
+	// ----------------------------------------
+	for(int tmp_i = 0; tmp_i < 4; tmp_i++){
+
+		// ----------------------------------------
+		// 面子牌
+		// ----------------------------------------
+		dparts->DispActSarashiParts(
+			AGARI_INFO_X1, 
+			PLY_YSTART+70+(tmp_i+1)*40,
+			tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i],
+			tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i],
+			tk->kyoku[kyoku_index].yk.agari_men_aka_count[tmp_i]);
+
+		// ----------------------------------------
+		// 和了牌変色
+		// ----------------------------------------
+
+		// 和了牌なら
+		if (tk->kyoku[kyoku_index].yk.agari_men_num_agari_hai == tmp_i){
+			// 面子形式・暗刻表示
+			if (tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == ANKO || tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == MINKO){
+					dparts->DispHai( AGARI_INFO_X1,             PLY_YSTART+70+(tmp_i+1)*40, tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i],  tk->kyoku[kyoku_index].yk.agari_aka, false, DISP_HAI_COLOR_NUM_BLUE, 0);
+			// 面子形式・順子表示
+			}else if(tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == SHUNTSU || tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == MINSHUN){
+				// 順子の順番確認
+				if(       tk->kyoku[kyoku_index].yk.agari_hai == tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i]){
+					// 順子の1枚目
+					dparts->DispHai( AGARI_INFO_X1,             PLY_YSTART+70+(tmp_i+1)*40, tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i],  tk->kyoku[kyoku_index].yk.agari_aka, false, DISP_HAI_COLOR_NUM_BLUE, 0);
+				}else if( tk->kyoku[kyoku_index].yk.agari_hai == tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i]+1){
+					// 順子の2枚目
+					dparts->DispHai( AGARI_INFO_X1+HAI_XSIZE*1, PLY_YSTART+70+(tmp_i+1)*40, tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i]+1,tk->kyoku[kyoku_index].yk.agari_aka, false, DISP_HAI_COLOR_NUM_BLUE, 0);
+				}else if( tk->kyoku[kyoku_index].yk.agari_hai == tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i]+2){
+					// 順子の3枚目
+					dparts->DispHai( AGARI_INFO_X1+HAI_XSIZE*2, PLY_YSTART+70+(tmp_i+1)*40, tk->kyoku[kyoku_index].yk.agari_men_hai[tmp_i]+2,tk->kyoku[kyoku_index].yk.agari_aka, false, DISP_HAI_COLOR_NUM_BLUE, 0);
+				}
+
+			}
+		}
+
+		// ----------------------------------------
+		// 面子表示
+		// ----------------------------------------
+		// メンツ形式
+		if( tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == SHUNTSU){
+			DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "順子");
+		}else if( tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == MINSHUN){
+			DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "明順");
+		}else if( tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == ANKO){
+			DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "暗刻");
+		}else if( tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == MINKO){
+			DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "明刻");
+		}else if( tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == ANKAN){
+			DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "暗槓");
+		}else if( tk->kyoku[kyoku_index].yk.agari_men_stat[tmp_i] == MINKAN){
+			DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "明槓");
+		}else{
+			DrawFormatString( AGARI_INFO_X1_1,PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "不明");
+		}
+
+		// メンツ符
+		DrawFormatString( AGARI_INFO_X1_1, PLY_YSTART+127+tmp_i*40, GetColor(255,255,255), "%2d符",tk->kyoku[kyoku_index].yk.agari_men_Fu[tmp_i]);
+
+		// 赤牌枚数
+		DrawFormatString( AGARI_INFO_X1_2, PLY_YSTART+110+tmp_i*40, GetColor(255,255,255), "赤%d枚",tk->kyoku[kyoku_index].yk.agari_men_aka_count[tmp_i]);
+
+		// 一九字・中張牌の種別
+		if( tk->kyoku[kyoku_index].yk.agari_men_19zi[tmp_i] == 0){
+			DrawFormatString(AGARI_INFO_X1_2, PLY_YSTART+127+tmp_i*40, GetColor(255,255,255), "中張牌");
+		}else if(tk->kyoku[kyoku_index].yk.agari_men_19zi[tmp_i] == 1){
+			DrawFormatString(AGARI_INFO_X1_2, PLY_YSTART+127+tmp_i*40, GetColor(255,255,255), "一九字");
+		}else if(tk->kyoku[kyoku_index].yk.agari_men_19zi[tmp_i] == 2){
+			DrawFormatString(AGARI_INFO_X1_2, PLY_YSTART+127+tmp_i*40, GetColor(255,255,255), "役牌　");
+		}
+
+	}
+
+/*
 	// 赤牌枚数の仮設定
 	tmp_aka_count=tk->kyoku[kyoku_index].yk.agari_ata_aka;
 
@@ -2854,12 +2962,9 @@ void MJSDisplay::DispKyokuEndMentsuInfoNormal(MJSTkinfo *tk, int kyoku_index){
 	}else if(tk->kyoku[kyoku_index].yk.agari_ata_19zi == 2){
 		DrawFormatString(AGARI_INFO_X1_2,PLY_YSTART+87, GetColor(255,255,255), "役牌　");
 	}
+*/
 
-	// ----------------------------------------
-	// 和了時の面子情報
-	// ----------------------------------------
-	for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-
+/*
 		// ----------------------------------------
 		// メンツ表示 - 暗刻表示
 		// ----------------------------------------
@@ -3001,6 +3106,7 @@ void MJSDisplay::DispKyokuEndMentsuInfoNormal(MJSTkinfo *tk, int kyoku_index){
 		}
 
 	}
+*/
 
 }
 

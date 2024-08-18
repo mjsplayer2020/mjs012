@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
- * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.182(囲みモード：鳴き捨牌時のアクション手牌表示)
+ * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
+ * バージョン     ： 0.1.2.0.183(和了時面子情報表示の修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.cpp
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/17 11:36:15
+ * 最終更新日     ： 2024/08/18 11:40:12
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -1055,6 +1055,22 @@ void MJSDisplayParts::DispActSarashiParts(int x, int y, LBMen naki_stat, int hai
 		}else{
 			DispHai( x+HAI_XSIZE*3, y, hai_index, false, false, 0, 0);
 		}
+
+	// ----------------------------------------
+	// 頭・対子の表示
+	// ----------------------------------------
+	}else if( naki_stat == ATAMA || naki_stat == TOITSU ){
+
+		// 晒し牌の表示
+		for(int tmp_i = 0; tmp_i < 2; tmp_i++){
+ 			if( ( hai_index == 5 || hai_index == 15 || hai_index == 25) && tmp_aka_count > 0 ){
+ 				DispHai( x+HAI_XSIZE*tmp_i, y, hai_index, true, false,  0, 0);
+				tmp_aka_count--;
+			}else{
+				DispHai( x+HAI_XSIZE*tmp_i, y, hai_index, false, false, 0, 0);
+			}
+		}
+
 	}
 
 }
@@ -1062,7 +1078,7 @@ void MJSDisplayParts::DispActSarashiParts(int x, int y, LBMen naki_stat, int hai
 /* ---------------------------------------------------------------------------------------------- */
 // 晒し面子のパーツ表示：全鳴き面子表示
 /* ---------------------------------------------------------------------------------------------- */
-void MJSDisplayParts::DispAllSarashiParts(int base_x, int base_y, int naki_count, LBMen naki_stat[], int naki_hai[], int naki_idx[], int naki_aka[]){
+void MJSDisplayParts::DispAllSarashiParts(int x, int y, int naki_count, LBMen naki_stat[], int naki_hai[], int naki_idx[], int naki_aka[]){
 
 	// 変数定義
 	int tmp_xstat_count = 0;
@@ -1078,7 +1094,7 @@ void MJSDisplayParts::DispAllSarashiParts(int base_x, int base_y, int naki_count
 		    naki_stat[tmp_i] == ANKAN  ){
 
 			// 鳴き表示
-			DispActSarashiParts( base_x - tmp_xstat_count*150, base_y,  naki_stat[tmp_i], naki_hai[tmp_i], naki_aka[tmp_i]);
+			DispActSarashiParts( x - tmp_xstat_count*150, y,  naki_stat[tmp_i], naki_hai[tmp_i], naki_aka[tmp_i]);
 
 			// 鳴き面子の表示位置移動
 			tmp_xstat_count++;
@@ -1089,7 +1105,7 @@ void MJSDisplayParts::DispAllSarashiParts(int base_x, int base_y, int naki_count
 		}else if(naki_stat[tmp_i] == MINSHUN){
 
 			// 鳴き表示
-			DispActSarashiParts( base_x - tmp_xstat_count*150, base_y,  naki_stat[tmp_i], naki_idx[tmp_i], naki_aka[tmp_i]);
+			DispActSarashiParts( x - tmp_xstat_count*150, y,  naki_stat[tmp_i], naki_idx[tmp_i], naki_aka[tmp_i]);
 
 			// 鳴き面子の表示位置移動
 			tmp_xstat_count++;
@@ -1105,7 +1121,7 @@ void MJSDisplayParts::DispAllSarashiParts(int base_x, int base_y, int naki_count
 				// 既存晒し面子と同じならば
 				if (naki_hai[tmp_j] == naki_hai[tmp_i]){
 					// 加槓表示
-					DispActSarashiParts(base_x - tmp_j*150, base_y,  KAKAN, naki_hai[tmp_j], naki_hai[tmp_i]);
+					DispActSarashiParts(x - tmp_j*150, y,  KAKAN, naki_hai[tmp_j], naki_hai[tmp_i]);
 					// 加槓があるので、ここで抜ける。(抜けないと加槓で重複処理になってしまう)
 					break;
 				}
@@ -1116,7 +1132,7 @@ void MJSDisplayParts::DispAllSarashiParts(int base_x, int base_y, int naki_count
 		// ----------------------------------------
 		}else{
 			// その他処理
-			DrawFormatString(base_x, base_y,  GetColor(255,255,255), "その他");
+			DrawFormatString(x, y,  GetColor(255,255,255), "その他");
 		}
 
 	}
@@ -2028,30 +2044,11 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispActSarashiParts_up(int x, int y, LBMen naki_stat, int hai_index, int aka_count){
 
+	// ----------------------------------------
 	// 変数の初期化
+	// ----------------------------------------
 	int tmp_aka_count = aka_count;
 
-	// ----------------------------------------
-	// (デバグ用)赤牌枚数
-	// ----------------------------------------
-/*
-	// 加槓確認
- 	if( naki_stat != KAKAN){
-
-			// (デバグ用)鳴き面子の赤牌枚数表示
-			DrawFormatString( x-(HAI_XSIZE*4+2), y   , GetColor(255,255,255), "赤%d枚", aka_count);
-
-	}else{
-
-		// (デバグ用)加槓・赤牌確認
-		if (aka_count>0){
-			DrawFormatString( x-(HAI_XSIZE*4+2), y+17, GetColor(255,255,255), "赤+1枚");
-		}else{
-			DrawFormatString( x-(HAI_XSIZE*4+2), y+17, GetColor(255,255,255), "赤+0枚");
-		}
-
-	}
-*/
 	// ----------------------------------------
 	// ポン牌の表示
 	// ----------------------------------------
@@ -2164,21 +2161,6 @@ void MJSDisplayParts::DispActSarashiParts_up(int x, int y, LBMen naki_stat, int 
 			DispHai( x-HAI_XSIZE*3, y, hai_index, false, true, 0, 0);
 		}
 
-	// ----------------------------------------
-	// 頭牌の表示
-	// ----------------------------------------
-	}else if( naki_stat == ATAMA || naki_stat == TOITSU ){
-
-		// 晒し牌の表示
-		for(int tmp_i = 0; tmp_i < 2; tmp_i++){
- 			if( ( hai_index == 5 || hai_index == 15 || hai_index == 25) && tmp_aka_count > 0 ){
- 				DispHai( x-HAI_XSIZE*tmp_i, y, hai_index, true, false,  0, 0);
-				tmp_aka_count--;
-			}else{
-				DispHai( x-HAI_XSIZE*tmp_i, y, hai_index, false, false, 0, 0);
-			}
-		}
-
 	}
 
 }
@@ -2188,7 +2170,9 @@ void MJSDisplayParts::DispActSarashiParts_up(int x, int y, LBMen naki_stat, int 
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispActSarashiParts_left(int x, int y, LBMen naki_stat, int hai_index, int aka_count){
 
+	// ----------------------------------------
 	// 変数の初期化
+	// ----------------------------------------
 	int tmp_aka_count = aka_count;
 
 	// ----------------------------------------
@@ -2305,11 +2289,6 @@ void MJSDisplayParts::DispActSarashiParts_left(int x, int y, LBMen naki_stat, in
 			DispLHai( x, y+LHAI_YSIZE*3, hai_index, false, true, 0, 0);
 		}
 
-	// ----------------------------------------
-	// 頭牌の表示
-	// ----------------------------------------
-	}else if( naki_stat == ATAMA || naki_stat == TOITSU ){
-
 	}
 
 }
@@ -2319,13 +2298,10 @@ void MJSDisplayParts::DispActSarashiParts_left(int x, int y, LBMen naki_stat, in
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispActSarashiParts_right(int x, int y, LBMen naki_stat, int hai_index, int aka_count){
 
+	// ----------------------------------------
 	// 変数の初期化
+	// ----------------------------------------
 	int tmp_aka_count = aka_count;
-
-	// ----------------------------------------
-	// (デバグ用)赤牌枚数
-	// ----------------------------------------
-
 
 	// ----------------------------------------
 	// ポン牌の表示
@@ -2440,11 +2416,6 @@ void MJSDisplayParts::DispActSarashiParts_right(int x, int y, LBMen naki_stat, i
 		}else{
 			DispLHai( x, y+LHAI_YSIZE*3, hai_index, false, false, 0, 0);
 		}
-
-	// ----------------------------------------
-	// 頭牌の表示
-	// ----------------------------------------
-	}else if( naki_stat == ATAMA || naki_stat == TOITSU ){
 
 	}
 

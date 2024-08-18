@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
- * プログラム概要 ： Newさくら麻雀(Ver0.1.2：ログビュアー実装版)
- * バージョン     ： 0.1.2.0.182(和了牌が赤牌場合に赤ドラ加算されない不具合の解消)
+ * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
+ * バージョン     ： 0.1.2.0.183(和了時面子情報表示の修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： score.h
  * クラス名       ： MJSScoreクラス
  * 処理概要       ： 得点計算クラス(新)
  * Ver0.1.2作成日 ： 2023/11/04 09:10:01
- * 最終更新日     ： 2024/08/17 11:36:15
+ * 最終更新日     ： 2024/08/18 11:40:12
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -19,6 +19,15 @@
 #define MJSSCORE_H_INCLUDED
 
 #include "common.h"
+
+/* ---------------------------------------------------------------------------------------------- */
+// 固定値
+/* ---------------------------------------------------------------------------------------------- */
+
+// 翻定数
+#define NORMAL_FU_SCORE_COUNT    10     // 通常点の符個数
+#define NORMAL_HAN_SCORE_COUNT    4     // 通常点の翻個数
+#define MANGAN_HAN_SCORE_COUNT    5     // 満貫以上の翻個数
 
 /* ---------------------------------------------------------------------------------------------- */
 //  構造体
@@ -85,11 +94,11 @@ struct MJSYakuinfo{
 	int   agari_men_19zi[MEN_MAX];          // 和了メンツのヤオチュウ有無(0:中張 1:ヤオチュウ 2:役牌)
 
 	// 和了面子情報(七対子)
-	int agari_chitoi_men_hai[7];            // 和了メンツ牌(七対子)
-	int agari_chitoi_men_aka_count[7];      // 和了メンツの赤牌数(七対子)
+	int agari_chitoi_men_hai[CHITOI_MEN_MAX];          // 和了メンツ牌(七対子)
+	int agari_chitoi_men_aka_count[CHITOI_MEN_MAX];    // 和了メンツの赤牌数(七対子)
 
 	// 和了牌の面子番号
-	int   agari_men_num_agari_hai;          // 和了牌を含む面子の面子番号
+	int agari_men_num_agari_hai;            // 和了牌を含む面子の面子番号
 
 	// 待ち形式
 	LBMen agari_machi_stat;                 // 和了時の待ち形式
@@ -151,9 +160,6 @@ struct MJSYakuinfo{
 	int  yakuman_count;                      // 役満の個数
 	int  yakuman_agari_ply_bai;              // 和了倍数
 
-	// 役名テーブル情報(通常役・役満共通)
-	// char yakuname[NORMALYAKU_MAX][40];       // 手役名
-
 	// 得点情報 - 相手
 	int agari_ply_ron;
 	int agari_ply_tsumo_oya; 
@@ -186,22 +192,22 @@ class MJSScore{
 	// ------------------------------------------------------------------- 
 
 	// 得点テーブル・通常得点
-	int score_ron_oya[4][10];
-	int score_ron_ko[4][10];
-	int score_tsumo_oya[4][10];
-	int score_tsumo_ko[4][10];
+	int score_ron_oya[NORMAL_HAN_SCORE_COUNT][NORMAL_FU_SCORE_COUNT];
+	int score_ron_ko[NORMAL_HAN_SCORE_COUNT][NORMAL_FU_SCORE_COUNT];
+	int score_tsumo_oya[NORMAL_HAN_SCORE_COUNT][NORMAL_FU_SCORE_COUNT];
+	int score_tsumo_ko[NORMAL_HAN_SCORE_COUNT][NORMAL_FU_SCORE_COUNT];
 
 	// 得点テーブル・満貫以上
-	int score_mangan_ron_oya[5];
-	int score_mangan_ron_ko[5];
-	int score_mangan_tsumo_oya[5];
-	int score_mangan_tsumo_ko[5];
+	int score_mangan_ron_oya[MANGAN_HAN_SCORE_COUNT];
+	int score_mangan_ron_ko[MANGAN_HAN_SCORE_COUNT];
+	int score_mangan_tsumo_oya[MANGAN_HAN_SCORE_COUNT];
+	int score_mangan_tsumo_ko[MANGAN_HAN_SCORE_COUNT];
 
 	// 得点テーブル・七対子
-	int score_chitoi_ron_oya[4];
-	int score_chitoi_ron_ko[4];
-	int score_chitoi_tsumo_oya[4];
-	int score_chitoi_tsumo_ko[4];
+	int score_chitoi_ron_oya[NORMAL_HAN_SCORE_COUNT];
+	int score_chitoi_ron_ko[NORMAL_HAN_SCORE_COUNT];
+	int score_chitoi_tsumo_oya[NORMAL_HAN_SCORE_COUNT];
+	int score_chitoi_tsumo_ko[NORMAL_HAN_SCORE_COUNT];
 
 	// 得点テーブル・役満
 	int score_yakuman_ron_oya;
@@ -301,9 +307,6 @@ class MJSScore{
 	// 得点確認(サブ処理・七対子・国士)
 	void Chk_chitoi_mentsu(MJSYakuinfo *yk);                // 03-01:面子確認(七対子)
 	void Chk_kokushi_mentsu(MJSYakuinfo *yk);               // 03-02:面子確認(国士)
-
-	// 得点計算サブ処理
-	void Chk_kyokuscore(MJSYakuinfo *yk);                   // 07-01:局の得点収支
 
 	// ドラ処理
 	void Chk_tehai_dora_count(int rinshan, bool ura_chk);   // ドラ枚数の確認

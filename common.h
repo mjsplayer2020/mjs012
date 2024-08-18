@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
- * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.182(囲みモード：鳴き捨牌時のアクション手牌表示)
+ * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
+ * バージョン     ： 0.1.2.0.183(和了時面子情報表示の修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： common.h
  * クラス名       ： 共通ヘッダー
  * 処理概要       ： 共通ヘッダー
  * Ver0.1.2作成日 ： 2023/11/04 09:10:01
- * 最終更新日     ： 2024/08/17 11:36:15
+ * 最終更新日     ： 2024/08/18 11:40:12
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -27,7 +27,7 @@
 #define VER2    1             // 2桁目のバージョン(ソース全体の改変があった場合(一から作り直した場合)、互換性なし)
 #define VER3    2             // 3桁目のバージョン(新機能の追加した場合、又は既存ソースからフォークした場合、互換性あり)
 #define VER4    0             // 4桁目のバージョン(雑多な細かい更新があった場合、互換性あり)
-#define VER5  182             // 5桁目のバージョン(内部管理用、公開時は常に0とする、互換性あり)
+#define VER5  183             // 5桁目のバージョン(内部管理用、公開時は常に0とする、互換性あり)
 
 // プレーヤー情報
 #define PLAYER_MAX                4     // プレーヤ数
@@ -42,6 +42,7 @@
 #define DORA_MAX                  5     // ドラ最大数
 #define TEHAI_MAX                13     // 手牌最大数(自摸牌含まず)
 #define MEN_MAX                   8     // 面子数
+#define CHITOI_MEN_MAX            7     // 七対子形式の面子数
 #define NORMAL_MACHI_MAX_COUNT   10     // 通常役の待牌数
 #define KAWA_HAI_MAX             25     // 捨牌数(河牌の最大数)
 #define SUTEHAI_MAX_COUNT        14     // 捨牌候補の最大数
@@ -72,8 +73,8 @@
 
 #define HAI_COLOR_NUM_NOCOLOR     0     // 「無色」の番号：通常牌の表示
 #define HAI_COLOR_NUM_GRAY        1     // 「灰色」の番号：鳴かれた場合
-#define HAI_COLOR_NUM_BLUE        2     // 「青色」の番号：鳴き実行確認
-#define HAI_COLOR_NUM_YELLOW      3     // 「黄色」の番号：ドラの場合
+#define HAI_COLOR_NUM_BLUE        2     // 「青色」の番号：鳴き実行確認・和了牌表示
+#define HAI_COLOR_NUM_YELLOW      3     // 「黄色」の番号：ドラ牌である場合
 #define HAI_COLOR_NUM_GREEN       4     // 「緑色」の番号：強調表示
 #define RIICHI_STAT_NUM           5     // リーチ状態
 

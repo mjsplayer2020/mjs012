@@ -1,6 +1,6 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
- * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
+ * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
  * バージョン     ： 0.1.2.0.175(テスト表示モードの全体見直し)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
@@ -27,9 +27,6 @@ void MJSGui::GuiInit(){
 	// GUIメインステータス
 	gui_main_stat = GUI_NO_MAIN_STAT;
 	gui_next_stat = GUI_NO_MAIN_STAT;
-
-	// オープニング
-	// gui_opening_mode = OPENING_NO_SETTING;
 
 	// 卓ステータス変数の初期化
 	guiTakuInit();
@@ -101,11 +98,6 @@ void MJSGui::MouseStat(){
 void MJSGui::chk_opening(MJSTkinfo *tk){
 
 	// -----------------------------
-	// 初期化
-	// -----------------------------
-	// gui_opening_mode = OPENING_NO_SETTING;
-
-	// -----------------------------
 	// マウス情報取得
 	// -----------------------------
 	MouseStat();
@@ -130,11 +122,6 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 		    msy>OPENING_BUT01_Y_START && msy<OPENING_BUT01_Y_START+BUT_ICON_YSIZE ){
 
 			// ----------------------------------------
-			// オープニングモードの変更(クライアントモード)
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_CLIENT_GUI;
-
-			// ----------------------------------------
 			// メインステータス変更
 			// ----------------------------------------
 			gui_main_stat = GUI_OPENING_POST;    // オープニング後処理
@@ -144,18 +131,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			// 各クラスの変数定義
 			// ----------------------------------------
 			tk->ply_hum_mode = 1;                 // 卓ゲームHUMモード：1(HUM対戦)
-			// cli_game_mode = GUI_MJAI_GAMEMODE_GUI_MODE;     // クライアントゲームモードの指定：GUIモード
 
 		// ----------------------------------------
 		// 01:MJAIクライアントモード(PLYモード)
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更(クライアントモード)
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_CLIENT_PLY;
 
 			// ----------------------------------------
 			// メインステータス変更
@@ -167,18 +148,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			// 各クラスの変数定義
 			// ----------------------------------------
 			tk->ply_hum_mode = 0;                      // 卓ゲームHUMモード：0(COM対戦)
-			// cli_game_mode = GUI_MJAI_GAMEMODE_PLY_MODE;     // クライアントゲームモードの指定：PLYモード
 
 		// ----------------------------------------
 		// 02:HUM対決・一局対戦・自摸テーブル読込
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*2 && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*2+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_HUM_TSUMOTBL;
 
 			// ----------------------------------------
 			// メインステータス変更
@@ -192,18 +167,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			tk->ply_hum_mode = 1;                      // 卓ゲームHUMモード：1(HUM対戦)
 			tk->tk_test_mode = PLAYGAME_1KYOKU;        // 卓ゲーム種別：一局戦
 			tk->yama_setting_mode = 0;                 // 牌山状態：牌テーブル読み込み
-			// cli_game_mode = GUI_NORMAL_GAMEMODE;       // クライアントゲームモードの指定：通常ゲームモード
 
 		// ----------------------------------------
 		// 03:HUM対決・シード値固定
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*3 && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*3+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_HUM_TONPUPLAY_SEEDNUM;
 
 			// ----------------------------------------
 			// メインステータス変更
@@ -217,18 +186,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			tk->ply_hum_mode = 1;                      // 卓ゲームHUMモード：1(HUM対戦)
 			tk->tk_test_mode = PLAYGAME_TONPU;         // 卓ゲーム種別：一局戦
 			tk->yama_setting_mode = 2;                 // 牌山状態：シード値固定
-			// cli_game_mode = GUI_NORMAL_GAMEMODE;   // クライアントゲームモードの指定：通常ゲームモード
 
 		// ----------------------------------------
 		// 04:HUM対決・シード値ランダム
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*4 && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*4+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_HUM_TONPUPLAY_RANDUM;
 
 			// ----------------------------------------
 			// メインステータス変更
@@ -242,18 +205,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			tk->ply_hum_mode = 1;                                // 卓ゲームHUMモード：1(HUM対戦)
 			tk->tk_test_mode = PLAYGAME_TONPU;
 			tk->yama_setting_mode = 1;                           // 牌山状態：シード値指定
-			// cli_game_mode = GUI_NORMAL_GAMEMODE;                 // クライアントゲームモードの指定：通常ゲームモード
 
 		// ----------------------------------------
 		// 05:4COM対決・シード値ランダム
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*5 && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*5+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_4COM_RANDUM;
 
 			// ----------------------------------------
 			// メインステータス変更
@@ -267,18 +224,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			tk->ply_hum_mode = 0;                                // 卓ゲームHUMモード：0(COM対戦)
 			tk->tk_test_mode = PLAYGAME_1KYOKU;
 			tk->yama_setting_mode = 1;                           // 牌山状態：シード値指定
-			// cli_game_mode = GUI_NORMAL_GAMEMODE;                 // クライアントゲームモードの指定：通常ゲームモード
 
 		// ----------------------------------------
 		// 06:検証モード・ACTID_MAX
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*6 && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*6+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_TEST_ACTIDMAX;
 
 			// ----------------------------------------
 			// ゲームモードの変更
@@ -292,18 +243,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			tk->ply_hum_mode = 0;                                // 卓ゲームHUMモード：0(COM対戦)
 			tk->tk_test_mode = TAKUIDTEST;
 			tk->yama_setting_mode = 1;                           // 牌山状態：シード値指定
-			// cli_game_mode = GUI_NORMAL_GAMEMODE;                 // クライアントゲームモードの指定：通常ゲームモード
 
 		// ----------------------------------------
 		// 07:検証モード・東風戦
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*7 && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*7+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_TEST_TONPU;
 
 			// ----------------------------------------
 			// ゲームモードの変更
@@ -317,18 +262,12 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			tk->ply_hum_mode = 0;                                // 卓ゲームHUMモード：0(COM対戦)
 			tk->tk_test_mode = PLAYGAME_TONPU;
 			tk->yama_setting_mode = 1;                           // 牌山状態：シード値指定
-			// cli_game_mode = GUI_NORMAL_GAMEMODE;                 // クライアントゲームモードの指定：通常ゲームモード
 
 		// ----------------------------------------
 		// 08:牌譜面読込(ビューワーモード)
 		// ----------------------------------------
 		}else if( msx>OPENING_BUT01_X_START && msx<OPENING_BUT01_X_START+BUT_ICON_XSIZE && 
 		    msy>OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*8 && msy<OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*8+BUT_ICON_YSIZE ){
-
-			// ----------------------------------------
-			// オープニングモードの変更
-			// ----------------------------------------
-			// gui_opening_mode = OPENING_VIEWING;
 
 			// ----------------------------------------
 			// ゲームモードの変更
@@ -340,7 +279,6 @@ void MJSGui::chk_opening(MJSTkinfo *tk){
 			// 各クラスの変数定義
 			// ----------------------------------------
 			tk->ply_hum_mode = 0;                           // 卓ゲームHUMモード：0(COM対戦)
-			// cli_game_mode = GUI_NORMAL_GAMEMODE;            // クライアントゲームモードの指定：通常ゲームモード
 
 		}
 
@@ -385,8 +323,8 @@ void MJSGui::guiTakuInit(){
 	// -----------------------------
 	// ボタン押下フラグ初期化
 	// -----------------------------
-	act_push_flg = false;                 // マウス押下フラグ
-	but_push_flg = false;             // ボタン押下フラグ
+	act_push_flg = false;               // マウス押下フラグ
+	but_push_flg = false;               // ボタン押下フラグ
 
 	// -----------------------------
 	// 卓ステータス初期化
@@ -403,8 +341,8 @@ void MJSGui::guiTakuInit(){
 	// 鳴き情報
 	chihai_count = 0;
 	for(int tmp_i = 0; tmp_i < CHI_KOHO_COUNT_MAX; tmp_i++){
-		chihai_mode[tmp_i] = false;
-		chi_idx_hai[tmp_i] = 0; 
+		chihai_mode[tmp_i]   = false;
+		chi_idx_hai[tmp_i]   = 0; 
 		chi_aka_count[tmp_i] = 0;
 	}
 
@@ -417,7 +355,6 @@ void MJSGui::guiTakuInit(){
 
 	// クライアントモード
 	cli_mode = GUI_MJAI_NOTCONNECT;
-	// ply_naki_chk_flg = false; // プレーヤの鳴きフラグ
 
 }
 
@@ -527,7 +464,7 @@ void MJSGui::guiChkPlyTsumoStat(MJSTkinfo *tk){
 	// -----------------------------
 
 	// 初期化
-	naki_ankan_hai_count=0;
+	naki_ankan_hai_count = 0;
 
 	// 暗槓確認
 	for(int tmp_i = 0; tmp_i < PAI_MAX; tmp_i++){
@@ -1133,11 +1070,6 @@ void MJSGui::guiSetPlyNormalAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// 手牌内の捨牌処理
 	// ----------------------------------------
-/*	if( msx > SPACE_XSIZE && 
-	    msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE+HAI_XSIZE &&
-	    msy > PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40 && 
-	    msy < PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40+HAI_YSIZE ){ */
-
 	if( msx > tehai_x && 
 	    msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE+HAI_XSIZE &&
 	    msy > tehai_y && 
@@ -1163,11 +1095,6 @@ void MJSGui::guiSetPlyNormalAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// 自摸牌の捨牌処理
 	// ----------------------------------------
-/*	}else if( msx > SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM])*HAI_XSIZE+SPACE_XSIZE && 
-			  msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM])*HAI_XSIZE+SPACE_XSIZE+HAI_XSIZE &&
-			  msy > PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40 && 
-			  msy < PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40+HAI_YSIZE ){ */ 
-
 	}else if( msx > tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]*HAI_XSIZE) + SPACE_XSIZE && 
 			  msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]*HAI_XSIZE) + SPACE_XSIZE + HAI_XSIZE && 
 			  msy > tehai_y && 
@@ -1347,11 +1274,6 @@ void MJSGui::guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// 手牌内の捨牌処理
 	// ----------------------------------------
-/*	if( msx > SPACE_XSIZE && 
-	    msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE+HAI_XSIZE &&
-	    msy > PLY_YSTART+3*PLY_YSIZE+40 && 
-	    msy < PLY_YSTART+3*PLY_YSIZE+40+36 ){ */
-
 	if( msx > tehai_x && 
 	    msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE + HAI_XSIZE &&
 	    msy > tehai_y && 
@@ -1379,18 +1301,12 @@ void MJSGui::guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// 自摸牌でクリックしたなら捨牌を定義する
 	// ----------------------------------------
-/*	}else if( msx > SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM])*HAI_XSIZE+SPACE_XSIZE && 
-			  msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM])*HAI_XSIZE+SPACE_XSIZE+HAI_XSIZE &&
-			  msy > PLY_YSTART+3*PLY_YSIZE+40 && 
-			  msy < PLY_YSTART+3*PLY_YSIZE+40+36 ){ */
-
 	}else if( msx > tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]*HAI_XSIZE) + SPACE_XSIZE && 
 			  msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]*HAI_XSIZE) + SPACE_XSIZE + HAI_XSIZE &&
 			  msy > tehai_y && 
 			  msy < tehai_y + HAI_YSIZE ){
 
 		// リーチ時の選択捨牌のシャンテンが0であるなら
-		// if( tk->ply_act_tsumo_shanten[HUM_PLY_SEKI_NUM] == 0 ){
 		if( tk->ply_act_tsumo_can_sute[HUM_PLY_SEKI_NUM] == true ){
 
 			// クリックフラグ有効化
@@ -1417,11 +1333,6 @@ void MJSGui::guiSetPlyRiichiYukoAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// 自摸牌でクリックしたなら捨牌を定義する
 	// ----------------------------------------
-/*	if( msx > SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM])*HAI_XSIZE+SPACE_XSIZE && 
-			  msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM])*HAI_XSIZE+SPACE_XSIZE+HAI_XSIZE &&
-			  msy > PLY_YSTART+3*PLY_YSIZE+40 && 
-			  msy < PLY_YSTART+3*PLY_YSIZE+40+36 ){ */
-
 	if( msx > tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]*HAI_XSIZE) + SPACE_XSIZE && 
 		msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]*HAI_XSIZE) + SPACE_XSIZE + HAI_XSIZE &&
 		msy > tehai_y && 
@@ -1507,18 +1418,12 @@ void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// 槓牌の選択
 	// ----------------------------------------
-/*	if( msx > SPACE_XSIZE && 
-	    msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE+HAI_XSIZE &&
-	    msy > PLY_YSTART+3*PLY_YSIZE+40 && 
-	    msy < PLY_YSTART+3*PLY_YSIZE+40+36 ){ */
-
 	if( msx > tehai_x && 
 	    msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE + HAI_XSIZE &&
 	    msy > tehai_y && 
 	    msy < tehai_y + HAI_YSIZE ){
 
 		// 暗槓牌0なら
-		// if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-SPACE_XSIZE)/HAI_XSIZE] == naki_ankan_hai[0]){
 		if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == naki_ankan_hai[0]){
 
 			// クリックフラグ有効化
@@ -1534,7 +1439,6 @@ void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 		}
 
 		// 暗槓牌1なら
-		// if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-SPACE_XSIZE)/HAI_XSIZE] == naki_ankan_hai[1]){
 		if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == naki_ankan_hai[1]){
 
 			// クリックフラグ有効化
@@ -1550,7 +1454,6 @@ void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 		}
 
 		// 暗槓牌2なら
-		// if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-SPACE_XSIZE)/HAI_XSIZE] == naki_ankan_hai[2]){
 		if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == naki_ankan_hai[2]){
 
 			// クリックフラグ有効化
@@ -1566,7 +1469,6 @@ void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 		}
 
 		// 加槓牌0なら
-		// if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-SPACE_XSIZE)/HAI_XSIZE] == naki_kakan_hai[0]){
 		if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == naki_kakan_hai[0]){
 
 			// クリックフラグ有効化
@@ -1593,7 +1495,6 @@ void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 		}
 
 		// 加槓牌1なら
-		// if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-SPACE_XSIZE)/HAI_XSIZE] == naki_kakan_hai[1]){
 		if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == naki_kakan_hai[1]){
 
 			// クリックフラグ有効化
@@ -1620,7 +1521,6 @@ void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 		}
 
 		// 加槓牌2なら
-		// if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-SPACE_XSIZE)/HAI_XSIZE] == naki_kakan_hai[2]){
 		if( tk->ply_act_tehaitbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == naki_kakan_hai[2]){
 
 			// クリックフラグ有効化
@@ -1778,7 +1678,7 @@ void MJSGui::guiSetPlyNakiAct(MJSTkinfo *tk){
 		tk->ply_naki_idx[HUM_PLY_SEKI_NUM] = tk->kyoku[tk->kyoku_index].act_hai[tk->kyoku[tk->kyoku_index].act_count];
 
 		// 赤牌定義
-		if( tk->ply_naki_idx[HUM_PLY_SEKI_NUM] == 5  || 
+		if( tk->ply_naki_idx[HUM_PLY_SEKI_NUM] ==  5 || 
 		    tk->ply_naki_idx[HUM_PLY_SEKI_NUM] == 15 || 
 		    tk->ply_naki_idx[HUM_PLY_SEKI_NUM] == 25 ){
 
@@ -1912,19 +1812,12 @@ void MJSGui::guiSetPlyChiPaiAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// チー牌の選択
 	// ----------------------------------------
-
-/*	if( msx > SPACE_XSIZE && 
-	    msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE+HAI_XSIZE &&
-	    msy > PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40 && 
-	    msy < PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40+36 ){ */
-
 	if( msx > tehai_x && 
 	    msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE + HAI_XSIZE &&
 	    msy > tehai_y && 
 	    msy < tehai_y + HAI_YSIZE ){
 
 		// 牌番号設定
-		// tmp_chi_idx = (msx-SPACE_XSIZE) / HAI_XSIZE;
 		tmp_chi_idx = (msx-tehai_x) / HAI_XSIZE;
 
 		// チーアクション設定
@@ -1985,11 +1878,6 @@ void MJSGui::guiSetPlyNakiSuteAct(MJSTkinfo *tk){
 	// ----------------------------------------
 	// 手牌内の捨牌処理
 	// ----------------------------------------
-/*	if( msx > SPACE_XSIZE && 
-	    msx < SPACE_XSIZE+(tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE+HAI_XSIZE &&
-	    msy > PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40 && 
-	    msy < PLY_YSTART+HUM_PLY_SEKI_NUM*PLY_YSIZE+40+36 ){ */
-
 	if( msx > tehai_x && 
 	    msx < tehai_x + (tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]-1)*HAI_XSIZE + HAI_XSIZE &&
 	    msy > tehai_y && 
@@ -2002,7 +1890,6 @@ void MJSGui::guiSetPlyNakiSuteAct(MJSTkinfo *tk){
 		tk->ply_act = ACTNAKISUTE;
 
 		// 捨牌番号設定(マウス選択位置)
-		// tk->ply_tbl_hum_sutehai_statnum = (msx-SPACE_XSIZE) / HAI_XSIZE;
 		tk->ply_tbl_hum_sutehai_statnum = (msx-tehai_x) / HAI_XSIZE;
 
 		// HUMプレーヤーの鳴きアクション定義
@@ -2860,7 +2747,6 @@ void MJSGui::guiClientSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 	    msy < tehai_y + HAI_YSIZE ){
 
 		// リーチ時の選択捨牌のシャンテンが0であるなら
-		// if(tk->ply_act_tehai_shanten_tbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == 0){
 		if(tk->ply_act_tehai_can_sute_tbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == true){
 
 			// クリックフラグ有効化
@@ -2870,7 +2756,6 @@ void MJSGui::guiClientSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 			tk->ply_act = ACTSUTE;
 
 			// 捨牌番号設定(マウス選択位置)
-			// tk->ply_tbl_hum_sutehai_statnum = (msx-SPACE_XSIZE) / HAI_XSIZE;
 			tk->ply_tbl_hum_sutehai_statnum = (msx-tehai_x) / HAI_XSIZE;        // 手牌選択牌
 
 			// GUI手牌モードの変更
@@ -2887,7 +2772,6 @@ void MJSGui::guiClientSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 			  msy < tehai_y + HAI_YSIZE ){
 
 		// リーチ時の選択捨牌のシャンテンが0であるなら
-		// if( tk->ply_act_tsumo_shanten[HUM_PLY_SEKI_NUM] == 0 ){
 		if( tk->ply_act_tsumo_can_sute[HUM_PLY_SEKI_NUM] == true ){
 
 			// クリックフラグ有効化
