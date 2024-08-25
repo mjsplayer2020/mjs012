@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.175(テスト表示モードの全体見直し)
+ * バージョン     ： 0.1.2.0.185(囲みモード手牌位置修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/08/04 20:24:58
+ * 最終更新日     ： 2024/08/25 10:19:10
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  *  
@@ -45,10 +45,10 @@ void MJSGui::GuiInit(){
 	// -----------------------------
 	// 手牌位置の設定
 	// -----------------------------
-	if(DESP_TEHAI_MODE_DEF == 0){
+	if(DISP_TEHAI_MODE_DEF == 0){
 		tehai_x = SPACE_XSIZE;
 		tehai_y = PLY_YSTART + PLY_YSIZE*HUM_PLY_SEKI_NUM + 40;
-	}else if(DESP_TEHAI_MODE_DEF == 1){
+	}else if(DISP_TEHAI_MODE_DEF == 1){
 		tehai_x = TEHAI_DOWN_X_START;
 		tehai_y = TEHAI_DOWN_Y_START;
 	}

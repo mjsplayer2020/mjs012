@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.182(囲みモード：鳴き捨牌時のアクション手牌表示)
+ * バージョン     ： 0.1.2.0.185(囲みモード手牌位置修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/08/17 11:36:15
+ * 最終更新日     ： 2024/08/25 10:19:10
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -24,8 +24,9 @@
 // 固定値(画像関連)
 /* ---------------------------------------------------------------------------------------------- */
 
-// 手牌表示形式
-#define DESP_TEHAI_MODE_DEF               1    // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
+// 表示形式
+#define DISP_TEHAI_MODE_DEF               1    // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
+#define DISP_DEBUG_INFO                   0    // デバグ情報の表示(0:非表示)
 
 // フレームカウント
 #define AUTO_FRAME_COUNT_PLAYING         20    // プレイモードのフレームカウント数
@@ -78,9 +79,12 @@
 
 // ゲームモードの表示位置(全体)
 #define STRING_YSIZE               17   // 文字サイズ
-#define PLY_YSIZE                  90   // プレーヤーごとのYサイズのレンジ
 #define SPACE_XSIZE                 5   // X軸の隙間サイズ
 #define SPACE_YSIZE                 5   // Y軸の隙間サイズ
+
+// ゲームモードの表示位置(プレーヤー情報)
+#define PLY_YSTART                 64   // プレーヤー情報のY開始位置
+#define PLY_YSIZE                  90   // プレーヤーごとのYサイズのレンジ
 
 // ゲームモードの表示位置(牌表示)
 #define DORA_XSIZE                450   // ドラ牌の位置
@@ -94,43 +98,45 @@
 
 #define LINE_SUTEHAI_COUNT_MAX      6   // 1行あたりの捨牌数
 
+#define TEHAI_UP_SUTE_X_START     168   // UPの捨牌開始位置
+#define TEHAI_UP_SUTE_Y_START     100   // UPの捨牌開始位置
+#define TEHAI_UP_X_START           96   // UPの手牌X開始位置
+#define TEHAI_UP_Y_START           64   // UPの手牌Y開始位置
+#define TEHAI_UP_NAKI_X_START     200   // UPの鳴牌開始位置
+#define TEHAI_UP_NAKI_Y_START      64   // UPの鳴牌開始位置
+
+#define TEHAI_DOWN_SUTE_X_START   168   // DOWNの捨牌開始位置
+#define TEHAI_DOWN_SUTE_Y_START   380   // DOWNの捨牌開始位置
+#define TEHAI_DOWN_X_START         96   // DOWNの手牌X開始位置
+#define TEHAI_DOWN_Y_START        512   // DOWNの手牌Y開始位置
+#define TEHAI_DOWN_NAKI_X_START   500   // DOWNの鳴牌開始位置
+#define TEHAI_DOWN_NAKI_Y_START   512   // DOWNの鳴牌開始位置
+
+#define TEHAI_LEFT_SUTE_X_START   132   // LEFTの捨牌開始位置
+#define TEHAI_LEFT_SUTE_Y_START   232   // LEFTの捨牌開始位置
+#define TEHAI_LEFT_X_START          5   // LEFTの手牌X開始位置
+#define TEHAI_LEFT_Y_START        100   // LEFTの手牌Y開始位置
+#define TEHAI_LEFT_NAKI_X_START    60   // LEFTの鳴牌開始位置
+#define TEHAI_LEFT_NAKI_Y_START   420   // LEFTの鳴牌開始位置
+
+#define TEHAI_RIGHT_SUTE_X_START  316   // RIGHTの捨牌開始位置
+#define TEHAI_RIGHT_SUTE_Y_START  232   // RIGHTの捨牌開始位置
 #define TEHAI_RIGHT_X_START       540   // RIGHTの手牌X開始位置
 #define TEHAI_RIGHT_Y_START       100   // RIGHTの手牌Y開始位置
 #define TEHAI_RIGHT_NAKI_X_START  380   // RIGHTの鳴牌開始位置
 #define TEHAI_RIGHT_NAKI_Y_START  105   // RIGHTの鳴牌開始位置
-#define TEHAI_RIGHT_SUTE_X_START  380   // RIGHTの捨牌開始位置
-#define TEHAI_RIGHT_SUTE_Y_START  215   // RIGHTの捨牌開始位置
-
-#define TEHAI_UP_X_START          210   // UPの手牌X開始位置
-#define TEHAI_UP_Y_START           65   // UPの手牌Y開始位置
-#define TEHAI_UP_NAKI_X_START      65   // UPの鳴牌開始位置
-#define TEHAI_UP_NAKI_Y_START      65   // UPの鳴牌開始位置
-#define TEHAI_UP_SUTE_X_START     210   // UPの捨牌開始位置
-#define TEHAI_UP_SUTE_Y_START     115   // UPの捨牌開始位置
-
-#define TEHAI_LEFT_X_START          5   // LEFTの手牌X開始位置
-#define TEHAI_LEFT_Y_START        100   // LEFTの手牌Y開始位置
-#define TEHAI_LEFT_NAKI_X_START    60   // LEFTの鳴牌開始位置
-#define TEHAI_LEFT_NAKI_Y_START   310   // LEFTの鳴牌開始位置
-#define TEHAI_LEFT_SUTE_X_START   155   // LEFTの捨牌開始位置
-#define TEHAI_LEFT_SUTE_Y_START   155   // LEFTの捨牌開始位置
-
-#define TEHAI_DOWN_X_START         50   // DOWNの手牌X開始位置
-#define TEHAI_DOWN_Y_START        420   // DOWNの手牌Y開始位置
-#define TEHAI_DOWN_NAKI_X_START   420   // DOWNの鳴牌開始位置
-#define TEHAI_DOWN_NAKI_Y_START   420   // DOWNの鳴牌開始位置
-#define TEHAI_DOWN_SUTE_X_START   210   // DOWNの捨牌開始位置
-#define TEHAI_DOWN_SUTE_Y_START   310   // DOWNの捨牌開始位置
-
-// ゲームモードの表示位置(プレーヤー情報)
-#define PLY_YSTART                 85   // プレーヤー情報のY開始位置
 
 // ゲームモードの表示位置(プレート関連)
-#define PLT_Y_STAT                465   // プレートのY位置
+// #define PLT_Y_STAT                465   // プレートのY位置
+#define PLT_Y_STAT                610   // プレートのY位置
 #define PLT_NAKIARI_X_STAT        550   // プレート鳴き有無のX位置
 
+// ゲームモードの表示位置(メッセージ関連)
+#define PLY_MES_Y_STAT            642   // メッセージのY位置
+
 // ゲームモードの表示位置(ボタン関連)
-#define BUT_Y_STAT          515         // ボタンのY位置
+// #define BUT_Y_STAT          515         // ボタンのY位置
+#define BUT_Y_STAT          660         // ボタンのY位置
 #define BUT01_X_STAT          5         // ボタン01のX位置(局開始情報)
 #define BUT02_X_STAT         45         // ボタン02のX位置(ビューワーモード：局ID変更)
 #define BUT03_X_STAT        115         // ボタン03のX位置(ビューワーモード：ActID変更)

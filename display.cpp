@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.183(和了時面子情報表示の修正)
+ * バージョン     ： 0.1.2.0.185(囲みモード手牌位置修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.cpp
  * クラス名       ： MJSDisplay
@@ -10,9 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
- * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/18 11:40:12
+ * 最終更新日     ： 2024/08/25 10:19:10
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -47,6 +45,17 @@ void MJSDisplay::DisplayInit(){
 	// DXライブラリ初期化
 	if (dparts->DispPartsLibInit() != 0){
 
+	}
+
+	// ----------------------------------------
+	// 画面表示設定
+	// ----------------------------------------
+
+	// デバグ情報の表示
+	if(DISP_DEBUG_INFO == 0){
+		disp_debug_info_mode = false;
+	}else{
+		disp_debug_info_mode = true;
 	}
 
 }
@@ -210,6 +219,7 @@ void MJSDisplay::DisplayTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, float m
 
 	// バナー
 	dparts->DispBunner(ver1, ver2, ver3, ver4, ver5);
+	dparts->DispCenterPlt();
 
 	// マウスポイント
 	dparts->DispMousepoint(5, 750, gui->msx, gui->msy, gui->Button[0], gui->Button[1]);
@@ -257,7 +267,6 @@ void MJSDisplay::DisplayTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, float m
 			DispKyokuInfo(tk,tk->kyoku_index);
 
 			// ドラ
-			// dparts->DispDora(tk,tk->kyoku_index);
 			dparts->DispDora(DORA_XSIZE, 5, tk->kyoku[tk->kyoku_index].doracount, tk->kyoku[tk->kyoku_index].dora, tk->kyoku[tk->kyoku_index].dora_aka);
 
 			// 卓情報
@@ -357,33 +366,27 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 
 	// 通常モードで表示するパーツ
 	if( gui->gui_taku_mode == COMMON_PLAY_MODE){
-
 		// プレート表示
 		dparts->DispPltline(gui->plt_mode);
-
 		// プレート鳴有/鳴無
 		dparts->DispPltNakiAriNashi(gui->plt_nakiari_flg);
-
 		// 手牌ラインメッセージ
-		DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLT_Y_STAT+34);
-
+		DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
 	}
 
 	// -----------------------------------------------------------
 	// デバグ情報
 	// -----------------------------------------------------------
-
-	// 個別アクション情報
-	DispActNumInfo(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT, tk->kyoku_index, tk->kyoku[tk->kyoku_index].act_count);
-
-	// 卓情報
-	DispTakuStat(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT + STRING_YSIZE);
-
-	// 卓クラス情報
-	DispTkInfoStat(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT + STRING_YSIZE*2);
-
-	// GUI情報
-	DispGuiInfo(gui,SPACE_XSIZE, GUI_INFO_Y_STAT);
+	if(disp_debug_info_mode == true){
+		// 個別アクション情報
+		DispActNumInfo(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT, tk->kyoku_index, tk->kyoku[tk->kyoku_index].act_count);
+		// 卓情報
+		DispTakuStat(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT + STRING_YSIZE);
+		// 卓クラス情報
+		DispTkInfoStat(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT + STRING_YSIZE*2);
+		// GUI情報
+		DispGuiInfo(gui,SPACE_XSIZE, GUI_INFO_Y_STAT);
+	}
 
 	// -----------------------------------------------------------
 	// 卓GUIモード(gui->gui_taku_mode)ごとの表示
@@ -391,7 +394,7 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 	if( gui->gui_taku_mode == COMMON_PLAY_MODE){
 
 		// 「手牌ライナー」モード設定
-		desp_tehai_mode = DESP_TEHAI_MODE_DEF;
+		desp_tehai_mode = DISP_TEHAI_MODE_DEF;
 
 		// -----------------------------------------------------------
 		// 「手牌ライナー」モード表示
@@ -400,10 +403,6 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 
 			// ライナーモード表示
 			for( int tmp_pnum = 0; tmp_pnum < PLAYER_MAX ; tmp_pnum++ ) {
-
-				// プレーヤ番号
-				// tkdp->PlyNum  = (tmpNum + tkdp->HumNum + 1) % 4;
-				// tkdp->yDisp   = 95 + PLY_YSIZE * tmpNum;
 
 				// 手牌
 				if( tk->ply_hum_mode == 1 && tmp_pnum == HUM_PLY_SEKI_NUM){
@@ -457,11 +456,8 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 		// 「テスト表示」モード
 		// -----------------------------------------------------------
 		}else if(desp_tehai_mode == 2){
-
 			// 囲み手牌のサンプル表示
 			dparts->DispActTehai_test_square();
-			// dparts->DispActTehai_test_square_parts();
-
 		}
 
 	// -----------------------------------------------------------
@@ -470,7 +466,7 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 	}else if(gui->gui_taku_mode == COMMON_END_CHECK_MODE){
 
 		// 終了ボタンの確認
-		DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLT_Y_STAT+34);
+		DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
 
 	// -----------------------------------------------------------
 	// tkinfoクラス情報
@@ -486,7 +482,6 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 	}else if(gui->gui_taku_mode == GAME_PLY_INFO_MODE){
 
 		// 手牌情報詳細(plyクラス情報表示)
-		// DisplayTakuDetail(tk,ply,tk->ply_turn);
 		DisplayPlyTehaiDetail(tk, ply, tk->ply_turn);
 
 		// サブ手牌の表示モード設定
@@ -541,13 +536,10 @@ void MJSDisplay::DisplayViewerTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, f
 
 	// メッセージ表示
 	if(gui->gui_taku_mode != COMMON_END_CHECK_MODE){
-
 		// 個別アクション情報
 		DispActNumInfo(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT, gui->gui_kyoku, gui->gui_actid);
-
 		// 卓クラス情報
 		DispTkInfoStat(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT+STRING_YSIZE*2);
-
 	}
 
 	/*-----------------------------------------------------------*/
@@ -555,15 +547,11 @@ void MJSDisplay::DisplayViewerTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, f
 	/*-----------------------------------------------------------*/
 
 	if(tk->kyoku[gui->gui_kyoku].act_stat[gui->gui_actid] == KYOKURESULT){
-
 		// 和了表示
 		DispKyokuEndTplog(tk, gui->gui_kyoku);
-
 	}else{
-
 		// ステータスごとのパーツ表示
 		DisplayViewerStatparts(tk, gui);
-
 	}
 
 	/*-----------------------------------------------------------*/
@@ -1720,7 +1708,6 @@ void MJSDisplay::DispTehaiLineMessage(MJSTkinfo *tk, MJSGui *gui, int x, int y){
 		if(gui->gui_ply_tehai_mode == TEHAI_NORMAL || gui->gui_ply_tehai_mode == TEHAI_RIICHI_YUKO){
 
 			// GUIモードの場合
-			// if( tk->kyoku[tk->kyoku_index].act_ply[tk->kyoku[tk->kyoku_index].act_count] == HUM_PLY_SEKI_NUM ){
 			if( tk->ply_hum_mode == 1 && 
 			    tk->kyoku[tk->kyoku_index].act_ply[tk->kyoku[tk->kyoku_index].act_count] == HUM_PLY_SEKI_NUM ){
 
@@ -1734,7 +1721,6 @@ void MJSDisplay::DispTehaiLineMessage(MJSTkinfo *tk, MJSGui *gui, int x, int y){
 					DrawFormatString(x, y, GetColor(255,255,255), "おめでとうございます。あなたのロン和了です");
 
 				// 自摸アクションの場合
-				// }else if( tk->stat == PLYACTSUTEWAIT || tk->stat == PLYACTNAKISUTEWAIT){
 				}else if( tk->kyoku[tk->kyoku_index].act_stat[tk->kyoku[tk->kyoku_index].act_count] == PLYACTTSUMO ||
 				          tk->kyoku[tk->kyoku_index].act_stat[tk->kyoku[tk->kyoku_index].act_count] == PLYRINSHAN  ){
 
@@ -1766,7 +1752,6 @@ void MJSDisplay::DispTehaiLineMessage(MJSTkinfo *tk, MJSGui *gui, int x, int y){
 			}else{
 
 				// COM自摸和了
-				//if( tk->stat == PLYTSUMOAGARI && tk->kyoku[tk->kyoku_index].yk.agari_ply_num != 3){
 				if( tk->kyoku[tk->kyoku_index].act_stat[tk->kyoku[tk->kyoku_index].act_count] == PLYTSUMOAGARI ){
 					DrawFormatString(x, y, GetColor(255,255,255), "COMプレーヤが自摸和了です");
 
@@ -3341,12 +3326,11 @@ void MJSDisplay::DisplayMjaiClientTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gu
 	// FPS
 	dparts->DispFps(670, 750, mFps, total_frame_count, gui->frame_count);
 
-	// -----------------------------------------------------------
-	// 詳細情報
-	// -----------------------------------------------------------
-
-	// クライアントモード情報の表示
-	DisplayClientModeInfo(tk, gui, SPACE_XSIZE, DEBUG_INFO_Y_STAT + STRING_YSIZE);
+	// デバグ情報
+	if(disp_debug_info_mode == TRUE){
+		// クライアントモード情報の表示
+		DisplayClientModeInfo(tk, gui, SPACE_XSIZE, DEBUG_INFO_Y_STAT + STRING_YSIZE);
+	}
 
 	/*-----------------------------------------------------------*/
 	// ステータスごとのパーツ表示(接続情報)
@@ -3475,7 +3459,6 @@ void MJSDisplay::DisplayClientModeBagime(MJSTkinfo *tk, MJSGui *gui, int kyoku_i
 	/*-----------------------------------------------------------*/
 	// クリック案内
 	/*-----------------------------------------------------------*/
-	// DrawFormatString( 100, 450, GetColor(255,255,255), "クリックしてください");
 	wsprintf(tmp_disp_msg, "クリックしてください");
 	dparts->DispString( 100, 450, tmp_disp_msg);
 
@@ -3540,14 +3523,14 @@ void MJSDisplay::DispyMjaiClientNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJ
 	dparts->DispPltNakiAriNashi(gui->plt_nakiari_flg);
 
 	// 手牌ラインメッセージ
-	DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLT_Y_STAT+34);
+	DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
 
 	// -----------------------------------------------------------
 	// 卓GUIモード(gui->gui_taku_mode)ごとの表示
 	// -----------------------------------------------------------
 
 		// 「手牌ライナー」モード設定
-		desp_tehai_mode = DESP_TEHAI_MODE_DEF;
+		desp_tehai_mode = DISP_TEHAI_MODE_DEF;
 
 		// -----------------------------------------------------------
 		// 「手牌ライナー」モード表示
@@ -3623,7 +3606,7 @@ void MJSDisplay::DispyMjaiClientNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJ
 	// }else if(gui->gui_taku_mode == COMMON_END_CHECK_MODE){
 
 		// 終了ボタンの確認
-		// DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLT_Y_STAT+34);
+		// DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
 
 	// -----------------------------------------------------------
 	// tkinfoクラス情報
@@ -3845,7 +3828,7 @@ void MJSDisplay::DisplayMjaiClientErrMes(MJSTkinfo *tk, MJSGui *gui){
 	dparts->DispPltline(gui->plt_mode);
 
 	// 手牌ラインメッセージ
-	// DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLT_Y_STAT+34);
+	// DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
 
 }
 

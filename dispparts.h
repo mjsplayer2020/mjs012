@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/18 11:40:12
+ * 最終更新日     ： 2024/08/25 10:19:10
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -80,9 +80,10 @@ class MJSDisplayParts
 	// ------------------------------------------------------------------- 
 
 	// 背景・タイトル
-	int backpic;      // 背景画
-	int title;        // タイトル
-	int banner;       // バナー
+	int backpic;         // 背景画
+	int title;           // タイトル
+	int banner;          // バナー
+	int center_pltimg;   // センタープレート
 
 	// 牌パーツ
 	int Pai[40];      // 牌画像_縦
@@ -193,6 +194,7 @@ class MJSDisplayParts
 	// パーツ表示/DXライブラリ情報
 	void DispOpeningTitle(int ver1, int ver2, int ver3, int ver4, int ver5);                    // オープニングタイトル
 	void DispBunner(int ver1, int ver2, int ver3, int ver4, int ver5);                          // バナー表示
+	void DispCenterPlt();                                                                       // センタープレート表示
 	void DispMousepoint(int x, int y, int msx, int msy, int b0, int b1);                        // マウス情報
 	void DispFps(int x, int y, float mFps, int total_frame_count, int frame_count);             // FPS・フレーム
 
