@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.183(和了時面子情報表示の修正)
+ * バージョン     ： 0.1.2.0.189(gui->desp_tehai_mode実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.h
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/25 10:19:10
+ * 最終更新日     ： 2024/09/07 09:16:50
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -194,7 +194,7 @@ class MJSDisplayParts
 	// パーツ表示/DXライブラリ情報
 	void DispOpeningTitle(int ver1, int ver2, int ver3, int ver4, int ver5);                    // オープニングタイトル
 	void DispBunner(int ver1, int ver2, int ver3, int ver4, int ver5);                          // バナー表示
-	void DispCenterPlt();                                                                       // センタープレート表示
+	void DispCenterPlt(int x, int y);                                                           // センタープレート表示
 	void DispMousepoint(int x, int y, int msx, int msy, int b0, int b1);                        // マウス情報
 	void DispFps(int x, int y, float mFps, int total_frame_count, int frame_count);             // FPS・フレーム
 
@@ -355,14 +355,10 @@ class MJSDisplayParts
 	void DispActSarashiParts_right(int x, int y, LBMen naki_stat, int hai_index, int aka_count);         // 晒し面子のパーツ表示：RIGHTプレーヤ表示
 
 	// 牌画パーツ/河情報
-	void DispActKawaParts_up(int x,    int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);             // 河パーツ表示：UPプレーヤ表示
-	void DispActKawaParts_down(int x,  int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);           // 河パーツ表示：DOWNプレーヤ表示
-	void DispActKawaParts_left(int x,  int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);           // 河パーツ表示：LEFTプレーヤ表示
+	void DispActKawaParts_up(int x,    int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);          // 河パーツ表示：UPプレーヤ表示
+	void DispActKawaParts_down(int x,  int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);          // 河パーツ表示：DOWNプレーヤ表示
+	void DispActKawaParts_left(int x,  int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);          // 河パーツ表示：LEFTプレーヤ表示
 	void DispActKawaParts_right(int x, int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);          // 河パーツ表示：RIGHTプレーヤ表示
-
-	// 牌画パーツ/囲み手牌表示(テスト用)
-	void DispActTehai_test_square();       // 卓表示(テスト用）
-	void DispActTehai_test_square_parts(); // 卓表示(テスト用：パーツ表示)
 
 };
 

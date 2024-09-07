@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.185(囲みモード手牌位置修正)
+ * バージョン     ： 0.1.2.0.189(gui->disp_tehai_mode実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.h
  * クラス名       ： MJSDisplay
@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/08/25 10:19:10
+ * 最終更新日     ： 2024/09/07 09:16:50
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -56,7 +56,7 @@ class MJSDisplay
 	// ------------------------------------------------------------------- 
 
 	// 手牌表示モード
-	int desp_tehai_mode;                // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
+	// int desp_tehai_mode;                // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
 
 	// デバグ情報表示モード
 	bool disp_debug_info_mode;          // バグ情報の表示モード
@@ -162,8 +162,11 @@ class MJSDisplay
 
 	// アクション手牌表示・スクエア表示
 	void DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum, int msx, int msy);    // アクション手牌COM向け(スクエア)
-	void DispActSarashi_square(MJSTkinfo *tk, int kyoku_index, int pnum, int actid);                                    // アクション手牌を考慮したさらし牌(スクエア) 
-	void DispActKawa_square(MJSTkinfo *tk, int kyoku_index, int actid, int pnum);                                       // アクション手牌の河牌(スクエア) 
+	void DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int pnum, int actid);                       // アクション手牌を考慮したさらし牌(スクエア) 
+	void DispActKawa_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum);                          // アクション手牌の河牌(スクエア) 
+
+	// アクション手牌表示・テスト表示
+	void DispActTehai_test_square(MJSGui *gui);
 
 	// アクション手牌表示・文字列表示(デバグ用)
 	void DispActTehai_info_all();

@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.185(囲みモード手牌位置修正)
+ * バージョン     ： 0.1.2.0.189(gui->desp_tehai_mode実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.cpp
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/08/25 10:19:10
+ * 最終更新日     ： 2024/09/07 09:16:50
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -344,10 +344,10 @@ void MJSDisplayParts::DispBunner(int ver1, int ver2, int ver3, int ver4, int ver
 /* ---------------------------------------------------------------------------------------------- */
 // パーツ表示/センタープレート表示
 /* ---------------------------------------------------------------------------------------------- */
-void MJSDisplayParts::DispCenterPlt(){
+void MJSDisplayParts::DispCenterPlt(int x, int y){
 
-	// バナー表示
-	DrawGraph( 168, 232, center_pltimg, TRUE ) ;
+	// センタープレート表示
+	DrawGraph( x, y, center_pltimg, TRUE ) ;
 
 }
 
@@ -1857,7 +1857,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 			// 捨牌表示
 			if(riichi_flg == true){
 				// 捨牌表示 - リーチ牌
-				DispHai( tmp_x+7, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
+				DispHai( tmp_x, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
 				tmp_y = tmp_y + HAI_YSIZE;
 			}else{
 				// 捨牌表示 - 通常牌
@@ -1917,7 +1917,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 			// 捨牌表示
 			if(riichi_flg == true){
 				// 捨牌表示 - リーチ牌
-				DispHai( tmp_x+7, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
+				DispHai( tmp_x, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
 				tmp_y = tmp_y + HAI_YSIZE;
 			}else{
 				// 捨牌表示 - 通常牌
@@ -1978,7 +1978,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 			// 捨牌表示
 			if(riichi_flg == true){
 				// 捨牌表示 - リーチ牌
-				DispHai( tmp_x+7, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
+				DispHai( tmp_x, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
 				tmp_y = tmp_y + HAI_YSIZE;
 			}else{
 				// 捨牌表示 - 通常牌
@@ -2034,7 +2034,7 @@ void MJSDisplayParts::DispActKawaParts_right(int x, int y, int kawa_tbl_count, i
 			// 捨牌表示
 			if(riichi_flg == true){
 				// 捨牌表示 - リーチ牌
-				DispHai( tmp_x+7, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
+				DispHai( tmp_x, tmp_y, kawa_tbl[tmp_sute_idx], kawa_tbl_aka[tmp_sute_idx], true,  tmp_kawa_mode, 0);
 				tmp_y = tmp_y + HAI_YSIZE;
 			}else{
 				// 捨牌表示 - 通常牌
@@ -2427,172 +2427,6 @@ void MJSDisplayParts::DispActSarashiParts_right(int x, int y, LBMen naki_stat, i
 		}
 
 	}
-
-}
-
-/* ---------------------------------------------------------------------------------------------- */
-// 全面表示（テスト用）
-/* ---------------------------------------------------------------------------------------------- */
-void MJSDisplayParts::DispActTehai_test_square(){
-
-	// ----------------------------------------
-	// 手牌数設定
-	// ----------------------------------------
-	int tmp_tehai_tbl_count_up    =  1;
-	int tmp_tehai_tbl_count_down  =  1;
-	int tmp_tehai_tbl_count_left  =  1;
-	int tmp_tehai_tbl_count_right =  1;
-
-	// ----------------------------------------
-	// 手牌の表示
-	// ----------------------------------------
-
-	// 手牌表示(Rightプレーヤ)
-		DispLHai( TEHAI_RIGHT_X_START, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + TEHAI_RIGHT_Y_START               , 31, false, false, 0, 0);     // 右自摸
-
-	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_right; tmp_i++){
-		DispLHai( TEHAI_RIGHT_X_START, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + TEHAI_RIGHT_Y_START + 24+10+tmp_i*24, 31, false, false, 0, 0);     // 右手牌
-	}
-
-	// 手牌表示(UPプレーヤ)
-	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_up; tmp_i++){
-		DispHai( TEHAI_UP_X_START + (TEHAI_MAX - tmp_tehai_tbl_count_up) * HAI_XSIZE + HAI_XSIZE * tmp_i,       TEHAI_UP_Y_START, 32, false, true, 0, 0);                    // UPプレーヤ手牌
-	}
-		DispHai( TEHAI_UP_X_START + (TEHAI_MAX - tmp_tehai_tbl_count_up) * HAI_XSIZE - HAI_XSIZE - SPACE_XSIZE, TEHAI_UP_Y_START, 32, false, true, 0, 0);                    // UPプレーヤ自摸
-
-	// 手牌表示(Leftプレーヤ)
-	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_left; tmp_i++){
-		DispLHai( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START + tmp_i * LHAI_YSIZE, 33, false, true, 0, 0);          // 左手牌
-	}
-		DispLHai( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START + tmp_tehai_tbl_count_left * LHAI_YSIZE + 10, 33, false, true, 0, 0);          // 左自摸(13*24)
-
-	// 手牌表示(DOWNプレーヤ)
-	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_down; tmp_i++){
-		DispHai( TEHAI_DOWN_X_START + HAI_XSIZE * tmp_i,                                  TEHAI_DOWN_Y_START, 34, false, false, 0, 0);      // DOWNプレーヤ手牌
-	}
-		DispHai( TEHAI_DOWN_X_START + HAI_XSIZE * tmp_tehai_tbl_count_down + SPACE_XSIZE, TEHAI_DOWN_Y_START, 34, false, false, 0, 0);      // DOWNプレーヤ自摸
-
-	// ----------------------------------------
-	// 鳴牌の表示
-	// ----------------------------------------
-
-	// 鳴牌表示(RIGHTプレーヤ)
-	for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-		DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*0,  0, false, false, 0, 0);
-		DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*1, 31, false, false, 0, 0);
-		DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*2, 31, false, false, 0, 0);
-		DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*3,  0, false, false, 0, 0);
-	}
-
-	// 鳴牌表示(UPプレーヤ)
-	for(int tmp_i = 0; tmp_i < 4 ; tmp_i++){
-		DispHai( TEHAI_UP_NAKI_X_START + tmp_i*100 + HAI_XSIZE*0, TEHAI_UP_NAKI_Y_START,  0, false, true, 0, 0);
-		DispHai( TEHAI_UP_NAKI_X_START + tmp_i*100 + HAI_XSIZE*1, TEHAI_UP_NAKI_Y_START, 32, false, true, 0, 0);
-		DispHai( TEHAI_UP_NAKI_X_START + tmp_i*100 + HAI_XSIZE*2, TEHAI_UP_NAKI_Y_START, 32, false, true, 0, 0);
-		DispHai( TEHAI_UP_NAKI_X_START + tmp_i*100 + HAI_XSIZE*3, TEHAI_UP_NAKI_Y_START,  0, false, true, 0, 0);
-	}
-
-	// 鳴牌表示(LEFTプレーヤ)
-	for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-		DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*0,  0, false, true, 0, 0);
-		DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*1, 33, false, true, 0, 0);
-		DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*2, 33, false, true, 0, 0);
-		DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*3,  0, false, true, 0, 0);
-	}
-
-	// 鳴牌表示(DOWNプレーヤ)
-	for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-		DispActSarashiParts( TEHAI_DOWN_NAKI_X_START - tmp_i*100, TEHAI_DOWN_NAKI_Y_START, ANKAN, 34, false);
-	}
-
-	// ----------------------------------------
-	// 捨牌の表示
-	// ----------------------------------------
-
-	// 捨牌表示(RIGHTプレーヤ)
-	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*0, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);    // 右一段目
-		DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*1, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);    // 右二段目
-		DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*2, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);    // 右三段目
-		DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*3, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);    // 右四段目
-	}
-
-	// 捨牌表示(UPプレーヤ)
-	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START-HAI_YSIZE*1,32, false, true, 0, 0); // 上三段目(あふれ分)
-		DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START+HAI_YSIZE*0,32, false, true, 0, 0); // 上三段目
-		DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START+HAI_YSIZE*1,32, false, true, 0, 0); // 上二段目
-		DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START+HAI_YSIZE*2,32, false, true, 0, 0); // 上一段目
-	}
-
-	// 捨牌表示(LEFTプレーヤ)
-	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*0, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左四段目
-		DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*1, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左三段目
-		DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*2, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左二段目
-		DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*3, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左一段目
-	}
-
-	// 捨牌表示(DOWNプレーヤ)
-	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		DispHai( TEHAI_DOWN_SUTE_X_START+HAI_XSIZE*tmp_i,     TEHAI_DOWN_SUTE_Y_START,             34, false, false, 0, 0);       // 下一段目
-		DispHai( TEHAI_DOWN_SUTE_X_START+HAI_XSIZE*tmp_i,     TEHAI_DOWN_SUTE_Y_START+HAI_YSIZE*1, 34, false, false, 0, 0);       // 下二段目
-		DispHai( TEHAI_DOWN_SUTE_X_START+HAI_XSIZE*tmp_i,     TEHAI_DOWN_SUTE_Y_START+HAI_YSIZE*2, 34, false, false, 0, 0);       // 下三段目
-		DispHai( TEHAI_DOWN_SUTE_X_START+HAI_XSIZE*tmp_i,     TEHAI_DOWN_SUTE_Y_START+HAI_YSIZE*3, 34, false, false, 0, 0);       // 下三段目
-//		DispHai( TEHAI_DOWN_SUTE_X_START+HAI_XSIZE*(tmp_i+6), TEHAI_DOWN_SUTE_Y_START+HAI_YSIZE*2, 34, false, false, 0, 0);       // 下三段目(あふれ分)
-	}
-
-}
-
-/* ---------------------------------------------------------------------------------------------- */
-// 全面表示（テスト用：パーツ表示）
-/* ---------------------------------------------------------------------------------------------- */
-void MJSDisplayParts::DispActTehai_test_square_parts(){
-
-	// ----------------------------------------
-	// 変数初期化
-	// ----------------------------------------
-
-	// 手牌
-	int tmp_tehai_tbl_count = 1;
-
-	// 捨牌
-	int  tmp_sute_tbl_count = 18;
-	int  tmp_sute_tbl[24];
-	bool tmp_sute_aka[24];
-	int  tmp_sute_mode[24];
-
-	for(int tmp_i = 0; tmp_i < tmp_sute_tbl_count; tmp_i++){
-		tmp_sute_tbl[tmp_i] = 35;
-		tmp_sute_aka[tmp_i] = false;
-		tmp_sute_mode[tmp_i] = 1;
-	}
-
-	// ----------------------------------------
-	// 手牌の表示
-	// ----------------------------------------
-
-
-	// ----------------------------------------
-	// 鳴牌の表示
-	// ----------------------------------------
-
-	// 鳴牌表示(RIGHTプレーヤ)
-	for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-		DispActSarashiParts_right( TEHAI_RIGHT_NAKI_X_START + tmp_i*LHAI_XSIZE, TEHAI_RIGHT_NAKI_Y_START , ANKAN, 31, false);
-	}
-
-	// ----------------------------------------
-	// 捨牌の表示
-	// ----------------------------------------
-
-	// 鳴牌表示(RIGHTプレーヤ)
-	DispActKawaParts_right( TEHAI_RIGHT_SUTE_X_START, 
-	                        TEHAI_RIGHT_SUTE_Y_START, 
-	                        tmp_sute_tbl_count, 
-	                        tmp_sute_tbl, 
-	                        tmp_sute_aka, 
-	                        tmp_sute_mode);
 
 }
 

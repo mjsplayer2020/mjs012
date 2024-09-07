@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.185(囲みモード手牌位置修正)
+ * バージョン     ： 0.1.2.0.189(gui->desp_tehai_mode実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/08/25 10:19:10
+ * 最終更新日     ： 2024/09/07 09:16:50
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -26,6 +26,7 @@
 
 // 表示形式
 #define DISP_TEHAI_MODE_DEF               1    // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
+#define DISP_SQUARE_NAKI_MENTSU_DEF       0    // 囲みモードでの鳴き面子表示形式(0:ライナー表示、1:縦表示)
 #define DISP_DEBUG_INFO                   0    // デバグ情報の表示(0:非表示)
 
 // フレームカウント
@@ -71,7 +72,7 @@
 // オープニング表示位置
 #define OPENING_BUT01_X_START     150   // セレクトボタンのX軸開始位置
 #define OPENING_BUT01_Y_START     250   // セレクトボタンのY軸開始位置
-#define OPENING_BUT01_Y_RANGE      50   // Y軸の幅
+#define OPENING_BUT01_Y_RANGE      48   // Y軸の幅
 
 // 共通パーツの表示位置
 #define GAMESTAT_X_STAT           770   // ゲームステータスのX位置
@@ -83,7 +84,7 @@
 #define SPACE_YSIZE                 5   // Y軸の隙間サイズ
 
 // ゲームモードの表示位置(プレーヤー情報)
-#define PLY_YSTART                 64   // プレーヤー情報のY開始位置
+#define PLY_YSTART                 90   // プレーヤー情報のY開始位置
 #define PLY_YSIZE                  90   // プレーヤーごとのYサイズのレンジ
 
 // ゲームモードの表示位置(牌表示)
@@ -98,45 +99,54 @@
 
 #define LINE_SUTEHAI_COUNT_MAX      6   // 1行あたりの捨牌数
 
-#define TEHAI_UP_SUTE_X_START     168   // UPの捨牌開始位置
-#define TEHAI_UP_SUTE_Y_START     100   // UPの捨牌開始位置
-#define TEHAI_UP_X_START           96   // UPの手牌X開始位置
-#define TEHAI_UP_Y_START           64   // UPの手牌Y開始位置
-#define TEHAI_UP_NAKI_X_START     200   // UPの鳴牌開始位置
-#define TEHAI_UP_NAKI_Y_START      64   // UPの鳴牌開始位置
+#define TAKU_PLT_X_SIZE           648    // 卓プレート_Xサイズ
+#define TAKU_PLT_Y_SIZE           648    // 卓プレート_Yサイズ
+#define TAKU_PLT_X_STAT            64    // 卓プレート_X開始位置
+#define TAKU_PLT_Y_STAT            64    // 卓プレート_Y開始位置
 
-#define TEHAI_DOWN_SUTE_X_START   168   // DOWNの捨牌開始位置
-#define TEHAI_DOWN_SUTE_Y_START   380   // DOWNの捨牌開始位置
-#define TEHAI_DOWN_X_START         96   // DOWNの手牌X開始位置
-#define TEHAI_DOWN_Y_START        512   // DOWNの手牌Y開始位置
-#define TEHAI_DOWN_NAKI_X_START   500   // DOWNの鳴牌開始位置
-#define TEHAI_DOWN_NAKI_Y_START   512   // DOWNの鳴牌開始位置
+#define SUTEHAI_CENTERPLT_RANGE     8    // 捨牌レンジ
+#define SUTEHAI_TEHAI_RANGE        16    // 手牌レンジ
+#define NAKI_RANGE                356    // 鳴き牌レンジ
 
-#define TEHAI_LEFT_SUTE_X_START   132   // LEFTの捨牌開始位置
-#define TEHAI_LEFT_SUTE_Y_START   232   // LEFTの捨牌開始位置
-#define TEHAI_LEFT_X_START          5   // LEFTの手牌X開始位置
-#define TEHAI_LEFT_Y_START        100   // LEFTの手牌Y開始位置
-#define TEHAI_LEFT_NAKI_X_START    60   // LEFTの鳴牌開始位置
-#define TEHAI_LEFT_NAKI_Y_START   420   // LEFTの鳴牌開始位置
+// ゲームモードの表示位置(手牌関連・囲みモード)
 
-#define TEHAI_RIGHT_SUTE_X_START  316   // RIGHTの捨牌開始位置
-#define TEHAI_RIGHT_SUTE_Y_START  232   // RIGHTの捨牌開始位置
-#define TEHAI_RIGHT_X_START       540   // RIGHTの手牌X開始位置
-#define TEHAI_RIGHT_Y_START       100   // RIGHTの手牌Y開始位置
-#define TEHAI_RIGHT_NAKI_X_START  380   // RIGHTの鳴牌開始位置
-#define TEHAI_RIGHT_NAKI_Y_START  105   // RIGHTの鳴牌開始位置
+#define TEHAI_UP_SUTE_X_START     280   // UPの捨牌開始位置
+#define TEHAI_UP_SUTE_Y_START     144   // UPの捨牌開始位置
+#define TEHAI_UP_X_START          208   // UPの手牌X開始位置
+#define TEHAI_UP_Y_START           96   // UPの手牌Y開始位置
+#define TEHAI_UP_NAKI_X_START      68   // UPの鳴牌開始位置
+#define TEHAI_UP_NAKI_Y_START      96   // UPの鳴牌開始位置
+
+#define TEHAI_DOWN_SUTE_X_START   280   // DOWNの捨牌開始位置
+#define TEHAI_DOWN_SUTE_Y_START   432   // DOWNの捨牌開始位置
+#define TEHAI_DOWN_X_START        184   // DOWNの手牌X開始位置
+#define TEHAI_DOWN_Y_START        576   // DOWNの手牌Y開始位置
+#define TEHAI_DOWN_NAKI_X_START   540   // DOWNの鳴牌開始位置
+#define TEHAI_DOWN_NAKI_Y_START   576   // DOWNの鳴牌開始位置
+
+#define TEHAI_LEFT_SUTE_X_START   240   // LEFTの捨牌開始位置
+#define TEHAI_LEFT_SUTE_Y_START   280   // LEFTの捨牌開始位置
+#define TEHAI_LEFT_X_START         96   // LEFTの手牌X開始位置
+#define TEHAI_LEFT_Y_START        184   // LEFTの手牌Y開始位置
+#define TEHAI_LEFT_NAKI_X_START    96   // LEFTの鳴牌開始位置
+#define TEHAI_LEFT_NAKI_Y_START   470   // LEFTの鳴牌開始位置
+
+#define TEHAI_RIGHT_SUTE_X_START  432   // RIGHTの捨牌開始位置
+#define TEHAI_RIGHT_SUTE_Y_START  280   // RIGHTの捨牌開始位置
+#define TEHAI_RIGHT_X_START       560   // RIGHTの手牌X開始位置
+#define TEHAI_RIGHT_Y_START       179   // RIGHTの手牌Y開始位置
+#define TEHAI_RIGHT_NAKI_X_START  560   // RIGHTの鳴牌開始位置
+#define TEHAI_RIGHT_NAKI_Y_START  155   // RIGHTの鳴牌開始位置
 
 // ゲームモードの表示位置(プレート関連)
-// #define PLT_Y_STAT                465   // プレートのY位置
-#define PLT_Y_STAT                610   // プレートのY位置
+#define PLT_Y_STAT                650   // プレートのY位置
 #define PLT_NAKIARI_X_STAT        550   // プレート鳴き有無のX位置
 
 // ゲームモードの表示位置(メッセージ関連)
-#define PLY_MES_Y_STAT            642   // メッセージのY位置
+#define PLY_MES_Y_STAT            682   // メッセージのY位置
 
 // ゲームモードの表示位置(ボタン関連)
-// #define BUT_Y_STAT          515         // ボタンのY位置
-#define BUT_Y_STAT          660         // ボタンのY位置
+#define BUT_Y_STAT          700         // ボタンのY位置
 #define BUT01_X_STAT          5         // ボタン01のX位置(局開始情報)
 #define BUT02_X_STAT         45         // ボタン02のX位置(ビューワーモード：局ID変更)
 #define BUT03_X_STAT        115         // ボタン03のX位置(ビューワーモード：ActID変更)
@@ -227,7 +237,7 @@ typedef enum {
 	TEHAI_NORMAL,                       // 01:通常状態
 	TEHAI_RIICHI_SUTEHAI,               // 03:リーチ時の捨牌選択
 	TEHAI_RIICHI_YUKO,                  // 04:リーチ有効状態
-	TEHAI_ANKAN_KAKAN_SELECT,           // 05:アンカン・カカン選択(アンカン・カカンは同時)
+	TEHAI_ANKAN_KAKAN_SELECT,           // 05:暗槓・加槓選択(暗槓・加槓は同時)
 	TEHAI_CHI_SELECT,                   // 06:チー選択
 	TEHAI_KUIKAE_NAKISUTE,              // 07:喰い換え状態の鳴き捨牌
 
@@ -302,13 +312,11 @@ class MJSGui
 	int wheelrotvol;           // ホイールの回転量
 	unsigned int Button[8];    // ボタンの押した状態
 
-	// マウス押下フラグ
-	// bool mouse_push_flg  
-	int mouse_push_flg;                      // bool型に変更予定
-
 	// -----------------------------
 	// マウス押下関連のフラグ
 	// -----------------------------
+	int mouse_push_flg;                      // bool型に変更予定
+	// bool mouse_push_flg  
 	bool act_push_flg;                       // 有効箇所を押下した場合のマウス押下フラグ                         
 	bool but_push_flg;                       // ボタン押下フラグ
 
@@ -319,10 +327,54 @@ class MJSGui
 	int total_frame_count;                   // 合計フレームカウント
 
 	// -----------------------------
-	// 手牌位置
+	// 手牌表示モード
 	// -----------------------------
+
+	// 手牌表示モード
+	int disp_tehai_mode;                     // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
+	int disp_square_naki_mentsu;             // デフォルトの鳴き面子の表示モード
+
+	// ライン・スクエア共通
 	int tehai_x;                             // 手牌のX座標
 	int tehai_y;                             // 手牌のY座標
+
+	// スクエア用捨牌位置
+	int sutehai_up_x;
+	int sutehai_up_y;
+	int sutehai_down_x;
+	int sutehai_down_y;
+	int sutehai_left_x;
+	int sutehai_left_y;
+	int sutehai_right_x;
+	int sutehai_right_y;
+
+	// スクエア用手牌位置
+	int tehai_up_x;
+	int tehai_up_y;
+	int tehai_left_x;
+	int tehai_left_y;
+	int tehai_right_x;
+	int tehai_right_y;
+
+	// 鳴牌_横列
+	int nakihai_line_up_x;
+	int nakihai_line_up_y;
+	int nakihai_line_down_x;
+	int nakihai_line_down_y;
+	int nakihai_line_left_x;
+	int nakihai_line_left_y;
+	int nakihai_line_right_x;
+	int nakihai_line_right_y;
+
+	// 鳴牌_縦列
+	int nakihai_up_x;
+	int nakihai_up_y;
+	int nakihai_down_x;
+	int nakihai_down_y;
+	int nakihai_left_x;
+	int nakihai_left_y;
+	int nakihai_right_x;
+	int nakihai_right_y;
 
 	// -----------------------------
 	// プレート
@@ -385,13 +437,13 @@ class MJSGui
 	// 鳴き種別用
 	// -----------------------------
 
-	// 鳴き種別(アンカン関連)
-	int naki_ankan_hai_count;                     // アンカン牌枚数
-	int naki_ankan_hai[4];                        // アンカンの牌番号
+	// 鳴き種別(暗槓関連)
+	int naki_ankan_hai_count;                     // 暗槓牌枚数
+	int naki_ankan_hai[4];                        // 暗槓の牌番号
 
-	// 鳴き種別(カカン関連)
-	int naki_kakan_hai_count;                     // カカン牌枚数
-	int naki_kakan_hai[4];                        // カカンの牌番号
+	// 鳴き種別(加槓関連)
+	int naki_kakan_hai_count;                     // 加槓牌枚数
+	int naki_kakan_hai[4];                        // 加槓の牌番号
 
 	// 鳴き種別(チー関連)
 	int  chihai_count;                            // チー牌枚数
@@ -446,7 +498,7 @@ class MJSGui
 	// -----------------------------
 	// void set_gui_ply_tsumo_action(MJSTkinfo *tk);                  // 鳴きアクション設定
 	// void set_gui_ply_nak_action(MJSTkinfo *tk);                    // 鳴きアクション設定
-	// void set_gui_ply_nakisute_action(MJSTkinfo *tk);               // 鳴きアクション設定
+	// void set_gui_ply_nakisute_action(MJSTkinfo *tk);               // 鳴き捨牌アクション設定
 
 	// -----------------------------
 	// プレイモード・卓処理
@@ -470,8 +522,8 @@ class MJSGui
 	void guiSetPlyNormalActMain(MJSTkinfo *tk);      // クリック後処理_通常画面・メイン処理
 	void guiSetPlyNormalAct(MJSTkinfo *tk);          // クリック後処理_通常画面・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
 	void guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk);   // クリック後処理_通常画面・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
-	void guiSetPlyRiichiYukoAct(MJSTkinfo *tk);      // クリック後処理_通常画面・リーチ有効後のアクション(自摸切り、自摸和了、アンカン)(mode:TEHAI_RIICHI_YUKO)
-	void guiSetPlyAnkanKakanAct(MJSTkinfo *tk);      // クリック後処理_通常画面・プレーヤーアンカンアクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
+	void guiSetPlyRiichiYukoAct(MJSTkinfo *tk);      // クリック後処理_通常画面・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
+	void guiSetPlyAnkanKakanAct(MJSTkinfo *tk);      // クリック後処理_通常画面・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
 
 	// 卓処理・鳴きアクション決定
 	void guiSetPlyNakiActMain(MJSTkinfo *tk);        // クリック後処理_鳴き画面・鳴きアクション・メイン処理
@@ -501,8 +553,8 @@ class MJSGui
 	void guiClientSetPlyNormalActMain(MJSTkinfo *tk);       // クライアントモード・クリック後処理_通常画面・メイン処理
 	void guiClientSetPlyNormalAct(MJSTkinfo *tk);           // クライアントモード・クリック後処理_通常画面・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
 	void guiClientSetPlyRiichiSutehaiAct(MJSTkinfo *tk);    // クライアントモード・クリック後処理_通常画面・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
-	void guiClientSetPlyRiichiYukoAct(MJSTkinfo *tk);       // クライアントモード・クリック後処理_通常画面・リーチ有効後のアクション(自摸切り、自摸和了、アンカン)(mode:TEHAI_RIICHI_YUKO)
-	void guiClientSetPlyAnkanKakanAct(MJSTkinfo *tk);       // クライアントモード・クリック後処理_通常画面・プレーヤーアンカンアクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
+	void guiClientSetPlyRiichiYukoAct(MJSTkinfo *tk);       // クライアントモード・クリック後処理_通常画面・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
+	void guiClientSetPlyAnkanKakanAct(MJSTkinfo *tk);       // クライアントモード・クリック後処理_通常画面・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
 
 	// クライアントモード・鳴きアクション決定
 	void guiClientSetPlyNakiActMain(MJSTkinfo *tk);         // クライアントモード・鳴きアクション・メイン処理
@@ -534,7 +586,7 @@ class MJSGui
 
 };
 
-#endif/* MJSMOUSE_H_INCLUDED */
+#endif /* MJSMOUSE_H_INCLUDED */
 
 /* ---------------------------------------------------------------------------------------------- */
 // ソース終了

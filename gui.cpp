@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.185(囲みモード手牌位置修正)
+ * バージョン     ： 0.1.2.0.189(gui->desp_tehai_mode実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/08/25 10:19:10
+ * 最終更新日     ： 2024/09/07 09:16:50
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  *  
@@ -43,14 +43,57 @@ void MJSGui::GuiInit(){
 	wsprintf(plt_name[PLT_NEXT]  , "次　へ");
 
 	// -----------------------------
+	// 手牌モード設定
+	// -----------------------------
+	disp_tehai_mode         = DISP_TEHAI_MODE_DEF;
+	disp_square_naki_mentsu = DISP_SQUARE_NAKI_MENTSU_DEF;
+
+	// -----------------------------
 	// 手牌位置の設定
 	// -----------------------------
-	if(DISP_TEHAI_MODE_DEF == 0){
+
+	// ライナー表示
+	if(disp_tehai_mode == 0){
+
+		// 手牌位置定義
 		tehai_x = SPACE_XSIZE;
 		tehai_y = PLY_YSTART + PLY_YSIZE*HUM_PLY_SEKI_NUM + 40;
-	}else if(DISP_TEHAI_MODE_DEF == 1){
-		tehai_x = TEHAI_DOWN_X_START;
-		tehai_y = TEHAI_DOWN_Y_START;
+
+	// スクエア表示
+	}else if(disp_tehai_mode == 1 || disp_tehai_mode == 2 ){
+
+		// UPプレーヤー手牌位置
+		sutehai_up_x         = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3;
+		sutehai_up_y         = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4;
+		tehai_up_x           = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*6; // 自摸分だけ右に移動する
+		tehai_up_y           = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE - HAI_YSIZE;
+		nakihai_line_up_x    = tehai_up_x - NAKI_RANGE + HAI_XSIZE*TEHAI_MAX - HAI_XSIZE;
+		nakihai_line_up_y    = tehai_up_y;
+
+		// DOWNプレーヤー手牌位置
+		sutehai_down_x       = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3;
+		sutehai_down_y       = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE;
+		tehai_x              = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*7;
+		tehai_y              = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE + HAI_YSIZE*4 + SUTEHAI_TEHAI_RANGE;
+		nakihai_line_down_x  = tehai_x + NAKI_RANGE;
+		nakihai_line_down_y  = tehai_y;
+
+		// LEFTプレーヤー手牌位置
+		sutehai_left_x       = 0;
+		sutehai_left_y       = 0;
+		tehai_left_x         = 0;
+		tehai_left_y         = 0;
+		nakihai_line_left_x  = tehai_left_x;
+		nakihai_line_left_y  = tehai_left_x - NAKI_RANGE + HAI_XSIZE*TEHAI_MAX - HAI_XSIZE;
+
+		// RIGHTプレーヤー手牌位置
+		sutehai_right_x      = 0;
+		sutehai_right_y      = 0;
+		tehai_right_x        = 0;
+		tehai_right_y        = 0;
+		nakihai_line_right_x = tehai_right_x;
+		nakihai_line_right_y = tehai_right_y - NAKI_RANGE;
+
 	}
 
 }
