@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.189(gui->desp_tehai_mode実装)
+ * バージョン     ： 0.1.2.0.191(囲みモード：LEFT,RIGHTプレーヤの検証モード・ライン鳴き表示実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/07 09:16:50
+ * 最終更新日     ： 2024/09/11 20:36:05
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  *  
@@ -45,8 +45,8 @@ void MJSGui::GuiInit(){
 	// -----------------------------
 	// 手牌モード設定
 	// -----------------------------
-	disp_tehai_mode         = DISP_TEHAI_MODE_DEF;
-	disp_square_naki_mentsu = DISP_SQUARE_NAKI_MENTSU_DEF;
+	disp_tehai_mode         = DISP_TEHAI_MODE_DEF;          // 卓表示モード
+	disp_square_naki_mentsu = DISP_SQUARE_NAKI_MENTSU_DEF;  // 鳴き牌表示モード
 
 	// -----------------------------
 	// 手牌位置の設定
@@ -60,39 +60,47 @@ void MJSGui::GuiInit(){
 		tehai_y = PLY_YSTART + PLY_YSIZE*HUM_PLY_SEKI_NUM + 40;
 
 	// スクエア表示
-	}else if(disp_tehai_mode == 1 || disp_tehai_mode == 2 ){
+	}else if( disp_tehai_mode == 1 || disp_tehai_mode == 2 ){
 
 		// UPプレーヤー手牌位置
 		sutehai_up_x         = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3;
-		sutehai_up_y         = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4;
+		sutehai_up_y         = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4;
 		tehai_up_x           = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*6; // 自摸分だけ右に移動する
-		tehai_up_y           = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE - HAI_YSIZE;
+		tehai_up_y           = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE - HAI_YSIZE;
 		nakihai_line_up_x    = tehai_up_x - NAKI_RANGE + HAI_XSIZE*TEHAI_MAX - HAI_XSIZE;
 		nakihai_line_up_y    = tehai_up_y;
+		nakihai_up_x         = 0;
+		nakihai_up_y         = 0;
 
 		// DOWNプレーヤー手牌位置
 		sutehai_down_x       = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3;
-		sutehai_down_y       = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE;
+		sutehai_down_y       = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE;
 		tehai_x              = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*7;
-		tehai_y              = (TAKU_PLT_Y_SIZE + TAKU_PLT_X_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE + HAI_YSIZE*4 + SUTEHAI_TEHAI_RANGE;
+		tehai_y              = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE + HAI_YSIZE*4 + SUTEHAI_TEHAI_RANGE;
 		nakihai_line_down_x  = tehai_x + NAKI_RANGE;
 		nakihai_line_down_y  = tehai_y;
+		nakihai_down_x       = 0;
+		nakihai_down_y       = 0;
 
 		// LEFTプレーヤー手牌位置
-		sutehai_left_x       = 0;
-		sutehai_left_y       = 0;
-		tehai_left_x         = 0;
-		tehai_left_y         = 0;
+		sutehai_left_x       = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE;
+		sutehai_left_y       = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3;
+		tehai_left_x         = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE - HAI_YSIZE;;
+		tehai_left_y         = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*8;
 		nakihai_line_left_x  = tehai_left_x;
-		nakihai_line_left_y  = tehai_left_x - NAKI_RANGE + HAI_XSIZE*TEHAI_MAX - HAI_XSIZE;
+		nakihai_line_left_y  = tehai_left_x + NAKI_RANGE + HAI_XSIZE*4;
+		nakihai_left_x       = 0;
+		nakihai_left_y       = 0;
 
 		// RIGHTプレーヤー手牌位置
-		sutehai_right_x      = 0;
-		sutehai_right_y      = 0;
-		tehai_right_x        = 0;
-		tehai_right_y        = 0;
+		sutehai_right_x      = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE;
+		sutehai_right_y      = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3;
+		tehai_right_x        = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 + HAI_XSIZE*3 + SUTEHAI_CENTERPLT_RANGE + HAI_YSIZE*4 + SUTEHAI_TEHAI_RANGE;
+		tehai_right_y        = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*7;
 		nakihai_line_right_x = tehai_right_x;
-		nakihai_line_right_y = tehai_right_y - NAKI_RANGE;
+		nakihai_line_right_y = tehai_right_y - NAKI_RANGE + HAI_XSIZE*TEHAI_MAX;
+		nakihai_right_x      = 0;
+		nakihai_right_y      = 0;
 
 	}
 

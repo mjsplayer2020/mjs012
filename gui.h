@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.189(gui->desp_tehai_mode実装)
+ * バージョン     ： 0.1.2.0.191(囲みモード：LEFT,RIGHTプレーヤの検証モード・ライン鳴き表示実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/07 09:16:50
+ * 最終更新日     ： 2024/09/11 20:36:05
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -99,14 +99,15 @@
 
 #define LINE_SUTEHAI_COUNT_MAX      6   // 1行あたりの捨牌数
 
-#define TAKU_PLT_X_SIZE           648    // 卓プレート_Xサイズ
-#define TAKU_PLT_Y_SIZE           648    // 卓プレート_Yサイズ
+#define TAKU_PLT_X_SIZE           696    // 卓プレート_Xサイズ
+#define TAKU_PLT_Y_SIZE           696    // 卓プレート_Yサイズ
 #define TAKU_PLT_X_STAT            64    // 卓プレート_X開始位置
 #define TAKU_PLT_Y_STAT            64    // 卓プレート_Y開始位置
 
 #define SUTEHAI_CENTERPLT_RANGE     8    // 捨牌レンジ
-#define SUTEHAI_TEHAI_RANGE        16    // 手牌レンジ
-#define NAKI_RANGE                356    // 鳴き牌レンジ
+#define SUTEHAI_TEHAI_RANGE        40    // 手牌レンジ
+#define NAKI_RANGE                384    // 鳴き牌レンジ
+#define NAKI_MENTSU_RANGE         104    // 鳴き牌ごとのレンジ
 
 // ゲームモードの表示位置(手牌関連・囲みモード)
 

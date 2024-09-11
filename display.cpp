@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.189(gui->disp_tehai_mode実装)
+ * バージョン     ： 0.1.2.0.190(囲みモード：LEFT,RIGHTプレーヤの表示位置修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.cpp
  * クラス名       ： MJSDisplay
@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/09/07 09:16:50
+ * 最終更新日     ： 2024/09/08 09:26:22
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -1821,7 +1821,7 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 		// 手牌パーツの表示(Right)
 		if( pnum == 0){
-			dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,
+			dparts->DispActTehaiParts_right( gui->tehai_right_x, gui->tehai_right_y,
 				                        tk->ply_act_tehaicount[pnum],
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1839,7 +1839,7 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                   EXCEPT_VALUE);
 		// 手牌パーツの表示(Left)
 		}else if( pnum == 2){
-				dparts->DispActTehaiParts_left( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,
+				dparts->DispActTehaiParts_left( gui->tehai_left_x, gui->tehai_left_y,
 				                        tk->ply_act_tehaicount[pnum],
 					                   tk->ply_act_tehaitbl[pnum],
 					                   tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1867,7 +1867,7 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 		// 手牌パーツの表示(Right)
 		if( pnum == 0){
-			dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,
+			dparts->DispActTehaiParts_right( gui->tehai_right_x, gui->tehai_right_y,
 				                        tk->ply_act_tehaicount[pnum],
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1885,7 +1885,7 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 					                   EXCEPT_VALUE);
 		// 手牌パーツの表示(Left)
 		}else if( pnum == 2){
-			dparts->DispActTehaiParts_left( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,
+			dparts->DispActTehaiParts_left( gui->tehai_left_x, gui->tehai_left_y,
 				                        tk->ply_act_tehaicount[pnum],
 					                   tk->ply_act_tehaitbl[pnum],
 					                   tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1913,8 +1913,8 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 		// 手牌パーツの表示(Right)
 		if( pnum == 0){
-			dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START,               // 01:X座標
-				                             TEHAI_RIGHT_Y_START,               // 02:Y座標
+			dparts->DispActTehaiParts_right( gui->tehai_right_x,               // 01:X座標
+				                             gui->tehai_right_y,               // 02:Y座標
 				                        tk->ply_act_tehaicount[pnum],           // 03:手牌数
 					                    tk->ply_act_tehaitbl[pnum],             
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1934,7 +1934,7 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 		// 手牌パーツの表示(Left)
 		}else if( pnum == 2){
-					dparts->DispActTehaiParts_left(  TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,
+					dparts->DispActTehaiParts_left(  gui->tehai_left_x, gui->tehai_left_y,
 				                        tk->ply_act_tehaicount[pnum],
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1964,8 +1964,8 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 		// 手牌パーツの表示(Right)
 		if( pnum == 0){
-					dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START,       // 01:X座標
-				                                     TEHAI_RIGHT_Y_START,       // 02:Y座標
+					dparts->DispActTehaiParts_right( gui->tehai_right_x,       // 01:X座標
+				                                     gui->tehai_right_y,       // 02:Y座標
 					                    tk->ply_act_tehaicount[pnum],           // 03:手牌数
 					                    tk->ply_act_tehaitbl[pnum],             
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -1986,8 +1986,8 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 		// 手牌パーツの表示(Left)
 		}else if( pnum == 2){
-					dparts->DispActTehaiParts_left(  TEHAI_LEFT_X_START,        // 01:X座標
-					                                 TEHAI_LEFT_Y_START,        // 02:Y座標
+					dparts->DispActTehaiParts_left(  gui->tehai_left_x,        // 01:X座標
+					                                 gui->tehai_left_y,        // 02:Y座標
 					                    tk->ply_act_tehaicount[pnum],           // 03:手牌数
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -2022,7 +2022,7 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 			// 手牌パーツの表示(Right)
 			if( pnum == 0){
-				dparts->DispActTehaiParts_right( TEHAI_RIGHT_X_START, TEHAI_RIGHT_Y_START,
+				dparts->DispActTehaiParts_right( gui->tehai_right_x, gui->tehai_right_y,
 				                        tk->ply_act_tehaicount[pnum],
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -2040,7 +2040,7 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 			// 手牌パーツの表示(Left)
 			}else if( pnum == 2){
-				dparts->DispActTehaiParts_left(  TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START,                // 01-02:X,Y座
+				dparts->DispActTehaiParts_left(  gui->tehai_left_x, gui->tehai_left_y,                // 01-02:X,Y座
 				                        tk->ply_act_tehaicount[pnum],
 					                    tk->ply_act_tehaitbl[pnum],
 					                    tk->ply_act_tehai_tbl_aka[pnum], 
@@ -2159,7 +2159,9 @@ void MJSDisplay::DispActSarashi(MJSTkinfo *tk, int kyoku_index, int actid, int p
 void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int pnum, int actid){
 
 	// 変数定義
-	int tmp_nakimen_count  = 0;
+	int tmp_nakimen_count  = 0;  // 面子数
+	int tmp_naki_x         = 0;  // 鳴き面子のX表示位置
+	int tmp_naki_y         = 0;  // 鳴き面子のY表示位置
 
 	// さらし表示
 	for(int tmp_i = 0; tmp_i < tk->kyoku[kyoku_index].naki_count[pnum]; tmp_i++){
@@ -2179,10 +2181,20 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				if( pnum == 0){
 
+					// 鳴き面子の表示位置
+					// 横列鳴き表示
+					if( gui->disp_square_naki_mentsu == 0 ){
+						tmp_naki_x = gui->nakihai_line_right_x;
+						tmp_naki_y = gui->nakihai_line_right_y + NAKI_MENTSU_RANGE*tmp_nakimen_count - HAI_XSIZE*3;
+					}else{
+//						tmp_naki_x = TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE;
+//						tmp_naki_y = TEHAI_RIGHT_NAKI_Y_START;
+					}
+
 					// 鳴き面子の表示
 					dparts->DispActSarashiParts_right( 
-					                     TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE, 
-				                         TEHAI_RIGHT_NAKI_Y_START,
+					                     tmp_naki_x, 
+				                         tmp_naki_y,
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_hai[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
@@ -2192,10 +2204,18 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				}else if( pnum == 1){
 
+					// 鳴き面子の表示位置
+					// 横列鳴き表示
+					if( gui->disp_square_naki_mentsu == 0 ){
+						tmp_naki_x = gui->nakihai_line_up_x + NAKI_MENTSU_RANGE*tmp_nakimen_count;
+						tmp_naki_x = gui->nakihai_line_up_y;
+					}else{
+//						tmp_naki_x = TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE;
+//						tmp_naki_y = TEHAI_RIGHT_NAKI_Y_START;
+					}
+
 					// 鳴き面子の表示
 					dparts->DispActSarashiParts_up( 
-//					                     TEHAI_UP_NAKI_X_START + tmp_nakimen_count*100, 
-//				                         TEHAI_UP_NAKI_Y_START,
 					                     gui->nakihai_line_up_x + tmp_nakimen_count*100, 
 					                     gui->nakihai_line_up_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
@@ -2207,9 +2227,20 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				}else if( pnum == 2){
 
+					// 鳴き面子の表示位置
+					// 横列鳴き表示
+					if( gui->disp_square_naki_mentsu == 0 ){
+						tmp_naki_x = gui->nakihai_line_left_x;
+						tmp_naki_y = gui->nakihai_line_left_y - NAKI_MENTSU_RANGE*tmp_nakimen_count;
+					}else{
+//						tmp_naki_x = TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE;
+//						tmp_naki_y = TEHAI_RIGHT_NAKI_Y_START;
+					}
+
+					// 鳴き面子の表示
 					dparts->DispActSarashiParts_left( 
-					                     TEHAI_LEFT_NAKI_X_START + tmp_nakimen_count*LHAI_XSIZE, 
-					                     TEHAI_LEFT_NAKI_Y_START,  
+					                     tmp_naki_x, 
+					                     tmp_naki_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_hai[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
@@ -2219,9 +2250,10 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				}else if( pnum == 3){
 
+					// 鳴き面子の表示位置
+
+					// 鳴き面子の表示
 					dparts->DispActSarashiParts( 
-//					                     TEHAI_DOWN_NAKI_X_START - tmp_nakimen_count*100, 
-//					                     TEHAI_DOWN_NAKI_Y_START, 
 					                     gui->nakihai_line_down_x - tmp_nakimen_count*100, 
 					                     gui->nakihai_line_down_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
@@ -2245,10 +2277,20 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				if( pnum == 0){
 
+					// 鳴き面子の表示位置
+					// 横列鳴き表示
+					if( gui->disp_square_naki_mentsu == 0 ){
+						tmp_naki_x = gui->nakihai_line_right_x;
+						tmp_naki_y = gui->nakihai_line_right_y + NAKI_MENTSU_RANGE*tmp_nakimen_count - HAI_XSIZE*3;
+					}else{
+						tmp_naki_x = TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE;
+						tmp_naki_y = TEHAI_RIGHT_NAKI_Y_START;
+					}
+
 					// 鳴き面子の表示
 					dparts->DispActSarashiParts_right( 
-					                     TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE, 
-				                         TEHAI_RIGHT_NAKI_Y_START,
+					                     tmp_naki_x, 
+				                         tmp_naki_y,
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
@@ -2258,10 +2300,10 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				}else if( pnum == 1){
 
+					// 鳴き面子の表示位置
+
 					// 鳴き面子の表示
 					dparts->DispActSarashiParts_up( 
-//					                     TEHAI_UP_X_START - 120 + HAI_XSIZE*2 + tmp_nakimen_count*75, 
-//				                         TEHAI_UP_Y_START,
 					                     gui->nakihai_line_up_x + tmp_nakimen_count*100, 
 					                     gui->nakihai_line_up_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
@@ -2273,10 +2315,20 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				}else if( pnum == 2){
 
+					// 鳴き面子の表示位置
+					// 横列鳴き表示
+					if( gui->disp_square_naki_mentsu == 0 ){
+						tmp_naki_x = gui->nakihai_line_left_x;
+						tmp_naki_y = gui->nakihai_line_left_y - NAKI_MENTSU_RANGE*tmp_nakimen_count;
+					}else{
+//						tmp_naki_x = TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE;
+//						tmp_naki_y = TEHAI_RIGHT_NAKI_Y_START;
+					}
+
 					// 鳴き面子の表示
-					dparts->DispActSarashiParts_left( 
-					                     TEHAI_LEFT_NAKI_X_START + tmp_nakimen_count*LHAI_XSIZE, 
-					                     TEHAI_LEFT_NAKI_Y_START,  
+					dparts->DispActSarashiParts_left(
+					                     tmp_naki_x, 
+					                     tmp_naki_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
@@ -2286,10 +2338,10 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 				// ----------------------------------------
 				}else if( pnum == 3){
 
+					// 鳴き面子の表示位置
+
 					// 鳴き面子の表示
-					dparts->DispActSarashiParts( 
-//					                     TEHAI_DOWN_NAKI_X_START - tmp_nakimen_count*100, 
-//					                     TEHAI_DOWN_NAKI_Y_START, 
+					dparts->DispActSarashiParts(  
 					                     gui->nakihai_line_down_x - tmp_nakimen_count*100, 
 					                     gui->nakihai_line_down_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
@@ -2320,23 +2372,36 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 						// 手牌パーツの表示(Right)
 						// ----------------------------------------
 						if( pnum == 0){
+
+							// 鳴き面子の表示位置
+							// 横列鳴き表示
+							if( gui->disp_square_naki_mentsu == 0 ){
+								tmp_naki_x = gui->nakihai_line_right_x;
+								tmp_naki_y = gui->nakihai_line_right_y + NAKI_MENTSU_RANGE*tmp_nakimen_count - HAI_XSIZE*3;
+							}else{
+								tmp_naki_x = TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE;
+								tmp_naki_y = TEHAI_RIGHT_NAKI_Y_START;
+							}
+
 							// 鳴き面子の表示
 							dparts->DispActSarashiParts_right( 
-					                     TEHAI_RIGHT_NAKI_X_START + (3-tmp_j)*LHAI_XSIZE, 
-				                         TEHAI_RIGHT_NAKI_Y_START,
+					                     tmp_naki_x, 
+				                         tmp_naki_y,
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
+
 						// ----------------------------------------
 						// 手牌パーツの表示(UP)
 						// ----------------------------------------
 						}else if( pnum == 1){
+
+							// 鳴き面子の表示位置
+
 							// 鳴き面子の表示
-							dparts->DispActSarashiParts_up( 
-//					                     TEHAI_UP_X_START - 120 + HAI_XSIZE*2 + tmp_j*75, 
-//				                         TEHAI_UP_Y_START,
-					                     gui->nakihai_line_up_x + tmp_nakimen_count*100, 
-					                     gui->nakihai_line_up_y, 
+							dparts->DispActSarashiParts_up(
+					                     tmp_naki_x, 
+					                     tmp_naki_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
@@ -2344,6 +2409,9 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 						// 手牌パーツの表示(Left)
 						// ----------------------------------------
 						}else if( pnum == 2){
+
+							// 鳴き面子の表示位置
+
 							// 鳴き面子の表示
 							dparts->DispActSarashiParts_left( 
 					                     TEHAI_LEFT_NAKI_X_START + tmp_j*LHAI_XSIZE, 
@@ -2351,14 +2419,24 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
+
 						// ----------------------------------------
 						// 手牌パーツの表示(Down：ライナーと共通)
 						// ----------------------------------------
 						}else if( pnum == 3){
+
+							// 鳴き面子の表示位置
+							// 横列鳴き表示
+							if( gui->disp_square_naki_mentsu == 0 ){
+								tmp_naki_x = gui->nakihai_line_left_x;
+								tmp_naki_y = gui->nakihai_line_left_y - NAKI_MENTSU_RANGE*tmp_nakimen_count;
+							}else{
+//								tmp_naki_x = TEHAI_RIGHT_NAKI_X_START + (3-tmp_nakimen_count)*LHAI_XSIZE;
+//								tmp_naki_y = TEHAI_RIGHT_NAKI_Y_START;
+							}
+
 							// 鳴き面子の表示
 							dparts->DispActSarashiParts( 
-//					                     TEHAI_DOWN_NAKI_X_START - tmp_j*100, 
-//					                     TEHAI_DOWN_NAKI_Y_START, 
 					                     gui->nakihai_line_down_x - tmp_nakimen_count*100, 
 					                     gui->nakihai_line_down_y, 
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
@@ -2399,8 +2477,8 @@ void MJSDisplay::DispActKawa_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index,
 
 	// RIGHTプレーヤの表示
 	if( pnum == 0 ){
-		dparts->DispActKawaParts_right( TEHAI_RIGHT_SUTE_X_START, 
-	                                    TEHAI_RIGHT_SUTE_Y_START, 
+		dparts->DispActKawaParts_right( gui->sutehai_right_x, 
+	                                    gui->sutehai_right_y, 
 	                            tk->ply_act_kawa_count[pnum], 
 	                            tk->ply_act_kawa[pnum], 
 	                            tk->ply_act_kawa_aka[pnum], 
@@ -2408,8 +2486,7 @@ void MJSDisplay::DispActKawa_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index,
 
 	// UPプレーヤの表示
 	}else if( pnum == 1 ){
-//		dparts->DispActKawaParts_up( TEHAI_UP_SUTE_X_START, 
-//	                                 TEHAI_UP_SUTE_Y_START, 
+
 		dparts->DispActKawaParts_up( gui->sutehai_up_x, 
 	                                 gui->sutehai_up_y, 
 	                            tk->ply_act_kawa_count[pnum], 
@@ -2419,8 +2496,8 @@ void MJSDisplay::DispActKawa_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index,
 
 	// LEFTプレーヤの表示
 	}else if( pnum == 2 ){
-		dparts->DispActKawaParts_left( TEHAI_LEFT_SUTE_X_START, 
-	                                   TEHAI_LEFT_SUTE_Y_START, 
+		dparts->DispActKawaParts_left( gui->sutehai_left_x, 
+	                                   gui->sutehai_left_y,
 	                            tk->ply_act_kawa_count[pnum], 
 	                            tk->ply_act_kawa[pnum], 
 	                            tk->ply_act_kawa_aka[pnum], 
@@ -2428,8 +2505,6 @@ void MJSDisplay::DispActKawa_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index,
 
 	// DOWNプレーヤの表示
 	}else if( pnum == 3 ){
-//		dparts->DispActKawaParts_down( TEHAI_DOWN_SUTE_X_START, 
-//	                                   TEHAI_DOWN_SUTE_Y_START, 
 		dparts->DispActKawaParts_down( gui->sutehai_down_x, 
 	                                   gui->sutehai_down_y, 
 	                            tk->ply_act_kawa_count[pnum], 
@@ -4744,10 +4819,10 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 	// ----------------------------------------
 
 	// 手牌表示(Rightプレーヤ)
-		dparts->DispLHai( TEHAI_RIGHT_X_START, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + TEHAI_RIGHT_Y_START               , 31, false, false, 0, 0);         // 右自摸
+		dparts->DispLHai( gui->tehai_right_x, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + gui->tehai_right_y               , 31, false, false, 0, 0);         // 右自摸
 
 	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_right; tmp_i++){
-		dparts->DispLHai( TEHAI_RIGHT_X_START, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + TEHAI_RIGHT_Y_START + 24+10+tmp_i*24, 31, false, false, 0, 0);       // 右手牌
+		dparts->DispLHai( gui->tehai_right_x, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + gui->tehai_right_y + 24+10+tmp_i*24, 31, false, false, 0, 0);       // 右手牌
 	}
 
 	// 手牌表示(UPプレーヤ)
@@ -4758,52 +4833,69 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 
 	// 手牌表示(Leftプレーヤ)
 	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_left; tmp_i++){
-		dparts->DispLHai( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START + tmp_i * LHAI_YSIZE, 33, false, true, 0, 0);          // 左手牌
+		dparts->DispLHai( gui->tehai_left_x, gui->tehai_left_y + tmp_i * LHAI_YSIZE, 33, false, true, 0, 0);                                                            // 左手牌
 	}
-		dparts->DispLHai( TEHAI_LEFT_X_START, TEHAI_LEFT_Y_START + tmp_tehai_tbl_count_left * LHAI_YSIZE + 10, 33, false, true, 0, 0);                                    // 左自摸(13*24)
+		dparts->DispLHai( gui->tehai_left_x, gui->tehai_left_y + tmp_tehai_tbl_count_left * LHAI_YSIZE + 10, 33, false, true, 0, 0);                                    // 左自摸(13*24)
 
 	// 手牌表示(DOWNプレーヤ)
 	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_down; tmp_i++){
-		dparts->DispHai( gui->tehai_x + HAI_XSIZE * tmp_i,                                  gui->tehai_y, 34, false, false, 0, 0);                            // DOWNプレーヤ手牌
+		dparts->DispHai( gui->tehai_x + HAI_XSIZE * tmp_i,                                  gui->tehai_y, 34, false, false, 0, 0);                                      // DOWNプレーヤ手牌
 	}
-		dparts->DispHai( gui->tehai_x + HAI_XSIZE * tmp_tehai_tbl_count_down + SPACE_XSIZE, gui->tehai_y, 34, false, false, 0, 0);                            // DOWNプレーヤ自摸
+		dparts->DispHai( gui->tehai_x + HAI_XSIZE * tmp_tehai_tbl_count_down + SPACE_XSIZE, gui->tehai_y, 34, false, false, 0, 0);                                      // DOWNプレーヤ自摸
 
 	// ----------------------------------------
 	// 鳴牌の表示
 	// ----------------------------------------
 
-	// ライナー鳴き表示
+	// 横列鳴き表示
 	if( gui->disp_square_naki_mentsu == 0 ){
 
 		// 鳴牌表示(UPプレーヤ)
 		for(int tmp_i = 0; tmp_i < 4 ; tmp_i++){
-			dparts->DispHai( gui->nakihai_line_up_x + tmp_i*100 - HAI_XSIZE*0, gui->nakihai_line_up_y,  0, false, true, 0, 0);
-			dparts->DispHai( gui->nakihai_line_up_x + tmp_i*100 - HAI_XSIZE*1, gui->nakihai_line_up_y, 32, false, true, 0, 0);
-			dparts->DispHai( gui->nakihai_line_up_x + tmp_i*100 - HAI_XSIZE*2, gui->nakihai_line_up_y, 32, false, true, 0, 0);
-			dparts->DispHai( gui->nakihai_line_up_x + tmp_i*100 - HAI_XSIZE*3, gui->nakihai_line_up_y,  0, false, true, 0, 0);
+			dparts->DispHai( gui->nakihai_line_up_x + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*0, gui->nakihai_line_up_y,  0, false, true, 0, 0);
+			dparts->DispHai( gui->nakihai_line_up_x + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*1, gui->nakihai_line_up_y, 32, false, true, 0, 0);
+			dparts->DispHai( gui->nakihai_line_up_x + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*2, gui->nakihai_line_up_y, 32, false, true, 0, 0);
+			dparts->DispHai( gui->nakihai_line_up_x + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*3, gui->nakihai_line_up_y,  0, false, true, 0, 0);
 		}
 
 		// 鳴牌表示(DOWNプレーヤ)
 		for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-			dparts->DispActSarashiParts( gui->nakihai_line_down_x - tmp_i*100, gui->nakihai_line_down_y, ANKAN, 34, false);
+			dparts->DispActSarashiParts( gui->nakihai_line_down_x - NAKI_MENTSU_RANGE*tmp_i, gui->nakihai_line_down_y, ANKAN, 34, false);
 		}
-
-	}else{
 
 		// 鳴牌表示(RIGHTプレーヤ)
 		for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-			dparts->DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*0,  0, false, false, 0, 0);
-			dparts->DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*1, 31, false, false, 0, 0);
-			dparts->DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*2, 31, false, false, 0, 0);
-			dparts->DispLHai( TEHAI_RIGHT_NAKI_X_START + LHAI_XSIZE*(3-tmp_i), TEHAI_RIGHT_NAKI_Y_START + LHAI_YSIZE*3,  0, false, false, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_right_x, gui->nakihai_line_right_y + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*3,  0, false, false, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_right_x, gui->nakihai_line_right_y + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*2, 31, false, false, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_right_x, gui->nakihai_line_right_y + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*1, 31, false, false, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_right_x, gui->nakihai_line_right_y + NAKI_MENTSU_RANGE*tmp_i - HAI_XSIZE*0,  0, false, false, 0, 0);
 		}
 
 		// 鳴牌表示(LEFTプレーヤ)
 		for(int tmp_i = 0; tmp_i < 4; tmp_i++){
-			dparts->DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*0,  0, false, true, 0, 0);
-			dparts->DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*1, 33, false, true, 0, 0);
-			dparts->DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*2, 33, false, true, 0, 0);
-			dparts->DispLHai( TEHAI_LEFT_NAKI_X_START+tmp_i*LHAI_XSIZE, TEHAI_LEFT_NAKI_Y_START + LHAI_YSIZE*3,  0, false, true, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_left_x, gui->nakihai_line_left_y - NAKI_MENTSU_RANGE*tmp_i + HAI_XSIZE*0,  0, false, true, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_left_x, gui->nakihai_line_left_y - NAKI_MENTSU_RANGE*tmp_i + HAI_XSIZE*1, 33, false, true, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_left_x, gui->nakihai_line_left_y - NAKI_MENTSU_RANGE*tmp_i + HAI_XSIZE*2, 33, false, true, 0, 0);
+			dparts->DispLHai( gui->nakihai_line_left_x, gui->nakihai_line_left_y - NAKI_MENTSU_RANGE*tmp_i + HAI_XSIZE*3,  0, false, true, 0, 0);
+		}
+
+	// 縦列鳴き表示
+	}else{
+
+		// 縦列鳴牌表示(LEFTプレーヤ)
+		for(int tmp_i = 0; tmp_i < 4; tmp_i++){
+			dparts->DispLHai( gui->nakihai_left_x + tmp_i*LHAI_XSIZE, gui->nakihai_left_y + LHAI_YSIZE*0,  0, false, true, 0, 0);
+			dparts->DispLHai( gui->nakihai_left_x + tmp_i*LHAI_XSIZE, gui->nakihai_left_y + LHAI_YSIZE*1, 33, false, true, 0, 0);
+			dparts->DispLHai( gui->nakihai_left_x + tmp_i*LHAI_XSIZE, gui->nakihai_left_y + LHAI_YSIZE*2, 33, false, true, 0, 0);
+			dparts->DispLHai( gui->nakihai_left_x + tmp_i*LHAI_XSIZE, gui->nakihai_left_y + LHAI_YSIZE*3,  0, false, true, 0, 0);
+		}
+
+		// 縦列鳴牌表示(RIGHTプレーヤ)
+		for(int tmp_i = 0; tmp_i < 4; tmp_i++){
+			dparts->DispLHai( gui->nakihai_right_x + LHAI_XSIZE*(3-tmp_i), gui->nakihai_right_y + LHAI_YSIZE*0,  0, false, false, 0, 0);
+			dparts->DispLHai( gui->nakihai_right_x + LHAI_XSIZE*(3-tmp_i), gui->nakihai_right_y + LHAI_YSIZE*1, 31, false, false, 0, 0);
+			dparts->DispLHai( gui->nakihai_right_x + LHAI_XSIZE*(3-tmp_i), gui->nakihai_right_y + LHAI_YSIZE*2, 31, false, false, 0, 0);
+			dparts->DispLHai( gui->nakihai_right_x + LHAI_XSIZE*(3-tmp_i), gui->nakihai_right_y + LHAI_YSIZE*3,  0, false, false, 0, 0);
 		}
 
 	}
@@ -4814,34 +4906,34 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 
 	// 捨牌表示(RIGHTプレーヤ)
 	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		dparts->DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*0, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右一段目
-		dparts->DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*1, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右二段目
-		dparts->DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*2, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右三段目
-		dparts->DispLHai( TEHAI_RIGHT_SUTE_X_START+LHAI_XSIZE*3, TEHAI_RIGHT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右四段目
+		dparts->DispLHai( gui->sutehai_right_x + LHAI_XSIZE*0, gui->sutehai_right_y + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右一段目
+		dparts->DispLHai( gui->sutehai_right_x + LHAI_XSIZE*1, gui->sutehai_right_y + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右二段目
+		dparts->DispLHai( gui->sutehai_right_x + LHAI_XSIZE*2, gui->sutehai_right_y + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右三段目
+		dparts->DispLHai( gui->sutehai_right_x + LHAI_XSIZE*3, gui->sutehai_right_y + tmp_i*LHAI_YSIZE, 31, false, false, 0, 0);      // 右四段目
 	}
 
 	// 捨牌表示(UPプレーヤ)
 	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		dparts->DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START+HAI_YSIZE*0,32, false, true, 0, 0);             // 上四段目
-		dparts->DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START+HAI_YSIZE*1,32, false, true, 0, 0);             // 上三段目
-		dparts->DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START+HAI_YSIZE*2,32, false, true, 0, 0);             // 上二段目
-		dparts->DispHai( TEHAI_UP_SUTE_X_START + HAI_XSIZE*tmp_i,     TEHAI_UP_SUTE_Y_START+HAI_YSIZE*3,32, false, true, 0, 0);             // 上一段目
+		dparts->DispHai( gui->sutehai_up_x + HAI_XSIZE*tmp_i, gui->sutehai_up_y              ,32, false, true, 0, 0);             // 上四段目
+		dparts->DispHai( gui->sutehai_up_x + HAI_XSIZE*tmp_i, gui->sutehai_up_y + HAI_YSIZE*1,32, false, true, 0, 0);             // 上三段目
+		dparts->DispHai( gui->sutehai_up_x + HAI_XSIZE*tmp_i, gui->sutehai_up_y + HAI_YSIZE*2,32, false, true, 0, 0);             // 上二段目
+		dparts->DispHai( gui->sutehai_up_x + HAI_XSIZE*tmp_i, gui->sutehai_up_y + HAI_YSIZE*3,32, false, true, 0, 0);             // 上一段目
 	}
 
 	// 捨牌表示(LEFTプレーヤ)
 	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		dparts->DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*0, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左四段目
-		dparts->DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*1, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左三段目
-		dparts->DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*2, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左二段目
-		dparts->DispLHai( TEHAI_LEFT_SUTE_X_START-LHAI_XSIZE*3, TEHAI_LEFT_SUTE_Y_START + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左一段目
+		dparts->DispLHai( gui->sutehai_left_x - LHAI_XSIZE*0, gui->sutehai_left_y + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左四段目
+		dparts->DispLHai( gui->sutehai_left_x - LHAI_XSIZE*1, gui->sutehai_left_y + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左三段目
+		dparts->DispLHai( gui->sutehai_left_x - LHAI_XSIZE*2, gui->sutehai_left_y + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左二段目
+		dparts->DispLHai( gui->sutehai_left_x - LHAI_XSIZE*3, gui->sutehai_left_y + tmp_i*LHAI_YSIZE, 33, false, true, 0, 0);       // 左一段目
 	}
 
 	// 捨牌表示(DOWNプレーヤ)
 	for(int tmp_i = 0; tmp_i < LINE_SUTEHAI_COUNT_MAX; tmp_i++){
-		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i,     gui->sutehai_down_y,             34, false, false, 0, 0);       // 下一段目
-		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i,     gui->sutehai_down_y+HAI_YSIZE*1, 34, false, false, 0, 0);       // 下二段目
-		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i,     gui->sutehai_down_y+HAI_YSIZE*2, 34, false, false, 0, 0);       // 下三段目
-		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i,     gui->sutehai_down_y+HAI_YSIZE*3, 34, false, false, 0, 0);       // 下四段目
+		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i, gui->sutehai_down_y,             34, false, false, 0, 0);       // 下一段目
+		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i, gui->sutehai_down_y+HAI_YSIZE*1, 34, false, false, 0, 0);       // 下二段目
+		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i, gui->sutehai_down_y+HAI_YSIZE*2, 34, false, false, 0, 0);       // 下三段目
+		dparts->DispHai( gui->sutehai_down_x+HAI_XSIZE*tmp_i, gui->sutehai_down_y+HAI_YSIZE*3, 34, false, false, 0, 0);       // 下四段目
 	}
 
 }
