@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.190(囲みモード：LEFT,RIGHTプレーヤの表示位置修正)
+ * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.cpp
  * クラス名       ： MJSDisplay
@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/09/08 09:26:22
+ * 最終更新日     ： 2024/09/13 20:53:47
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -370,7 +370,7 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 		// プレート鳴有/鳴無
 		dparts->DispPltNakiAriNashi(gui->plt_nakiari_flg);
 		// 手牌ラインメッセージ
-		DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
+		DispTehaiLineMessage(tk, gui, PLY_MES_X_STAT, PLY_MES_Y_STAT);
 	}
 
 	// -----------------------------------------------------------
@@ -474,7 +474,7 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 	}else if(gui->gui_taku_mode == COMMON_END_CHECK_MODE){
 
 		// 終了ボタンの確認
-		DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
+		DispTehaiLineMessage(tk, gui, PLY_MES_X_STAT, PLY_MES_Y_STAT);
 
 	// -----------------------------------------------------------
 	// tkinfoクラス情報
@@ -1721,12 +1721,14 @@ void MJSDisplay::DispTehaiLineMessage(MJSTkinfo *tk, MJSGui *gui, int x, int y){
 
 				// HUM自摸和了
 				if( tk->kyoku[tk->kyoku_index].act_stat[tk->kyoku[tk->kyoku_index].act_count] == PLYTSUMOAGARI){
-					DrawFormatString(x, y, GetColor(255,255,255), "おめでとうございます。あなたの自摸和了です");
+					DrawFormatString(x, y,    GetColor(255,255,255), "おめでとうございます");
+					DrawFormatString(x, y+17, GetColor(255,255,255), "あなたの自摸和了です");
 
 				// HUMロン和了
 				// }else if( tk->stat == PLYACTRON && tk->kyoku[tk->kyoku_index].yk.agari_ply_num != 3 && tk->kyoku[tk->kyoku_index].yk.furikomi_ply_num == 3){
 				}else if( tk->kyoku[tk->kyoku_index].act_stat[tk->kyoku[tk->kyoku_index].act_count] == PLYACTRON){
-					DrawFormatString(x, y, GetColor(255,255,255), "おめでとうございます。あなたのロン和了です");
+					DrawFormatString(x, y,    GetColor(255,255,255), "おめでとうございます");
+					DrawFormatString(x, y+17, GetColor(255,255,255), "あなたのロン和了です");
 
 				// 自摸アクションの場合
 				}else if( tk->kyoku[tk->kyoku_index].act_stat[tk->kyoku[tk->kyoku_index].act_count] == PLYACTTSUMO ||
@@ -1734,7 +1736,8 @@ void MJSDisplay::DispTehaiLineMessage(MJSTkinfo *tk, MJSGui *gui, int x, int y){
 
 					// HUMの捨牌メッセージ
 					if(gui->gui_ply_tehai_mode == TEHAI_RIICHI_YUKO){
-						DrawFormatString(x, y, GetColor(255,255,255), "リーチ宣言してます。自動捨牌をします");
+						DrawFormatString(x, y,    GetColor(255,255,255), "リーチ宣言してます");
+						DrawFormatString(x, y+17, GetColor(255,255,255), "自動捨牌をします");
 					}else{
 						DrawFormatString(x, y, GetColor(255,255,255), "捨牌をしてください");
 					}
@@ -1793,7 +1796,7 @@ void MJSDisplay::DispTehaiLineMessage(MJSTkinfo *tk, MJSGui *gui, int x, int y){
 
 	// 終了確認メッセージ
 	}else if(gui->gui_taku_mode == COMMON_END_CHECK_MODE){
-		DrawFormatString(x, y, GetColor(255,255,255), "処理を終了します。");
+		DrawFormatString(x, y, GetColor(255,255,255), "処理を終了します");
 	// 例外処理
 	}else{
 		DrawFormatString(x, y, GetColor(255,255,255), "例外処理：gui_taku_mode");
@@ -2130,7 +2133,7 @@ void MJSDisplay::DispActSarashi(MJSTkinfo *tk, int kyoku_index, int actid, int p
 							dparts->DispActSarashiParts(600 - tmp_j*150, PLY_YSTART+pnum*PLY_YSIZE+40, KAKAN, tk->kyoku[kyoku_index].naki_hai[pnum][tmp_j], 0);
 						}
 
-						// 加槓があるので、ここで抜ける。(抜けないと加槓で重複処理になってしまう)
+						// 加槓があるので、ここで抜ける(抜けないと加槓で重複処理になってしまう)
 						break;
 
 					}
@@ -2444,7 +2447,7 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
 						}
 
-						// 加槓があるので、ここで抜ける。(抜けないと加槓で重複処理になってしまう)
+						// 加槓があるので、ここで抜ける(抜けないと加槓で重複処理になってしまう)
 						break;
 
 					}
@@ -3623,7 +3626,7 @@ void MJSDisplay::DispyMjaiClientNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJ
 	dparts->DispPltNakiAriNashi(gui->plt_nakiari_flg);
 
 	// 手牌ラインメッセージ
-	DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
+	DispTehaiLineMessage(tk, gui, PLY_MES_X_STAT, PLY_MES_Y_STAT);
 
 	// -----------------------------------------------------------
 	// 卓GUIモード(gui->gui_taku_mode)ごとの表示
@@ -3709,7 +3712,7 @@ void MJSDisplay::DispyMjaiClientNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJ
 	// }else if(gui->gui_taku_mode == COMMON_END_CHECK_MODE){
 
 		// 終了ボタンの確認
-		// DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
+		// DispTehaiLineMessage(tk, gui, PLY_MES_X_STAT, PLY_MES_Y_STAT);
 
 	// -----------------------------------------------------------
 	// tkinfoクラス情報
@@ -3931,7 +3934,7 @@ void MJSDisplay::DisplayMjaiClientErrMes(MJSTkinfo *tk, MJSGui *gui){
 	dparts->DispPltline(gui->plt_mode);
 
 	// 手牌ラインメッセージ
-	// DispTehaiLineMessage(tk, gui, SPACE_XSIZE, PLY_MES_Y_STAT);
+	// DispTehaiLineMessage(tk, gui, PLY_MES_X_STAT, PLY_MES_Y_STAT);
 
 }
 

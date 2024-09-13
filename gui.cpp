@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.191(囲みモード：LEFT,RIGHTプレーヤの検証モード・ライン鳴き表示実装)
+ * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/11 20:36:05
+ * 最終更新日     ： 2024/09/13 20:53:47
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  *  
@@ -1961,10 +1961,10 @@ void MJSGui::guiPlyDetailInfo(MJSTkinfo *tk){
 	// BUT04が押されたなら
 	// ----------------------------------------
 
-	if( msx > BUT04_X_STAT && 
-		msx < BUT04_X_STAT + 32 &&
-		msy > BUT_Y_STAT && 
-		msy < BUT_Y_STAT + 32 ){
+	if( msx > THINFO_BUT_X_STAT && 
+		msx < THINFO_BUT_X_STAT + 32 &&
+		msy > BUT02_Y_STAT && 
+		msy < BUT02_Y_STAT + 32 ){
 
 		// (デバグ用)クリックフラグ無効化(プレートが押された場合は常にfalse)
 		act_push_flg = false;
@@ -2083,8 +2083,8 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 	// ----------------------------------------
 
 	// 局ID・カウントダウン
-	if( msx>BUT02_X_STAT && msx<BUT02_X_STAT+BUT_ICON_XSIZE && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE && gui_kyoku > 0){
+	if( msx > BUT02_X_STAT && msx < BUT02_X_STAT + BUT_ICON_XSIZE && 
+		msy > BUT01_Y_STAT && msy < BUT01_Y_STAT   + BUT_ICON_YSIZE && gui_kyoku > 0){
 
 		// 局ID変更
 		gui_kyoku--;
@@ -2099,7 +2099,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// 局ID・カウントアップ
 	if( msx>BUT02_X_STAT+BUT_ICON_XSIZE && msx<BUT02_X_STAT+BUT_ICON_XSIZE*2 && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE && gui_kyoku <  tk->kyoku_index-1){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_kyoku <  tk->kyoku_index-1){
 
 		// 局ID変更
 		gui_kyoku++;
@@ -2118,7 +2118,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// ActID・カウントダウンMIN
 	if( msx>BUT03_X_STAT && msx<BUT03_X_STAT+BUT_ICON_XSIZE && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE){
 
 		// ActID変更
 		gui_actid=0;
@@ -2132,7 +2132,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// ActID・カウントダウン-4
 	if( msx>BUT03_X_STAT+BUT_ICON_XSIZE*1 && msx<BUT03_X_STAT+BUT_ICON_XSIZE*2 && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE && gui_actid >= 4){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_actid >= 4){
 
 		// ActID変更
 		gui_actid=gui_actid-4;
@@ -2146,7 +2146,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// ActID・カウントダウン-1
 	if( msx>BUT03_X_STAT+BUT_ICON_XSIZE*2 && msx<BUT03_X_STAT+BUT_ICON_XSIZE*3 && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE && gui_actid > 0){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_actid > 0){
 
 		// ActID変更
 		gui_actid--;
@@ -2160,7 +2160,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// ActID・カウントアップ+1
 	if( msx>BUT03_X_STAT+BUT_ICON_XSIZE*3 && msx<BUT03_X_STAT+BUT_ICON_XSIZE*4 && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE && gui_actid < tk->kyoku[gui_kyoku].act_count-1){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_actid < tk->kyoku[gui_kyoku].act_count-1){
 
 		// ActID変更
 		gui_actid++;
@@ -2174,7 +2174,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// ActID・カウントアップ+4
 	if( msx>BUT03_X_STAT+BUT_ICON_XSIZE*4 && msx<BUT03_X_STAT+BUT_ICON_XSIZE*5 && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE && Button[0]>0 && gui_actid < tk->kyoku[gui_kyoku].act_count-1-4){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && Button[0]>0 && gui_actid < tk->kyoku[gui_kyoku].act_count-1-4){
 
 		// ActID変更
 		gui_actid=gui_actid+4;
@@ -2188,7 +2188,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// ActID・カウントアップMAX
 	if( msx>BUT03_X_STAT+BUT_ICON_XSIZE*5 && msx<BUT03_X_STAT+BUT_ICON_XSIZE*6 && 
-		msy>BUT_Y_STAT && msy<BUT_Y_STAT+BUT_ICON_YSIZE && Button[0]>0){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && Button[0]>0){
 
 		// ActID変更
 		gui_actid=tk->kyoku[gui_kyoku].act_count-1;
@@ -3189,16 +3189,13 @@ void MJSGui::chk_but(MJSTkinfo *tk){
 	// ----------------------------------------
 	// クライアントモード
 	// ----------------------------------------
-//	if ( cli_game_mode == GUI_MJAI_GAMEMODE_GUI_MODE || 
-//	     cli_game_mode == GUI_MJAI_GAMEMODE_PLY_MODE ){ 
-
 	if ( gui_main_stat == GUI_CLIENT ){
 
 		// 終了ボタンが押されたら
 		if( msx > QUIT_BUT_X_STAT && 
 		    msx < QUIT_BUT_X_STAT + BUT_ICON_XSIZE && 
-		    msy > BUT_Y_STAT && 
-		    msy < BUT_Y_STAT + BUT_ICON_YSIZE){
+		    msy > BUT02_Y_STAT && 
+		    msy < BUT02_Y_STAT + BUT_ICON_YSIZE){
 
 			// GUIボタンの有効化
 			but_push_flg = true;
@@ -3235,8 +3232,8 @@ void MJSGui::chk_but(MJSTkinfo *tk){
 		// 終了ボタンが押されたら
 		if( msx > QUIT_BUT_X_STAT && 
 		    msx < QUIT_BUT_X_STAT + BUT_ICON_XSIZE && 
-		    msy > BUT_Y_STAT && 
-		    msy < BUT_Y_STAT + BUT_ICON_YSIZE){
+		    msy > BUT02_Y_STAT && 
+		    msy < BUT02_Y_STAT + BUT_ICON_YSIZE){
 
 			// GUIボタンの有効化
 			but_push_flg = true;
@@ -3256,8 +3253,8 @@ void MJSGui::chk_but(MJSTkinfo *tk){
 		// TKINFO情報ボタンが押されたら
 		} else if( msx > TKINFO_BUT_X_STAT && 
 		    msx < TKINFO_BUT_X_STAT + BUT_ICON_XSIZE && 
-		    msy > BUT_Y_STAT && 
-		    msy < BUT_Y_STAT + BUT_ICON_YSIZE){
+		    msy > BUT02_Y_STAT && 
+		    msy < BUT02_Y_STAT + BUT_ICON_YSIZE){
 
 			// GUIボタンの有効化
 			but_push_flg = true;
@@ -3277,8 +3274,8 @@ void MJSGui::chk_but(MJSTkinfo *tk){
 		// PLYINFO_BUTが押されたら
 		}else if( msx > PLYINFO_BUT_X_STAT && 
 			      msx < PLYINFO_BUT_X_STAT + BUT_ICON_XSIZE && 
-			      msy > BUT_Y_STAT && 
-			      msy < BUT_Y_STAT + BUT_ICON_YSIZE){
+			      msy > BUT02_Y_STAT && 
+			      msy < BUT02_Y_STAT + BUT_ICON_YSIZE){
 
 			// GUIボタンの有効化
 			but_push_flg = true;

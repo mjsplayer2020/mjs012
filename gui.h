@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.191(囲みモード：LEFT,RIGHTプレーヤの検証モード・ライン鳴き表示実装)
+ * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/11 20:36:05
+ * 最終更新日     ： 2024/09/13 20:53:47
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -140,22 +140,37 @@
 #define TEHAI_RIGHT_NAKI_Y_START  155   // RIGHTの鳴牌開始位置
 
 // ゲームモードの表示位置(プレート関連)
-#define PLT_Y_STAT                650   // プレートのY位置
+#define PLT_Y_STAT                704   // プレートのY位置
 #define PLT_NAKIARI_X_STAT        550   // プレート鳴き有無のX位置
 
 // ゲームモードの表示位置(メッセージ関連)
-#define PLY_MES_Y_STAT            682   // メッセージのY位置
+#define PLY_MES_X_STAT            720   // メッセージのX位置
+#define PLY_MES_Y_STAT            688   // メッセージのY位置
 
 // ゲームモードの表示位置(ボタン関連)
-#define BUT_Y_STAT          700         // ボタンのY位置
+/*
 #define BUT01_X_STAT          5         // ボタン01のX位置(局開始情報)
 #define BUT02_X_STAT         45         // ボタン02のX位置(ビューワーモード：局ID変更)
 #define BUT03_X_STAT        115         // ボタン03のX位置(ビューワーモード：ActID変更)
 #define BUT04_X_STAT        315         // ボタン04のX位置(局終了情報)
+
 #define THINFO_BUT_X_STAT   360         // 手牌詳細情報ボタンのX位置
 #define TKINFO_BUT_X_STAT   400         // TKクラス情報ボタンのX位置
 #define PLYINFO_BUT_X_STAT  440         // PLY情報ボタンのX位置
 #define QUIT_BUT_X_STAT     480         // 終了ボタンのX位置
+*/
+
+#define BUT01_Y_STAT        600         // ボタンのY位置(ビューア機能ボタン)
+#define BUT01_X_STAT        605         // ボタン01のX位置(局開始情報)
+#define BUT02_X_STAT        645         // ボタン02のX位置(ビューワーモード：局ID変更)
+#define BUT03_X_STAT        715         // ボタン03のX位置(ビューワーモード：ActID変更)
+#define BUT04_X_STAT        915         // ボタン04のX位置(局終了情報)
+
+#define BUT02_Y_STAT        640         // ボタンのY位置(操作ボタン)
+#define THINFO_BUT_X_STAT   800         // 手牌詳細情報ボタンのX位置
+#define TKINFO_BUT_X_STAT   840         // TKクラス情報ボタンのX位置(デバグ用)
+#define PLYINFO_BUT_X_STAT  880         // PLY情報ボタンのX位置
+#define QUIT_BUT_X_STAT     920         // 終了ボタンのX位置
 
 // ゲームモードの表示位置(情報表示)
 #define DEBUG_INFO_Y_STAT   550         // デバグ情報のY位置
