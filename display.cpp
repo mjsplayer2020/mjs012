@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
+ * バージョン     ： 0.1.2.0.196(手牌上に名前表示)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.cpp
  * クラス名       ： MJSDisplay
@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/09/13 20:53:47
+ * 最終更新日     ： 2024/09/19 08:18:20
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -194,7 +194,13 @@ void MJSDisplay::DisplayOpening(MJSGui *gui, float mFps, int total_frame_count, 
 	// 08:牌譜面読込(ビューワーモード)
 	// ----------------------------------------
 	dparts->DispButton(OPENING_BUT01_X_START, OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*8, PARTS_BUT_BLUE);
-	DrawFormatString(OPENING_BUT01_X_START+50, OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*8+8, GetColor(255,255,255),  "牌譜読込");
+	DrawFormatString(OPENING_BUT01_X_START+50, OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*8+8, GetColor(255,255,255),  "牌譜読込:東風荘ログ");
+
+	// ----------------------------------------
+	// 09:牌譜面読込(ビューワーモード:MJAIログ)
+	// ----------------------------------------
+	dparts->DispButton(OPENING_BUT01_X_START, OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*9, PARTS_BUT_BLUE);
+	DrawFormatString(OPENING_BUT01_X_START+50, OPENING_BUT01_Y_START+OPENING_BUT01_Y_RANGE*9+8, GetColor(255,255,255),  "牌譜読込:MJAIログ");
 
 	// ----------------------------------------
 	// 裏画面を表画面に反映
@@ -392,9 +398,6 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 	// -----------------------------------------------------------
 	if( gui->gui_taku_mode == COMMON_PLAY_MODE){
 
-		// 「手牌ライナー」モード設定
-		// disp_tehai_mode = DISP_TEHAI_MODE_DEF;
-
 		// -----------------------------------------------------------
 		// 「手牌ライナー」モード表示
 		// -----------------------------------------------------------
@@ -448,7 +451,7 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 				}
 
 				// 晒し表示
-				DispActSarashi_square(tk, gui, tk->kyoku_index, tmp_pnum, tk->kyoku[tk->kyoku_index].act_count);
+				DispActSarashi_square(tk, gui, tk->kyoku_index, tk->kyoku[tk->kyoku_index].act_count, tmp_pnum);
 
 				// 河表示
 				DispActKawa_square(tk, gui, tk->kyoku_index, tk->kyoku[tk->kyoku_index].act_count, tmp_pnum);
@@ -537,29 +540,45 @@ void MJSDisplay::DisplayViewerTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, f
 	// -----------------------------------------------------------
 
 	// 局情報
-	DispKyokuInfo(tk, gui->gui_kyoku);
+	DispKyokuInfo(tk, gui->gui_kyoku_index);
 
 	// ドラ
 	dparts->DispDora(DORA_XSIZE, 5, tk->kyoku[tk->kyoku_index].doracount, tk->kyoku[tk->kyoku_index].dora, tk->kyoku[tk->kyoku_index].dora_aka);
 
 	// メッセージ表示
+	if(gui->gui_taku_mode == COMMON_END_CHECK_MODE){
+
+		// 終了ボタンの確認
+		DispTehaiLineMessage(tk, gui, PLY_MES_X_STAT, PLY_MES_Y_STAT);
+
+	}
+
+/*
+	// デバグ卓情報表示
 	if(gui->gui_taku_mode != COMMON_END_CHECK_MODE){
 		// 個別アクション情報
-		DispActNumInfo(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT, gui->gui_kyoku, gui->gui_actid);
+		DispActNumInfo(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT, gui->gui_kyoku_index, gui->gui_actid);
 		// 卓クラス情報
 		DispTkInfoStat(tk, SPACE_XSIZE, DEBUG_INFO_Y_STAT+STRING_YSIZE*2);
 	}
+*/
 
 	/*-----------------------------------------------------------*/
 	// 卓ステータスごとの表示
 	/*-----------------------------------------------------------*/
 
-	if(tk->kyoku[gui->gui_kyoku].act_stat[gui->gui_actid] == KYOKURESULT){
+	if(tk->kyoku[gui->gui_kyoku_index].act_stat[gui->gui_actid] == KYOKURESULT){
+
+		// 場決め表示
+
 		// 和了表示
-		DispKyokuEndTplog(tk, gui->gui_kyoku);
+		DispViewerKyokuEnd(tk, gui->gui_kyoku_index);
+
 	}else{
+
 		// ステータスごとのパーツ表示
 		DisplayViewerStatparts(tk, gui);
+
 	}
 
 	/*-----------------------------------------------------------*/
@@ -575,23 +594,55 @@ void MJSDisplay::DisplayViewerTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, f
 void MJSDisplay::DisplayViewerStatparts(MJSTkinfo *tk, MJSGui *gui){
 
 	// -----------------------------------------------------------
-	// プレーヤごとの情報
+	// 「手牌ライナー」モード表示
 	// -----------------------------------------------------------
+	if( gui->disp_tehai_mode == 0){
 
-	// プレーヤ一覧表示
-	for( int tmp_pnum = 0; tmp_pnum < PLAYER_MAX ; tmp_pnum++ ) {
+		// プレーヤ一覧表示
+		for( int tmp_pnum = 0; tmp_pnum < PLAYER_MAX ; tmp_pnum++ ) {
 
-		// プレーヤ情報
-		DispPlyInfo(tk, gui->gui_kyoku, tmp_pnum);
+			// 手牌(COM表示)
+			DispActTehaiCom(tk, gui, gui->gui_kyoku_index, gui->gui_actid, tmp_pnum, gui->msx, gui->msy);
 
-		// 手牌(COM表示)
-		DispActTehaiCom(tk, gui, gui->gui_kyoku, gui->gui_actid, tmp_pnum, gui->msx, gui->msy);
+			// 晒し表示
+			DispActSarashi(tk, gui->gui_kyoku_index, gui->gui_actid, tmp_pnum);
 
-		// 晒し表示
-		DispActSarashi(tk, gui->gui_kyoku, gui->gui_actid, tmp_pnum);
+			// 捨牌描写
+			DispActKawa(tk, gui->gui_kyoku_index, gui->gui_actid, tmp_pnum);
 
-		// 捨牌描写
-		DispActKawa(tk, gui->gui_kyoku, gui->gui_actid, tmp_pnum);
+			// プレーヤごとの得点情報
+			DispPlyInfo(tk, gui->gui_kyoku_index, tmp_pnum);
+
+		}
+
+	// -----------------------------------------------------------
+	// 「手牌囲み」モード表示
+	// -----------------------------------------------------------
+	}else if( gui->disp_tehai_mode == 1 ){
+
+		// 卓プレート表示
+		DrawBox( TAKU_PLT_X_STAT, TAKU_PLT_Y_STAT, TAKU_PLT_X_SIZE-1, TAKU_PLT_Y_SIZE-1, GetColor( 0, 64, 0 ), TRUE ) ;
+
+		// センタープレート
+		dparts->DispCenterPlt( (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3,
+			                       (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 );
+
+		// 手牌囲みモード表示
+		for( int tmp_pnum = 0; tmp_pnum < PLAYER_MAX ; tmp_pnum++ ) {
+
+			// 手牌(COM表示)
+			DispActTehaiCom_square(tk, gui, gui->gui_kyoku_index, gui->gui_actid, tmp_pnum, gui->msx, gui->msy);
+
+			// 晒し表示
+			DispActSarashi_square(tk, gui, gui->gui_kyoku_index, gui->gui_actid, tmp_pnum);
+
+			// 河表示
+			DispActKawa_square(tk, gui, gui->gui_kyoku_index, gui->gui_actid, tmp_pnum);
+
+			// プレーヤごとの得点情報
+			DispPlyInfo(tk, gui->gui_kyoku_index, tmp_pnum);
+
+		}
 
 	}
 
@@ -1666,8 +1717,6 @@ void MJSDisplay::DisplayGuiTehaiMode(MJSGui *gui, int x, int y){
 
 	if(gui->gui_ply_tehai_mode == TEHAI_NORMAL){
 		DrawFormatString(x, y, GetColor(255,255,255), "[手牌]通常手牌　");
-	// }else if(gui->gui_ply_tehai_mode == TEHAI_NAKI_PLT){
-		// DrawFormatString(x, y, GetColor(255,255,255), "[手牌]鳴き待ち　");
 	}else if(gui->gui_ply_tehai_mode == TEHAI_RIICHI_SUTEHAI){
 		DrawFormatString(x, y, GetColor(255,255,255), "[手牌]リーチ選択");
 	}else if(gui->gui_ply_tehai_mode == TEHAI_RIICHI_YUKO){
@@ -2159,7 +2208,7 @@ void MJSDisplay::DispActSarashi(MJSTkinfo *tk, int kyoku_index, int actid, int p
 /* ---------------------------------------------------------------------------------------------- */
 // アクション情報の晒し表示(スクエア)
 /* ---------------------------------------------------------------------------------------------- */
-void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int pnum, int actid){
+void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum){
 
 	// 変数定義
 	int tmp_nakimen_count  = 0;  // 面子数
@@ -3312,9 +3361,9 @@ void MJSDisplay::DispKyokuEndAgariInfoChitoi(MJSTkinfo *tk, int kyoku_index){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// 局終了表示(東風荘ログ向け)
+// 局終了表示(ビューアモード)
 /* ---------------------------------------------------------------------------------------------- */
-void MJSDisplay::DispKyokuEndTplog(MJSTkinfo *tk, int kyoku_index){
+void MJSDisplay::DispViewerKyokuEnd(MJSTkinfo *tk, int kyoku_index){
 
 	// ----------------------------------------
 	// 役名表示
@@ -3632,9 +3681,6 @@ void MJSDisplay::DispyMjaiClientNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJ
 	// 卓GUIモード(gui->gui_taku_mode)ごとの表示
 	// -----------------------------------------------------------
 
-		// 「手牌ライナー」モード設定
-		// disp_tehai_mode = DISP_TEHAI_MODE_DEF;
-
 		// -----------------------------------------------------------
 		// 「手牌ライナー」モード表示
 		// -----------------------------------------------------------
@@ -3686,7 +3732,7 @@ void MJSDisplay::DispyMjaiClientNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJ
 				}
 
 				// 晒し表示
-				DispActSarashi_square(tk, gui, tk->kyoku_index, tmp_pnum, tk->kyoku[tk->kyoku_index].act_count);
+				DispActSarashi_square(tk, gui, tk->kyoku_index, tk->kyoku[tk->kyoku_index].act_count, tmp_pnum);
 
 				// 河表示
 				DispActKawa_square(tk, gui, tk->kyoku_index, tk->kyoku[tk->kyoku_index].act_count, tmp_pnum);
@@ -4810,12 +4856,26 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 	int tmp_tehai_tbl_count_left  =  1;
 	int tmp_tehai_tbl_count_right =  1;
 
-	// 卓プレート表示
+	// 卓ベース表示
 	DrawBox( TAKU_PLT_X_STAT, TAKU_PLT_Y_STAT, TAKU_PLT_X_SIZE-1, TAKU_PLT_Y_SIZE-1, GetColor( 0, 64, 0 ), TRUE ) ;
 
 	// センタープレート
 	dparts->DispCenterPlt( (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3,
 	               (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 );
+
+	// 席情報UP
+	DrawRotaString( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX, gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 1.0, 1.0, 0, 0, PI, GetColor( 255, 255, 255 ), 0, FALSE, "[席2]ひまわり青");
+
+	// 席情報DONW
+	// DrawFormatString( gui->tehai_x, gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, GetColor(255,255,255), "[席4]ひまわり緑"); 
+	wsprintf(tmp_disp_msg,"[席4]ひまわり緑");
+	dparts->DispString(  gui->tehai_x, gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, tmp_disp_msg);
+
+	// 席情報RIGHT
+	DrawRotaString( gui->tehai_right_x            - STRING_YSIZE - NAME_TEHAI_RANGE, gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE+10, 1.0, 1.0, 0, 0, PI*3.0 / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, "[席1]ひまわり赤");
+
+	// 席情報LEFT
+	DrawRotaString( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, gui->tehai_left_y,                                           1.0, 1.0, 0, 0, PI     / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, "[席3]ひまわり緑");
 
 	// ----------------------------------------
 	// 手牌の表示
@@ -4825,7 +4885,7 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 		dparts->DispLHai( gui->tehai_right_x, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + gui->tehai_right_y               , 31, false, false, 0, 0);         // 右自摸
 
 	for(int tmp_i = 0; tmp_i < tmp_tehai_tbl_count_right; tmp_i++){
-		dparts->DispLHai( gui->tehai_right_x, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + gui->tehai_right_y + 24+10+tmp_i*24, 31, false, false, 0, 0);       // 右手牌
+		dparts->DispLHai( gui->tehai_right_x, (TEHAI_MAX - tmp_tehai_tbl_count_right) * HAI_XSIZE + gui->tehai_right_y + HAI_XSIZE+10+tmp_i*24, 31, false, false, 0, 0);       // 右手牌
 	}
 
 	// 手牌表示(UPプレーヤ)

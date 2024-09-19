@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.141(kyoku_index変数の共通化)
+ * バージョン     ： 0.1.2.0.194(クラス名をMJSReadTplogに変更)
  * プログラム名   ： mjs.exe
  * ファイル名     ： tpread.h
  * クラス名       ： MJSTpread
@@ -17,12 +17,12 @@
 
 #pragma once
 
-#ifndef MJSTPREAD_H_INCLUDED
-#define MJSTPREAD_H_INCLUDED
+#ifndef MJSREADTPLOG_H_INCLUDED
+#define MJSREADTPLOG_H_INCLUDED
 
 #include <windows.h>
 #include "tkinfo.h"
-#include "showlog.h"
+// #include "showlog.h"
 
 /* ---------------------------------------------------------------------------------------------- */
 // 固定値
@@ -38,7 +38,7 @@
 /* ---------------------------------------------------------------------------------------------- */
 // クラス定義
 /* ---------------------------------------------------------------------------------------------- */
-class MJSTpread
+class MJSReadTplog
 {
 
 	// ------------------------------------------------------------------- 
@@ -50,19 +50,19 @@ class MJSTpread
 	FILE *fp; // FILE型構造体
 
 	// 作業用文字配列
-	char** wk_str;                // 作業用文字配列
-	int wk_str_count;             // 作業用文字配列の総数
-	int wk_index;                 // 作業用文字配列のINDEX
+	char** wk_str;            // 作業用文字配列
+	int wk_str_count;         // 作業用文字配列の総数
+	int wk_index;             // 作業用文字配列のINDEX
 
 	// ------------------------------------------------------------------- 
 	// コンストラクタ
 	// ------------------------------------------------------------------- 
 
 	// コンストラクタ定義
-	MJSTpread() {};
+	MJSReadTplog() {};
 
 	// デストラクタ定義
-	~MJSTpread() {};
+	~MJSReadTplog() {};
 
 	/* ----------------------------- */
 	// 関数定義
@@ -81,8 +81,8 @@ class MJSTpread
 	void Set_wk(char* str);
 
 	// 牌番号確認処理
-	int Chk_painum(char* str);
-	int Chk_DoraHyoji(int hai);             // ドラ表示
+	int Chk_painum(char* str);              // 牌番号の算出
+	int Chk_DoraHyoji(int hai);             // ドラ表示牌の算出
 
 	// Tkinfo設定処理
 	void Set_tkinfo(MJSTkinfo *tk);                                        // メイン処理
@@ -99,7 +99,7 @@ class MJSTpread
 
 };
 
-#endif/* MJSTPREAD_H_INCLUDED */
+#endif/* MJSREADTPLOG_H_INCLUDED */
 
 /* ---------------------------------------------------------------------------------------------- 
  * ソース終了

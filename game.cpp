@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.170(クライアントモードPLY鳴き実装：チー不具合修正)
+ * バージョン     ： 0.1.2.0.196(tklogクラス実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： game.cpp
  * クラス名       ： MJSGame
@@ -12,7 +12,7 @@
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/05/26 10:55:05
+ * 最終更新日     ： 2024/09/16 15:51:09
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -101,18 +101,6 @@ void MJSGame::GamePost(){
 void MJSGame::GameTakuInit(){
 
 	// ----------------------------------------
-	// ログ開始処理
-	// ----------------------------------------
-
-	// ログファイル名
-	char logname[50];
-
-	// ログファイル名設定
-	wsprintf(logname, "mjslog.log");
-	// ログファイル初期化
-	log.ShowlogInit(logname);
-
-	// ----------------------------------------
 	// 卓モードクラスの初期化(卓ステータス初期化)
 	// ----------------------------------------
 
@@ -124,6 +112,21 @@ void MJSGame::GameTakuInit(){
 
 	// GUIクラス・卓モード初期化
 	gui.guiTakuInit();
+
+	// ----------------------------------------
+	// ログ開始処理
+	// ----------------------------------------
+
+	// ログファイル名
+	char logname[50];
+
+	// ログファイル名設定
+	wsprintf(logname, "mjslog.log");
+
+	// ログファイル初期化
+	if ( gui.tklog_output_flg == true ){
+		log.tklog_init(logname);
+	}
 
 }
 
@@ -149,9 +152,11 @@ void MJSGame::GameTakuPost(){
 	// ログ終了処理
 	// ----------------------------------------
 
-	// ファイル出力終了
-	log.ShowlogFileClose();
 
+	// ファイル出力終了
+	if ( gui.tklog_output_flg == true ){
+		log.tklog_post();
+	}
 }
 
 /* ---------------------------------------------------------------------------------------------- */
@@ -473,13 +478,9 @@ void MJSGame::PlayingExe(){
 	dsp.DisplayTaku(&tk, ply, &gui, ave_fps, total_frame_count, ver1, ver2, ver3, ver4, ver5);
 
 	// ログ出力
-	if ( tk.log_flg == true ){
-
-		log.ShowMJSlogMain(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
-
-		// ログ出力の無効化
-		tk.log_flg = false;
-
+	if ( tk.stat == TAKUEND && gui.tklog_output_flg == true ){
+		log.tklog_print(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
+		gui.tklog_output_flg = false;
 	}
 
 	// ----------------------------------------
@@ -568,7 +569,10 @@ void MJSGame::ViewingExe(){
 		gui.guiViewerInitTaku(&tk);
 
 		// ログ出力
-		log.ShowMJSlogMain(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
+		if ( gui.tklog_output_flg == true ){
+			log.tklog_print(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
+			gui.tklog_output_flg = false;
+		}
 
 		// 牌譜ログ読み込み無効化
 		haifu_read_mode = false;
@@ -668,13 +672,9 @@ void MJSGame::RunningExec(){
 	dsp.DisplayTaku(&tk, ply, &gui, ave_fps, total_frame_count, ver1, ver2, ver3, ver4, ver5);
 
 	// ログ出力
-	if ( tk.log_flg == true ){
-
-		log.ShowMJSlogMain(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
-
-		// ログ出力の無効化
-		tk.log_flg = false;
-
+	if ( tk.stat == TAKUEND && gui.tklog_output_flg == true ){
+		log.tklog_print(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
+		gui.tklog_output_flg = false;
 	}
 
 	// ----------------------------------------
@@ -703,7 +703,7 @@ void MJSGame::ClientInit(){
 	GameTakuInit();
 
 	// クライアントクラス初期化
-	cli.ClientInit(&tk);
+	cli.ClientInit(&tk, &gui, &mjai);
 
 	// ----------------------------------------
 	// 変数定義
@@ -732,7 +732,7 @@ void MJSGame::ClientPost(){
 	GameTakuPost();
 
 	// クライアントクラス終了
-	cli.ClientPost();
+	cli.ClientPost(&gui);
 
 	// ----------------------------------------
 	// 変数定義
@@ -768,13 +768,9 @@ void MJSGame::ClientExec(){
 	dsp.DisplayMjaiClientTaku(&tk, ply, &gui, ave_fps, total_frame_count, ver1, ver2, ver3, ver4, ver5);
 
 	// ログ出力
-/*	if ( tk.log_flg == true ){
-
-		log.ShowMJSlogMain(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
-
-		// ログ出力の無効化
-		tk.log_flg = false;
-
+/*	if ( gui.tklog_output_flg == true ){
+		log.tklog_print(&tk, log_ver1, log_ver2, log_ver3, log_ver4);
+		gui.tklog_output_flg = false;
 	}*/
 
 	// ----------------------------------------

@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.189(gui->disp_tehai_mode実装)
+ * バージョン     ： 0.1.2.0.194(DispActSarashi_square関数修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.h
  * クラス名       ： MJSDisplay
@@ -127,8 +127,10 @@ class MJSDisplay
 
 	// ビューアーモード卓表示(メイン処理)
 	void DisplayViewerTaku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, float mFps, int total_frame_count, int ver1, int ver2, int ver3, int ver4, int ver5);
-	void DisplayViewerStatparts(MJSTkinfo *tk, MJSGui *gui);                              // ステータスごとのパーツ表示
-	void DispKyokuEndTplog(MJSTkinfo *tk, int kyoku_index);                               // 和了情報
+	void DisplayViewerStatparts(MJSTkinfo *tk, MJSGui *gui);          // 「卓ステータス」ごとの手牌、パーツ表示
+	void DispViewerBagime(MJSTkinfo *tk);                             // 場決め情報
+	void DispViewerKyokuEnd(MJSTkinfo *tk, int kyoku_index);          // 局終了(和了)情報
+	void DispViewerGameResult(MJSTkinfo *tk);                         // 卓終了処理
 
 	// ------------------------------------------------------------------- 
 	// メイン画面表示(MJAIクライアントモード表示)
@@ -162,7 +164,7 @@ class MJSDisplay
 
 	// アクション手牌表示・スクエア表示
 	void DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum, int msx, int msy);    // アクション手牌COM向け(スクエア)
-	void DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int pnum, int actid);                       // アクション手牌を考慮したさらし牌(スクエア) 
+	void DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum);                       // アクション手牌を考慮したさらし牌(スクエア) 
 	void DispActKawa_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum);                          // アクション手牌の河牌(スクエア) 
 
 	// アクション手牌表示・テスト表示

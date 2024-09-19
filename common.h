@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
+ * バージョン     ： 0.1.2.0.196(tklogクラス実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： common.h
  * クラス名       ： 共通ヘッダー
  * 処理概要       ： 共通ヘッダー
  * Ver0.1.2作成日 ： 2023/11/04 09:10:01
- * 最終更新日     ： 2024/09/13 20:53:47
+ * 最終更新日     ： 2024/09/19 08:18:20
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -23,11 +23,11 @@
 /* ---------------------------------------------------------------------------------------------- */
 
 // バージョン情報
-#define VER1    0                       // 1桁目のバージョン(公開向け)
-#define VER2    1                       // 2桁目のバージョン(ソース全体の改変があった場合(一から作り直した場合)、互換性なし)
-#define VER3    2                       // 3桁目のバージョン(新機能の追加した場合、又は既存ソースからフォークした場合、互換性あり)
-#define VER4    0                       // 4桁目のバージョン(雑多な細かい更新があった場合、互換性あり)
-#define VER5  192                       // 5桁目のバージョン(内部管理用、公開時は常に0とする、互換性あり)
+#define VER1        0                   // 1桁目のバージョン(公開向け)
+#define VER2        1                   // 2桁目のバージョン(ソース全体の改変があった場合(一から作り直した場合)、互換性なし)
+#define VER3        2                   // 3桁目のバージョン(新機能の追加した場合、又は既存ソースからフォークした場合、互換性あり)
+#define VER4        0                   // 4桁目のバージョン(雑多な細かい更新があった場合、互換性あり)
+#define VER5      196                   // 5桁目のバージョン(内部管理用、公開時は常に0とする、互換性あり)
 
 // プレーヤー情報
 #define PLAYER_MAX                4     // プレーヤ数
@@ -82,6 +82,8 @@
  * 固定値(牌番号)
  * ---------------------------------------------------------------------------------------------- */
 
+#define HAIZERONUM    0   //  牌番号0
+
 #define MAN1NUM       1   // 「萬子1」牌番号
 #define MAN2NUM       2   // 「萬子2」牌番号
 #define MAN3NUM       3   // 「萬子3」牌番号
@@ -122,7 +124,6 @@
 #define CHUNNUM      37   // 「中」牌番号
 
 #define UNKNOWNNUM   38   // 「？」牌番号
-#define HAIZERONUM    0   //  牌番号0
 
 /* ---------------------------------------------------------------------------------------------- */
 // ラベル(卓状態)
@@ -143,78 +144,78 @@ typedef enum {
 // 卓状態ラベル
 typedef enum {
 
-	PLYNOACT = 0,         // 00: 卓状態の定義なし
-	TAKUSTART,            // 01: 卓開始
-	BAGIME,               // 02: 場決め
-	KYOKUSTART,           // 03: 局開始
-	HAIPAI,               // 04: 配牌
-	PLYACTTSUMOWAIT,      // 05: 自摸牌待ち(他プレーヤの捨牌、鳴き待ち完了後)
-	PLYACTTSUMO,          // 06: 自摸牌受取
-	PLYRINSHAN,           // 07: 嶺上牌受取
-	PLYACTSUTEWAIT,       // 08: 自摸後の捨牌待ち
-	PLYACTNAKISUTEWAIT,   // 09: 鳴後の捨牌待ち
-	PLYACTSUTE,           // 10: 捨牌
-	PLYACTTSUMOGIRI,      // 11: 自摸切り
-	PLYACTNAKISUTE,       // 12: 鳴き捨牌
-	PLYACTRIICH,          // 13: リーチ宣言
-	PLYTSUMOAGARI,        // 14: 自摸和了
-	PLYACTANKAN,          // 15: 暗槓
-	PLYACTKAKAN,          // 16: 加槓
-	PLYACTNAKIWAIT,       // 17: 鳴き待ち
-	PLYACTRON,            // 18: ロン和了
-	PLYACTPON,            // 19: ポン
-	PLYACTCHI,            // 20: チー
-	PLYACTMINKAN,         // 21: 明槓
-	PLYACTCHANKAN,        // 22: 槍槓ロン
-	PLYRIICHACCEPTED,     // 23: リーチ宣言受け入れ
-	RYUKYOKU,             // 24: 流局
-	KYOKURESULT,          // 25: 局結果表示
-	KYOKUEND,             // 26: 局終了
-	TAKURESULT,           // 27: 卓結果表示
-	TAKUEND,              // 28: 卓終了
-	TAKUERR,              // 29: 卓エラー状態
+	PLYNOACT = 0,             // 00: 卓状態の定義なし
+	TAKUSTART,                // 01: 卓開始
+	BAGIME,                   // 02: 場決め
+	KYOKUSTART,               // 03: 局開始
+	HAIPAI,                   // 04: 配牌
+	PLYACTTSUMOWAIT,          // 05: 自摸牌待ち(他プレーヤの鳴き待ち)
+	PLYACTTSUMO,              // 06: 自摸牌受取
+	PLYRINSHAN,               // 07: 嶺上牌受取
+	PLYACTSUTEWAIT,           // 08: 自摸後の捨牌待ち
+	PLYACTNAKISUTEWAIT,       // 09: 鳴後の捨牌待ち
+	PLYACTSUTE,               // 10: 捨牌
+	PLYACTTSUMOGIRI,          // 11: 自摸切り
+	PLYACTNAKISUTE,           // 12: 鳴き捨牌
+	PLYACTRIICH,              // 13: リーチ宣言
+	PLYTSUMOAGARI,            // 14: 自摸和了
+	PLYACTANKAN,              // 15: 暗槓
+	PLYACTKAKAN,              // 16: 加槓
+	PLYACTNAKIWAIT,           // 17: 鳴き待ち
+	PLYACTRON,                // 18: ロン和了
+	PLYACTPON,                // 19: ポン
+	PLYACTCHI,                // 20: チー
+	PLYACTMINKAN,             // 21: 明槓
+	PLYACTCHANKAN,            // 22: 槍槓ロン
+	PLYRIICHACCEPTED,         // 23: リーチ宣言受け入れ
+	RYUKYOKU,                 // 24: 流局
+	KYOKURESULT,              // 25: 局結果表示
+	KYOKUEND,                 // 26: 局終了
+	TAKURESULT,               // 27: 卓結果表示
+	TAKUEND,                  // 28: 卓終了
+	TAKUERR,                  // 29: 卓エラー状態
 
 } LBTkSt;
 
 // 局終了(流局)ラベル
 typedef enum {
 
-	NORKK,             // 00: 流局設定なし
-	HOWANPAI,          // 01: 荒牌
-	SUFURENDA,         // 03: 四風連打
-	RIICHI4PLY,        // 03: 四人リーチ
-	RON3PLY,           // 04: 三人ロン
-	TEHAI9HAI,         // 05: 九種九牌
-	NAGASHIMANGAN,     // 06: 流し満貫
-	UNKNOWNRKK,        // 07: その他流局
-	AGARIEND,          // 08: 和了で局が終了
+	NORKK,                    // 00: 流局設定なし
+	HOWANPAI,                 // 01: 荒牌
+	SUFURENDA,                // 03: 四風連打
+	RIICHI4PLY,               // 03: 四人リーチ
+	RON3PLY,                  // 04: 三人ロン
+	TEHAI9HAI,                // 05: 九種九牌
+	NAGASHIMANGAN,            // 06: 流し満貫
+	UNKNOWNRKK,               // 07: その他流局
+	AGARIEND,                 // 08: 和了で局が終了
 
 } LBRKStat;
 
 // プレーヤ動作ラベル
 typedef enum {
 
-	NOACT = 0,        // 00: アクションなし
-	ACTHAIPAI,        // 01: 配牌時
-	ACTTSUMO,         // 02: 自摸牌受取
-	ACTRINSHAN,       // 03: 嶺上牌受取
-	ACTSUTEWAIT,      // 04: 捨牌待ち
-	ACNAKITSUTEWAIT,  // 05: 鳴き捨牌待ち
-	ACTSUTE,          // 06: 捨牌
-	ACTNAKISUTE,      // 07: 鳴き捨牌
-	ACTTSUMOGIRI,     // 08: 自摸切り
-	ACTRIICH,         // 09: リーチ宣言
-	ACTTSUMOAGARI,    // 10: 自摸和了宣言
-	ACTNAKIWAIT,      // 11: 鳴き待ち
-	ACTNONAKI,        // 12: 鳴きをしない
-	ACTRON,           // 13: ロン和了宣言
-	ACTPON,           // 14: ポン鳴き宣言
-	ACTCHI,           // 15: チー鳴き宣言
-	ACTMINKAN,        // 16: 明槓鳴き宣言
-	ACTANKAN,         // 17: 暗槓鳴き宣言
-	ACTKAKAN,         // 18: 加槓鳴き宣言
-	ACTCHANKAN,       // 19: 槍槓和了宣言
-	ACTTEHAI9HAI,     // 20: 九種九牌宣言
+	NOACT = 0,                // 00: アクションなし
+	ACTHAIPAI,                // 01: 配牌時
+	ACTTSUMO,                 // 02: 自摸牌受取
+	ACTRINSHAN,               // 03: 嶺上牌受取
+	ACTSUTEWAIT,              // 04: 捨牌待ち
+	ACTSUTE,                  // 05: 捨牌
+	ACNAKITSUTEWAIT,          // 06: 鳴き捨牌待ち
+	ACTNAKISUTE,              // 07: 鳴き捨牌
+	ACTTSUMOGIRI,             // 08: 自摸切り
+	ACTRIICH,                 // 09: リーチ宣言
+	ACTTSUMOAGARI,            // 10: 自摸和了宣言
+	ACTNAKIWAIT,              // 11: 鳴き待ち
+	ACTNONAKI,                // 12: 鳴きをしない
+	ACTRON,                   // 13: ロン和了宣言
+	ACTPON,                   // 14: ポン鳴き宣言
+	ACTCHI,                   // 15: チー鳴き宣言
+	ACTMINKAN,                // 16: 明槓鳴き宣言
+	ACTANKAN,                 // 17: 暗槓鳴き宣言
+	ACTKAKAN,                 // 18: 加槓鳴き宣言
+	ACTCHANKAN,               // 19: 槍槓和了宣言
+	ACTTEHAI9HAI,             // 20: 九種九牌宣言
 
 } LBPAct;
 

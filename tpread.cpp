@@ -1,10 +1,10 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.165(役情報パラメータの不要分削除)
+ * バージョン     ： 0.1.2.0.194(クラス名をMJSReadTplogに変更)
  * プログラム名   ： mjs.exe
  * ファイル名     ： tpread.cpp
- * クラス名       ： MJSTpread
+ * クラス名       ： MJSReadTplog
  * 処理概要       ： 東風荘ログ読み込みクラス
  * Ver0.1.0作成日 ： 2022/04/11 15:57:39
  * Ver0.1.1作成日 ： 2022/05/14 22:27:08
@@ -20,7 +20,7 @@
 /* ---------------------------------------------------------------------------------------------- */
 // 初期化処理
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::TpreadInit(){
+void MJSReadTplog::TpreadInit(){
 
 	// ----------------------------------------
 	// 値の初期化
@@ -60,7 +60,7 @@ void MJSTpread::TpreadInit(){
 /* ---------------------------------------------------------------------------------------------- */
 // 後処理
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::TpreadPost(){
+void MJSReadTplog::TpreadPost(){
 
 	// ----------------------------------------
 	// free定義
@@ -82,7 +82,7 @@ void MJSTpread::TpreadPost(){
 /* ---------------------------------------------------------------------------------------------- */
 // 読み込み実行処理
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::TpreadExec(MJSTkinfo *tk){
+void MJSReadTplog::TpreadExec(MJSTkinfo *tk){
 
 	// Mjscore読み込み処理
 	Read_mjscore();
@@ -95,7 +95,7 @@ void MJSTpread::TpreadExec(MJSTkinfo *tk){
 /* ---------------------------------------------------------------------------------------------- */
 // mjscoreの読み込み
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Read_mjscore(){
+void MJSReadTplog::Read_mjscore(){
 
 	// ----------------------------------------
 	// 初期化
@@ -208,7 +208,7 @@ void MJSTpread::Read_mjscore(){
 /* ---------------------------------------------------------------------------------------------- */
 // wk構造体に一時データを格納
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_wk(char* str){
+void MJSReadTplog::Set_wk(char* str){
 
 	wsprintf(wk_str[wk_str_count], "%s", str);
 	wk_str_count ++;
@@ -218,7 +218,7 @@ void MJSTpread::Set_wk(char* str){
 /* ---------------------------------------------------------------------------------------------- */
 // 牌番号確認処理
 /* ---------------------------------------------------------------------------------------------- */
-int MJSTpread::Chk_painum(char* str){
+int MJSReadTplog::Chk_painum(char* str){
 
 	// 牌番号設定
 	int hainum = 0;
@@ -312,7 +312,7 @@ int MJSTpread::Chk_painum(char* str){
 /* ---------------------------------------------------------------------------------------------- */
 // ドラ表示確認
 /* ---------------------------------------------------------------------------------------------- */
-int MJSTpread::Chk_DoraHyoji(int hai){
+int MJSReadTplog::Chk_DoraHyoji(int hai){
 
 	return 0;
 
@@ -321,7 +321,7 @@ int MJSTpread::Chk_DoraHyoji(int hai){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理：メイン処理
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo(MJSTkinfo *tk){
+void MJSReadTplog::Set_tkinfo(MJSTkinfo *tk){
 
 	bool chk_kyoku_mode = true ;  // 局読み込みモードの確認
 	tk->kyoku_index = 0;           // 局のインデックス
@@ -367,7 +367,7 @@ void MJSTpread::Set_tkinfo(MJSTkinfo *tk){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 1 ： 卓開始情報読み込み
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_tkstart(MJSTkinfo *tk){
+void MJSReadTplog::Set_tkinfo_tkstart(MJSTkinfo *tk){
 
 	// INDEXを+1する。(区切り文字「===」があるため)
 	wk_index++;
@@ -397,7 +397,7 @@ void MJSTpread::Set_tkinfo_tkstart(MJSTkinfo *tk){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 2 ： プレーヤー情報読み込み
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_plyprof(MJSTkinfo *tk){
+void MJSReadTplog::Set_tkinfo_plyprof(MJSTkinfo *tk){
 
 	// 変数定義
 	char tmp_str[10];
@@ -487,7 +487,7 @@ void MJSTpread::Set_tkinfo_plyprof(MJSTkinfo *tk){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 3 ： 局情報とプレーヤー得点情報
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_kyoku_score(MJSTkinfo *tk, int kyoku_index){
+void MJSReadTplog::Set_tkinfo_kyoku_score(MJSTkinfo *tk, int kyoku_index){
 
 	// ----------------------------------------
 	// 初期化
@@ -617,7 +617,7 @@ void MJSTpread::Set_tkinfo_kyoku_score(MJSTkinfo *tk, int kyoku_index){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 4 ： 和了情報読み込み
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_agariinfo(MJSTkinfo *tk, int kyoku_index){
+void MJSReadTplog::Set_tkinfo_agariinfo(MJSTkinfo *tk, int kyoku_index){
 
 	// 変数定義
 	int mode=0;
@@ -646,7 +646,7 @@ void MJSTpread::Set_tkinfo_agariinfo(MJSTkinfo *tk, int kyoku_index){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 5 ： 配牌情報
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_haipai(MJSTkinfo *tk, int kyoku_index){
+void MJSReadTplog::Set_tkinfo_haipai(MJSTkinfo *tk, int kyoku_index){
 
 	// 配牌読み込み
 	for(int ply_i = 0; ply_i < 4; ply_i++){
@@ -661,7 +661,7 @@ void MJSTpread::Set_tkinfo_haipai(MJSTkinfo *tk, int kyoku_index){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 5a ： 配牌情報(サブ処理)
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_haipai_sub(MJSTkinfo *tk, int kyoku_index, int pnum){
+void MJSReadTplog::Set_tkinfo_haipai_sub(MJSTkinfo *tk, int kyoku_index, int pnum){
 
 	// ----------------------------------------
 	// 初期化
@@ -781,7 +781,7 @@ void MJSTpread::Set_tkinfo_haipai_sub(MJSTkinfo *tk, int kyoku_index, int pnum){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 6 ： ドラ情報
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_dora(MJSTkinfo *tk, int kyoku_index){
+void MJSReadTplog::Set_tkinfo_dora(MJSTkinfo *tk, int kyoku_index){
 
 	// ----------------------------------------
 	// 卓情報設定 - ドラ設定(仮置き)
@@ -799,7 +799,7 @@ void MJSTpread::Set_tkinfo_dora(MJSTkinfo *tk, int kyoku_index){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 7 ： アクション情報
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_actinfo(MJSTkinfo *tk, int kyoku_index){
+void MJSReadTplog::Set_tkinfo_actinfo(MJSTkinfo *tk, int kyoku_index){
 
 	// ----------------------------------------
 	// 「+」「*」と続くのでスキップする
@@ -1266,7 +1266,7 @@ void MJSTpread::Set_tkinfo_actinfo(MJSTkinfo *tk, int kyoku_index){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 8 ： 卓終了確認
 /* ---------------------------------------------------------------------------------------------- */
-bool MJSTpread::Set_tkinfo_checkend(){
+bool MJSReadTplog::Set_tkinfo_checkend(){
 
 	// 分割処理用
 	char tmp_str[3];
@@ -1306,7 +1306,7 @@ bool MJSTpread::Set_tkinfo_checkend(){
 /* ---------------------------------------------------------------------------------------------- */
 // Tkinfo設定処理： mjscore_read_mode = 9 ： 卓終了情報読み込み
 /* ---------------------------------------------------------------------------------------------- */
-void MJSTpread::Set_tkinfo_tkend(MJSTkinfo *tk){
+void MJSReadTplog::Set_tkinfo_tkend(MJSTkinfo *tk){
 
 	// 「wk_indexを+5にする
 	wk_index=wk_index+5;

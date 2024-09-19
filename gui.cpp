@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
+ * バージョン     ： 0.1.2.0.196(tklogクラス実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/13 20:53:47
+ * 最終更新日     ： 2024/09/19 08:18:20
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  *  
@@ -21,8 +21,12 @@
 void MJSGui::GuiInit(){
 
 	// -----------------------------
-	// ゲームモード初期化
+	// 卓ゲームモード初期化
 	// -----------------------------
+
+	// ログ出力の無効化
+	tklog_output_flg     = false;
+	clientlog_output_flg = false;
 
 	// GUIメインステータス
 	gui_main_stat = GUI_NO_MAIN_STAT;
@@ -401,7 +405,7 @@ void MJSGui::guiTakuInit(){
 	cannot_sutehai_count = 0;
 
 	// ビューアーモード
-	gui_kyoku = 0;
+	gui_kyoku_index = 0;
 	gui_actid = 0;
 
 	// クライアントモード
@@ -566,7 +570,7 @@ void MJSGui::guiChkPlyTsumoStat(MJSTkinfo *tk){
 	}
 
 	// -----------------------------
-	// 暗槓又は加槓なら、カンプレート有効化
+	// 暗槓又は加槓なら、槓プレート有効化
 	// -----------------------------
 	if( ( naki_ankan_hai_count > 0 || naki_kakan_hai_count > 0 ) && 
 	    gui_ply_tehai_mode == TEHAI_NORMAL){
@@ -1093,7 +1097,7 @@ void MJSGui::guiTakuActClick(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・プレーヤー通常アクション定義(メイン処理：モードごとの切り替え)
+// 1.GUI操作通常処理（メイン）
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyNormalActMain(MJSTkinfo *tk){
 
@@ -1114,7 +1118,7 @@ void MJSGui::guiSetPlyNormalActMain(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
+// 1-1.GUI操作通常処理・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyNormalAct(MJSTkinfo *tk){
 
@@ -1133,7 +1137,6 @@ void MJSGui::guiSetPlyNormalAct(MJSTkinfo *tk){
 		tk->ply_act = ACTSUTE;
 
 		// 捨牌番号設定(マウス選択位置)
-		// tk->ply_tbl_hum_sutehai_statnum = (msx-SPACE_XSIZE) / HAI_XSIZE;
 		tk->ply_tbl_hum_sutehai_statnum = (msx-tehai_x) / HAI_XSIZE;
 
 		// プレート無効化
@@ -1168,7 +1171,7 @@ void MJSGui::guiSetPlyNormalAct(MJSTkinfo *tk){
 		plt_mode[PLT_AGARI]  = false;
 
 	// ----------------------------------------
-	// カンプレートが押されたなら
+	// 槓プレートが押されたなら
 	// ----------------------------------------
 	}else if( plt_mode[PLT_KAN] == true &&
 	          msx > SPACE_XSIZE+(PLT_ICON_XSIZE+SPACE_XSIZE)*PLT_KAN && 
@@ -1318,7 +1321,7 @@ void MJSGui::guiSetPlyNormalAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
+// 1-2.GUI操作通常処理・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 
@@ -1331,7 +1334,6 @@ void MJSGui::guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 	    msy < tehai_y + HAI_YSIZE ){
 
 		// リーチ時の選択捨牌のシャンテンが0であるなら
-		// if(tk->ply_act_tehai_shanten_tbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == 0){
 		if(tk->ply_act_tehai_can_sute_tbl[HUM_PLY_SEKI_NUM][(msx-tehai_x)/HAI_XSIZE] == true){
 
 			// クリックフラグ有効化
@@ -1341,7 +1343,6 @@ void MJSGui::guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 			tk->ply_act = ACTSUTE;
 
 			// 捨牌番号設定(マウス選択位置)
-			// tk->ply_tbl_hum_sutehai_statnum = (msx-SPACE_XSIZE) / HAI_XSIZE;
 			tk->ply_tbl_hum_sutehai_statnum = (msx-tehai_x) / HAI_XSIZE;
 
 			// GUI手牌モードの変更
@@ -1377,7 +1378,7 @@ void MJSGui::guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
+// 1-3.GUI操作通常処理・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyRiichiYukoAct(MJSTkinfo *tk){
 
@@ -1399,7 +1400,7 @@ void MJSGui::guiSetPlyRiichiYukoAct(MJSTkinfo *tk){
 		tk->ply_tbl_hum_sutehai_statnum = tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]; // 自摸牌
 
 	// ----------------------------------------
-	// カンプレートが押されたなら
+	// 槓プレートが押されたなら
 	// ----------------------------------------
 	}else if( plt_mode[PLT_KAN] == true &&
 	          msx > SPACE_XSIZE+(PLT_ICON_XSIZE+SPACE_XSIZE)*PLT_KAN && 
@@ -1462,7 +1463,7 @@ void MJSGui::guiSetPlyRiichiYukoAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
+// 1-4.GUI操作通常処理・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 
@@ -1602,7 +1603,7 @@ void MJSGui::guiSetPlyAnkanKakanAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・プレーヤー個別鳴きアクション定義(mode=0)
+// 2.GUI操作通常処理・プレーヤー個別鳴き確認(メイン)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyNakiActMain(MJSTkinfo *tk){
 
@@ -1656,7 +1657,7 @@ void MJSGui::guiSetPlyNakiActMain(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・プレーヤー個別鳴きアクション定義(mode=0)
+// 2-1.GUI操作通常処理・プレーヤー個別鳴きアクション定義(mode:TEHAI_NORMAL || mode:TEHAI_RIICHI_YUKO)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyNakiAct(MJSTkinfo *tk){
 
@@ -1751,7 +1752,7 @@ void MJSGui::guiSetPlyNakiAct(MJSTkinfo *tk){
 		plt_mode[PLT_AGARI]  = false;
 
 	// ----------------------------------------
-	// カンプレートが押されたなら
+	// 槓プレートが押されたなら
 	// ----------------------------------------
 	}else if( plt_mode[PLT_KAN] == true &&
 	      msx > SPACE_XSIZE+(PLT_ICON_XSIZE+SPACE_XSIZE)*PLT_KAN && 
@@ -1853,7 +1854,7 @@ void MJSGui::guiSetPlyNakiAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・プレーヤーチー牌アクション定義(mode=TEHAI_CHI_SELECT)
+// 2-2.GUI操作通常処理・プレーヤーチー牌アクション定義(mode:TEHAI_CHI_SELECT)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyChiPaiAct(MJSTkinfo *tk){
 
@@ -1922,7 +1923,7 @@ void MJSGui::guiSetPlyChiPaiAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クリック後処理_通常画面・プレーヤー鳴き後の捨牌処理
+// 3.GUI操作通常処理・プレーヤー鳴き後の捨牌処理
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiSetPlyNakiSuteAct(MJSTkinfo *tk){
 
@@ -2023,11 +2024,11 @@ void MJSGui::guiViewerInitTaku(MJSTkinfo *tk){
 	tk->KyokuInit();
 
 	// 初期化
-	gui_kyoku = 0;
+	gui_kyoku_index = 0;
 	gui_actid = 0;
 
 	// tkクラスのアクション情報の最新化
-	tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+	tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	// GUIモード設定
 	gui_taku_mode = COMMON_PLAY_MODE;           // 通常モード
@@ -2084,31 +2085,31 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 
 	// 局ID・カウントダウン
 	if( msx > BUT02_X_STAT && msx < BUT02_X_STAT + BUT_ICON_XSIZE && 
-		msy > BUT01_Y_STAT && msy < BUT01_Y_STAT   + BUT_ICON_YSIZE && gui_kyoku > 0){
+		msy > BUT01_Y_STAT && msy < BUT01_Y_STAT   + BUT_ICON_YSIZE && gui_kyoku_index > 0){
 
 		// 局ID変更
-		gui_kyoku--;
+		gui_kyoku_index--;
 		gui_actid=0;
 
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
 	// 局ID・カウントアップ
 	if( msx>BUT02_X_STAT+BUT_ICON_XSIZE && msx<BUT02_X_STAT+BUT_ICON_XSIZE*2 && 
-		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_kyoku <  tk->kyoku_index-1){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_kyoku_index <  tk->kyoku_index-1){
 
 		// 局ID変更
-		gui_kyoku++;
+		gui_kyoku_index++;
 		gui_actid=0;
 
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
@@ -2126,7 +2127,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
@@ -2140,7 +2141,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
@@ -2154,13 +2155,13 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
 	// ActID・カウントアップ+1
 	if( msx>BUT03_X_STAT+BUT_ICON_XSIZE*3 && msx<BUT03_X_STAT+BUT_ICON_XSIZE*4 && 
-		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_actid < tk->kyoku[gui_kyoku].act_count-1){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && gui_actid < tk->kyoku[gui_kyoku_index].act_count-1){
 
 		// ActID変更
 		gui_actid++;
@@ -2168,13 +2169,13 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
 	// ActID・カウントアップ+4
 	if( msx>BUT03_X_STAT+BUT_ICON_XSIZE*4 && msx<BUT03_X_STAT+BUT_ICON_XSIZE*5 && 
-		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && Button[0]>0 && gui_actid < tk->kyoku[gui_kyoku].act_count-1-4){
+		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && Button[0]>0 && gui_actid < tk->kyoku[gui_kyoku_index].act_count-1-4){
 
 		// ActID変更
 		gui_actid=gui_actid+4;
@@ -2182,7 +2183,7 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
@@ -2191,12 +2192,12 @@ void MJSGui::count_plyact(MJSTkinfo *tk){
 		msy>BUT01_Y_STAT && msy<BUT01_Y_STAT+BUT_ICON_YSIZE && Button[0]>0){
 
 		// ActID変更
-		gui_actid=tk->kyoku[gui_kyoku].act_count-1;
+		gui_actid=tk->kyoku[gui_kyoku_index].act_count-1;
 
 		// ----------------------------------------
 		// tkクラスのアクション情報の最新化
 		// ----------------------------------------
-		tk->Check_Ply_ActTehai(gui_kyoku, gui_actid);
+		tk->Check_Ply_ActTehai(gui_kyoku_index, gui_actid);
 
 	}
 
@@ -2596,7 +2597,7 @@ void MJSGui::guiClientMain(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クライアントモード・通常処理（メイン）
+// GUI操作通常処理（メイン）
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiClientSetPlyNormalActMain(MJSTkinfo *tk){
 
@@ -2614,7 +2615,7 @@ void MJSGui::guiClientSetPlyNormalActMain(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クライアントモード・クリック後処理_通常画面・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
+// GUI操作通常処理・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiClientSetPlyNormalAct(MJSTkinfo *tk){
 
@@ -2667,7 +2668,7 @@ void MJSGui::guiClientSetPlyNormalAct(MJSTkinfo *tk){
 		plt_mode[PLT_AGARI]  = false;
 
 	// ----------------------------------------
-	// カンプレートが押されたなら
+	// 槓プレートが押されたなら
 	// ----------------------------------------
 	}else if( plt_mode[PLT_KAN] == true &&
 	          msx > SPACE_XSIZE+(PLT_ICON_XSIZE+SPACE_XSIZE)*PLT_KAN && 
@@ -2785,7 +2786,7 @@ void MJSGui::guiClientSetPlyNormalAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クライアントモード・クリック後処理_通常画面・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
+// GUI操作通常処理・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiClientSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 
@@ -2843,7 +2844,7 @@ void MJSGui::guiClientSetPlyRiichiSutehaiAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クライアントモード・クリック後処理_通常画面・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
+// GUI操作通常処理・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiClientSetPlyRiichiYukoAct(MJSTkinfo *tk){
 
@@ -2865,7 +2866,7 @@ void MJSGui::guiClientSetPlyRiichiYukoAct(MJSTkinfo *tk){
 		tk->ply_tbl_hum_sutehai_statnum = tk->ply_act_tehaicount[HUM_PLY_SEKI_NUM]; // 自摸牌
 
 	// ----------------------------------------
-	// カンプレートが押されたなら
+	// 槓プレートが押されたなら
 	// ----------------------------------------
 	}else if( plt_mode[PLT_KAN] == true &&
 	          msx > SPACE_XSIZE+(PLT_ICON_XSIZE+SPACE_XSIZE)*PLT_KAN && 
@@ -2928,7 +2929,21 @@ void MJSGui::guiClientSetPlyRiichiYukoAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クライアントモード・クリック後処理_通常画面・プレーヤー鳴き確認
+// GUI操作通常処理・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
+/* ---------------------------------------------------------------------------------------------- */
+
+
+
+
+/* ---------------------------------------------------------------------------------------------- */
+// GUI操作通常処理・プレーヤー個別鳴き確認(メイン)
+/* ---------------------------------------------------------------------------------------------- */
+
+
+
+
+/* ---------------------------------------------------------------------------------------------- */
+// GUI操作通常処理・プレーヤー個別鳴きアクション定義(mode:TEHAI_NORMAL || mode:TEHAI_RIICHI_YUKO)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiClientSetPlyNakiAct(MJSTkinfo *tk){
 
@@ -2998,7 +3013,7 @@ void MJSGui::guiClientSetPlyNakiAct(MJSTkinfo *tk){
 		plt_mode[PLT_AGARI]  = false;
 
 	// ----------------------------------------
-	// カンプレートが押されたなら
+	// 槓プレートが押されたなら
 	// ----------------------------------------
 	}else if( plt_mode[PLT_KAN] == true &&
 		      msx > SPACE_XSIZE+(PLT_ICON_XSIZE+SPACE_XSIZE)*PLT_KAN && 
@@ -3035,8 +3050,8 @@ void MJSGui::guiClientSetPlyNakiAct(MJSTkinfo *tk){
 			gui_ply_tehai_mode = TEHAI_CHI_SELECT;
 
 		// チー候補牌が1枚であれば、自動チー処理
-		}else{*/
-
+		}else{
+*/
 			// クリックフラグ有効化
 			act_push_flg = true;
 
@@ -3074,7 +3089,14 @@ void MJSGui::guiClientSetPlyNakiAct(MJSTkinfo *tk){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// クライアントモード・クリック後処理_通常画面・鳴き捨牌
+// GUI操作通常処理・プレーヤーチー牌アクション定義(mode:TEHAI_CHI_SELECT)
+/* ---------------------------------------------------------------------------------------------- */
+
+
+
+
+/* ---------------------------------------------------------------------------------------------- */
+// GUI操作通常処理・プレーヤー鳴き後の捨牌処理
 /* ---------------------------------------------------------------------------------------------- */
 void MJSGui::guiClienSetPlyNakiSuteAct(MJSTkinfo *tk){
 
@@ -3087,7 +3109,6 @@ void MJSGui::guiClienSetPlyNakiSuteAct(MJSTkinfo *tk){
 	    msy < tehai_y + HAI_YSIZE ){
 
 		// 捨牌番号設定(マウス選択位置)
-		// tk->ply_tbl_hum_sutehai_statnum = (msx-SPACE_XSIZE) / HAI_XSIZE;
 		tk->ply_tbl_hum_sutehai_statnum = (msx-tehai_x) / HAI_XSIZE;
 
 		// 鳴き捨て可能なら

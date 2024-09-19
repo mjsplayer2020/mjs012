@@ -149,10 +149,10 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="readmjai.cpp" />
     <ClCompile Include="score.cpp" />
-    <ClCompile Include="showlog.cpp" />
     <ClCompile Include="socket.cpp" />
     <ClCompile Include="taku.cpp" />
     <ClCompile Include="tkinfo.cpp" />
+    <ClCompile Include="tklog.cpp" />
     <ClCompile Include="tpread.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,11 +166,11 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="readmjai.h" />
     <ClInclude Include="score.h" />
-    <ClInclude Include="showlog.h" />
     <ClInclude Include="socket.h" />
     <ClInclude Include="StdAfx.h" />
     <ClInclude Include="taku.h" />
     <ClInclude Include="tkinfo.h" />
+    <ClInclude Include="tklog.h" />
     <ClInclude Include="tpread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

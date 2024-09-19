@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
+ * バージョン     ： 0.1.2.0.196(tklogクラス実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/13 20:53:47
+ * 最終更新日     ： 2024/09/19 08:18:20
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -25,17 +25,24 @@
 /* ---------------------------------------------------------------------------------------------- */
 
 // 表示形式
-#define DISP_TEHAI_MODE_DEF               1    // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
-#define DISP_SQUARE_NAKI_MENTSU_DEF       0    // 囲みモードでの鳴き面子表示形式(0:ライナー表示、1:縦表示)
-#define DISP_DEBUG_INFO                   0    // デバグ情報の表示(0:非表示)
+#define DISP_TEHAI_MODE_DEF             2    // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
+#define DISP_SQUARE_NAKI_MENTSU_DEF     0    // 囲みモードでの鳴き面子表示形式(0:ライナー表示、1:縦表示)
+#define DISP_DEBUG_INFO                 0    // デバグ情報の表示(0:非表示)
 
 // フレームカウント
-#define AUTO_FRAME_COUNT_PLAYING         20    // プレイモードのフレームカウント数
-#define AUTO_FRAME_COUNT_RUNNING          1    // 検証モードのフレームカウント数
-#define AUTO_FRAME_COUNT_CLIENT           5    // クライアントモードのフレームカウント数
-#define AUTO_FRAME_COUNT_CLIENT_SND       5    // 送信時ウエイト用のフレームカウント数
-#define AUTO_FRAME_COUNT_AUTO_TSUMO      20    // リーチ時のオート自摸のフレームカウント数
-#define AUTO_FRAME_COUNT_RESULT         150    // 結果表示等のウェイト用フレームカウント数
+#define AUTO_FRAME_COUNT_PLAYING       20    // プレイモードのフレームカウント数
+#define AUTO_FRAME_COUNT_RUNNING        1    // 検証モードのフレームカウント数
+#define AUTO_FRAME_COUNT_CLIENT         5    // クライアントモードのフレームカウント数
+#define AUTO_FRAME_COUNT_CLIENT_SND     5    // 送信時ウエイト用のフレームカウント数
+#define AUTO_FRAME_COUNT_AUTO_TSUMO    20    // リーチ時のオート自摸のフレームカウント数
+#define AUTO_FRAME_COUNT_RESULT       150    // 結果表示等のウェイト用フレームカウント数
+
+/* ---------------------------------------------------------------------------------------------- */
+// 固定値(ログ出力設定)
+/* ---------------------------------------------------------------------------------------------- */
+
+// 牌譜読み取りモード
+#define MJSCORE_LOG_OUTPUT_MODE         0    // ログ出力モード
 
 /* ---------------------------------------------------------------------------------------------- */
 // 固定値(GUIクラス定義用)
@@ -70,8 +77,8 @@
 /* ---------------------------------------------------------------------------------------------- */
 
 // オープニング表示位置
-#define OPENING_BUT01_X_START     150   // セレクトボタンのX軸開始位置
-#define OPENING_BUT01_Y_START     250   // セレクトボタンのY軸開始位置
+#define OPENING_BUT01_X_START     160   // セレクトボタンのX軸開始位置
+#define OPENING_BUT01_Y_START     240   // セレクトボタンのY軸開始位置
 #define OPENING_BUT01_Y_RANGE      48   // Y軸の幅
 
 // 共通パーツの表示位置
@@ -105,7 +112,8 @@
 #define TAKU_PLT_Y_STAT            64    // 卓プレート_Y開始位置
 
 #define SUTEHAI_CENTERPLT_RANGE     8    // 捨牌レンジ
-#define SUTEHAI_TEHAI_RANGE        40    // 手牌レンジ
+#define SUTEHAI_TEHAI_RANGE        48    // 手牌レンジ
+#define NAME_TEHAI_RANGE            8    // 名前レンジ
 #define NAKI_RANGE                384    // 鳴き牌レンジ
 #define NAKI_MENTSU_RANGE         104    // 鳴き牌ごとのレンジ
 
@@ -148,29 +156,17 @@
 #define PLY_MES_Y_STAT            688   // メッセージのY位置
 
 // ゲームモードの表示位置(ボタン関連)
-/*
-#define BUT01_X_STAT          5         // ボタン01のX位置(局開始情報)
-#define BUT02_X_STAT         45         // ボタン02のX位置(ビューワーモード：局ID変更)
-#define BUT03_X_STAT        115         // ボタン03のX位置(ビューワーモード：ActID変更)
-#define BUT04_X_STAT        315         // ボタン04のX位置(局終了情報)
-
-#define THINFO_BUT_X_STAT   360         // 手牌詳細情報ボタンのX位置
-#define TKINFO_BUT_X_STAT   400         // TKクラス情報ボタンのX位置
-#define PLYINFO_BUT_X_STAT  440         // PLY情報ボタンのX位置
-#define QUIT_BUT_X_STAT     480         // 終了ボタンのX位置
-*/
-
-#define BUT01_Y_STAT        600         // ボタンのY位置(ビューア機能ボタン)
-#define BUT01_X_STAT        605         // ボタン01のX位置(局開始情報)
-#define BUT02_X_STAT        645         // ボタン02のX位置(ビューワーモード：局ID変更)
-#define BUT03_X_STAT        715         // ボタン03のX位置(ビューワーモード：ActID変更)
-#define BUT04_X_STAT        915         // ボタン04のX位置(局終了情報)
+#define BUT01_Y_STAT        520         // ボタンのY位置(ビューア機能ボタン)
+#define BUT01_X_STAT        720         // ボタン01のX位置(局開始情報)
+#define BUT02_X_STAT        720         // ボタン02のX位置(ビューワーモード：局ID変更)
+#define BUT03_X_STAT        800         // ボタン03のX位置(ビューワーモード：ActID変更)
+#define BUT04_X_STAT        760         // ボタン04のX位置(局終了情報)
 
 #define BUT02_Y_STAT        640         // ボタンのY位置(操作ボタン)
-#define THINFO_BUT_X_STAT   800         // 手牌詳細情報ボタンのX位置
-#define TKINFO_BUT_X_STAT   840         // TKクラス情報ボタンのX位置(デバグ用)
-#define PLYINFO_BUT_X_STAT  880         // PLY情報ボタンのX位置
-#define QUIT_BUT_X_STAT     920         // 終了ボタンのX位置
+#define THINFO_BUT_X_STAT   720         // 手牌詳細情報ボタンのX位置
+#define TKINFO_BUT_X_STAT   760         // TKクラス情報ボタンのX位置(デバグ用)
+#define PLYINFO_BUT_X_STAT  800         // PLY情報ボタンのX位置
+#define QUIT_BUT_X_STAT     840         // 終了ボタンのX位置
 
 // ゲームモードの表示位置(情報表示)
 #define DEBUG_INFO_Y_STAT   550         // デバグ情報のY位置
@@ -400,23 +396,30 @@ class MJSGui
 	bool plt_nakiari_flg;                    // 鳴有/鳴無フラグ
 
 	// -----------------------------
-	// 表示モードごとのGUI状態(プレイモード)
+	// 表示モードごとのGUI状態(メイン処理)
 	// -----------------------------
 
 	// GUIメインステータス
 	LBGuiGmSt gui_main_stat;                 // メインステータスの値
 	LBGuiGmSt gui_next_stat;                 // 「POST処理」後にメインステータスの値
 
+	// -----------------------------
+	// 表示モードごとのGUI状態(卓ゲームモード)
+	// -----------------------------
+
 	// GUIモード(卓表示)
 	LBGuiTakuMode  gui_taku_mode;            // 卓表示モード
 	LBGuiTehaiMode gui_ply_tehai_mode;       // 手牌表示モード(手牌・鳴き状態)
+
+	// 卓ログ出力
+	bool tklog_output_flg;                   // 卓ログの出力有無
 
 	// -----------------------------
 	// 表示モードごとのGUI状態(ビューアーモード)
 	// -----------------------------
 
 	// ビューアーモード
-	int gui_kyoku;                           // GUI局番号
+	int gui_kyoku_index;                     // GUI局番号
 	int gui_actid;                           // GUIアクション番号
 
 	// -----------------------------
@@ -427,7 +430,7 @@ class MJSGui
 	LBGuiMjaiClientMode cli_mode;
 
 	// -----------------------------
-	// Socket処理用
+	// ソケット処理用
 	// -----------------------------
 
 	// IPアドレス
@@ -448,6 +451,11 @@ class MJSGui
 	// MJAIメッセージ解析用バッファ
 	int  wk_str_count;             // 作業用文字配列の総数
 	char wk_str[128][64];          // 作業用文字配列
+
+	// クライアントログ(Socketデバグログ)
+	bool clientlog_output_flg;     // クライアントログ・出力有無
+	char clientlog_name[50];       // クライアントログ・ファイル名
+	char clientlog_buf[1024];      // クライアントログ・バッファ
 
 	// -----------------------------
 	// 鳴き種別用
@@ -512,9 +520,22 @@ class MJSGui
 	// -----------------------------
 	// 共通関数・手牌処理
 	// -----------------------------
-	// void set_gui_ply_tsumo_action(MJSTkinfo *tk);                  // 鳴きアクション設定
-	// void set_gui_ply_nak_action(MJSTkinfo *tk);                    // 鳴きアクション設定
-	// void set_gui_ply_nakisute_action(MJSTkinfo *tk);               // 鳴き捨牌アクション設定
+
+	// 卓処理・自摸時
+	// void set_gui_ply_tsumo_act(MJSTkinfo *tk);                       // 1.GUI操作通常処理（メイン）
+	// void set_hum_ply_tsumo_act(MJSTkinfo *tk);                       // 1-1.GUI操作通常処理・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
+	// void set_hum_riichisute_act(MJSTkinfo *tk);                      // 1-2.GUI操作通常処理・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
+	// void set_hum_riichiyuko_act(MJSTkinfo *tk);                      // 1-3.GUI操作通常処理・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
+	// void set_hum_ankankakan_act(MJSTkinfo *tk);                      // 1-4.GUI操作通常処理・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
+
+	// 卓処理・鳴きアクション設定
+	// void set_gui_ply_naki_act(MJSTkinfo *tk);                        // 2.GUI操作通常処理・プレーヤー個別鳴き確認(メイン)
+	// void set_hum_ply_naki_act(MJSTkinfo *tk);                        // 2-1.GUI操作通常処理・プレーヤー個別鳴きアクション定義(mode:TEHAI_NORMAL || mode:TEHAI_RIICHI_YUKO)
+	// void set_hum_ply_chi1_act(MJSTkinfo *tk);                        // 2-2.GUI操作通常処理・プレーヤーチー牌アクション定義(mode:TEHAI_CHI_SELECT)
+	// void set_hum_ply_chi2_act(MJSTkinfo *tk);                        // 2-3.GUI操作通常処理・プレーヤーチー牌アクション定義(mode:TEHAI_CHI_SELECT)
+
+	// 卓処理・鳴き捨牌
+	// void set_gui_ply_nakisute_act(MJSTkinfo *tk);                    // 3.GUI操作通常処理・プレーヤー鳴き後の捨牌処理
 
 	// -----------------------------
 	// プレイモード・卓処理
@@ -525,35 +546,35 @@ class MJSGui
 	void guiTakuPost();
 
 	// 卓処理・メイン処理
-	void guiTaku(MJSTkinfo *tk);                     // メイン処理
-	void guiTakuChkPreClick(MJSTkinfo *tk);          // クリック前処理(メイン)
-	void guiTakuActClick(MJSTkinfo *tk);             // クリック後処理(メイン)
+	void guiTaku(MJSTkinfo *tk);                       // 卓ゲームモードのGUI処理(メイン)
+	void guiTakuChkPreClick(MJSTkinfo *tk);            // 卓モードごとのクリック前処理(メイン)
+	void guiTakuActClick(MJSTkinfo *tk);               // 卓モードごとのクリック後処理(メイン)
 
-	// 卓処理・手牌確認
-	void guiChkPlyTsumoStat(MJSTkinfo *tk);          // プレーヤーの自摸状態確認
-	void guiChkPlyNakiStat(MJSTkinfo *tk);           // プレーヤーの鳴き状態確認
-	void guiChkPlyRonStat(MJSTkinfo *tk);            // プレーヤーのロン状態確認
+	// 卓処理・クリック前の確認処理
+	void guiChkPlyTsumoStat(MJSTkinfo *tk);            // プレーヤーの自摸状態確認
+	void guiChkPlyNakiStat(MJSTkinfo *tk);             // プレーヤーの鳴き状態確認
+	void guiChkPlyRonStat(MJSTkinfo *tk);              // プレーヤーのロン状態確認
 
 	// 卓処理・自摸時
-	void guiSetPlyNormalActMain(MJSTkinfo *tk);      // クリック後処理_通常画面・メイン処理
-	void guiSetPlyNormalAct(MJSTkinfo *tk);          // クリック後処理_通常画面・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
-	void guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk);   // クリック後処理_通常画面・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
-	void guiSetPlyRiichiYukoAct(MJSTkinfo *tk);      // クリック後処理_通常画面・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
-	void guiSetPlyAnkanKakanAct(MJSTkinfo *tk);      // クリック後処理_通常画面・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
+	void guiSetPlyNormalActMain(MJSTkinfo *tk);        // 1.GUI操作通常処理（メイン）
+	void guiSetPlyNormalAct(MJSTkinfo *tk);            // 1-1.GUI操作通常処理・プレーヤー通常アクション定義(mode:TEHAI_NORMAL)
+	void guiSetPlyRiichiSutehaiAct(MJSTkinfo *tk);     // 1-2.GUI操作通常処理・リーチ宣言後の捨牌選択(mode:TEHAI_RIICHI_SUTEHAI)
+	void guiSetPlyRiichiYukoAct(MJSTkinfo *tk);        // 1-3.GUI操作通常処理・リーチ有効後のアクション(自摸切り、自摸和了、暗槓)(mode:TEHAI_RIICHI_YUKO)
+	void guiSetPlyAnkanKakanAct(MJSTkinfo *tk);        // 1-4.GUI操作通常処理・プレーヤー暗槓アクション定義(mode:TEHAI_ANKAN_KAKAN_SELECT)
 
 	// 卓処理・鳴きアクション決定
-	void guiSetPlyNakiActMain(MJSTkinfo *tk);        // クリック後処理_鳴き画面・鳴きアクション・メイン処理
-	void guiSetPlyNakiAct(MJSTkinfo *tk);            // クリック後処理_鳴き画面・鳴きアクション・サブ処理
-	void guiSetPlyChiPaiAct(MJSTkinfo *tk);          // クリック後処理_鳴き画面・プレーヤーチーの1枚目の牌選択アクション(mode=11)
-	void guiSetPlyChiPaiAct2(MJSTkinfo *tk);         // クリック後処理_鳴き画面・プレーヤーチーの2枚目の牌選択アクション(mode=12)
+	void guiSetPlyNakiActMain(MJSTkinfo *tk);          // 2.GUI操作通常処理・プレーヤー個別鳴き確認(メイン)
+	void guiSetPlyNakiAct(MJSTkinfo *tk);              // 2-1.GUI操作通常処理・プレーヤー個別鳴きアクション定義(mode:TEHAI_NORMAL || mode:TEHAI_RIICHI_YUKO)
+	void guiSetPlyChiPaiAct(MJSTkinfo *tk);            // 2-2.GUI操作通常処理・プレーヤーチー牌アクション定義(mode:TEHAI_CHI_SELECT)
+	void guiSetPlyChiPaiAct2(MJSTkinfo *tk);           // 2-3.GUI操作通常処理・プレーヤーチー牌アクション定義(mode:TEHAI_CHI_SELECT)
 
 	// 卓処理・鳴き捨牌
-	void guiSetPlyNakiSuteAct(MJSTkinfo *tk);        // クリック後処理_鳴き捨牌時
+	void guiSetPlyNakiSuteAct(MJSTkinfo *tk);          // 3.GUI操作通常処理・プレーヤー鳴き後の捨牌処理
 
 	// 卓処理・その他
-	void guiPlyDetailInfo(MJSTkinfo *tk);            // クリック後処理_通常画面・ply情報画面操作(デバグ用)
-	void guiKyokuEnd(MJSTkinfo *tk);                 // 局終了処理
-	void guiTakuEnd(MJSTkinfo *tk);                  // 卓終了処理
+	void guiPlyDetailInfo(MJSTkinfo *tk);              // GUI操作通常処理・ply情報画面操作(デバグ用)
+	void guiKyokuEnd(MJSTkinfo *tk);                   // GUI操作通常処理・局終了処理
+	void guiTakuEnd(MJSTkinfo *tk);                    // GUI操作通常処理・卓終了処理
 
 	// -----------------------------
 	// クライアントモード・卓処理

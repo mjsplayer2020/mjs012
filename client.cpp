@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.170(クライアントモードPLY鳴き実装：チー不具合修正)
+ * バージョン     ： 0.1.2.0.195(卓ログ、クライアントログの無効化)
  * プログラム名   ： mjs.exe
  * ファイル名     ： client.cpp
  * クラス名       ： MJSMjaiClient
  * 処理概要       ： Mjaiクライアント処理クラス
  * Ver0.1.2作成日 ： 2023/11/19 21:38:17
- * 最終更新日     ： 2024/05/26 10:55:05
+ * 最終更新日     ： 2024/09/16 15:51:09
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -18,7 +18,7 @@
 /* ---------------------------------------------------------------------------------------------- */
 // 前処理
 /* ---------------------------------------------------------------------------------------------- */
-void MJSMjaiClient::ClientInit(MJSTkinfo *tk){
+void MJSMjaiClient::ClientInit(MJSTkinfo *tk, MJSGui *gui, MJSReadMjai *tmp_mjai){
 
 	// ----------------------------------------
 	// クラス定義
@@ -29,22 +29,29 @@ void MJSMjaiClient::ClientInit(MJSTkinfo *tk){
 	// ----------------------------------------
 	// メッセージ処理クラスの初期化
 	// ----------------------------------------
+	if( gui->clientlog_output_flg == true){
 
-	// ログファイル名設定
-	wsprintf(clientlog_name, "mjai_client.log" );
+		// ログファイル名設定
+		wsprintf(clientlog_name, "mjai_client.log" );
+		clientlog->CorelogInit(clientlog_name);
 
+	}
+
+	// MJAIログ初期化
 	mjai->ReadlogInit();
-	clientlog->CorelogInit(clientlog_name);
 
 	// ----------------------------------------
 	// デバグログヘッダー出力
 	// ----------------------------------------
+	if( gui->clientlog_output_flg == true){
 
-	// ログファイル名設定
-	wsprintf(clientlog_buf, "ヘッダー\n----\n" );
+		// ログファイル名設定
+		wsprintf(clientlog_buf, "ヘッダー\n----\n" );
 
-	// ログ出力
-	clientlog->CorelogPrint(clientlog_buf);
+		// ログ出力
+		clientlog->CorelogPrint(clientlog_buf);
+
+	}
 
 	// 時刻設定
 	SetNowTime(tk);
@@ -54,18 +61,22 @@ void MJSMjaiClient::ClientInit(MJSTkinfo *tk){
 /* ---------------------------------------------------------------------------------------------- */
 // 終了処理
 /* ---------------------------------------------------------------------------------------------- */
-void MJSMjaiClient::ClientPost(){
+void MJSMjaiClient::ClientPost(MJSGui *gui){
 
 	// ----------------------------------------
 	// クラスの終了
 	// ----------------------------------------
 	mjai->ReadlogPost();
-	clientlog->CorelogPost();
+
+	// ログ後処理
+	if( gui->clientlog_output_flg == true){
+		clientlog->CorelogPost();
+	}
 
 	// ----------------------------------------
 	// クラス削除
 	// ----------------------------------------
-	delete mjai;
+	delete mjai;                        // MJAIクラス
 	delete clientlog;                   // クライアントデバグログ
 
 }
@@ -79,11 +90,13 @@ void MJSMjaiClient::ClientSendMes(MJSGui *gui){
 	sock.SendMes(gui);
 
 	// ログ出力
-	wsprintf(clientlog_buf, "SND:");
-	clientlog->CorelogPrint(clientlog_buf);
-	clientlog->CorelogPrint(gui->snd_mes);
-	wsprintf(clientlog_buf, "----\n");
-	clientlog->CorelogPrint(clientlog_buf);
+	if( gui->clientlog_output_flg == true){
+		wsprintf(clientlog_buf, "SND:");
+		clientlog->CorelogPrint(clientlog_buf);
+		clientlog->CorelogPrint(gui->snd_mes);
+		wsprintf(clientlog_buf, "----\n");
+		clientlog->CorelogPrint(clientlog_buf);
+	}
 
 	// 送信バッファのクリア
 	memset(gui->snd_mes, 0, sizeof(gui->snd_mes));
@@ -207,11 +220,13 @@ void MJSMjaiClient::CheckTakuStatus(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, 
 			wsprintf(gui->stat_mes, "HELLOメッセージを受信しました");
 
 			// ログ出力(HELLOメッセージ)
-			clientlog->CorelogPrint(gui->res_mes);
-			clientlog->CorelogPrint(clientlog_buf);
-			// ログ出力(区切り線)
-			wsprintf(clientlog_buf, "----\n");
-			clientlog->CorelogPrint(clientlog_buf);
+			if( gui->clientlog_output_flg == true){
+				clientlog->CorelogPrint(gui->res_mes);
+				clientlog->CorelogPrint(clientlog_buf);
+				// ログ出力(区切り線)
+				wsprintf(clientlog_buf, "----\n");
+				clientlog->CorelogPrint(clientlog_buf);
+			}
 
 			// モード変更
 			gui->cli_mode = GUI_MJAI_WAIT_TAKU_START_RESMES;
@@ -237,10 +252,12 @@ void MJSMjaiClient::CheckTakuStatus(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, 
 			// メッセージ表示
 			wsprintf(gui->stat_mes, "ゲーム開始メッセージを受信しました");
 
-			// ログ出力
-			clientlog->CorelogPrint(gui->res_mes);
-			wsprintf(clientlog_buf, "----\n");
-			clientlog->CorelogPrint(clientlog_buf);
+			// ログ出力(gui->res_mes出力)
+			if( gui->clientlog_output_flg == true){
+				clientlog->CorelogPrint(gui->res_mes);
+				wsprintf(clientlog_buf, "----\n");
+				clientlog->CorelogPrint(clientlog_buf);
+			}
 
 			// ライン解析
 			wsprintf(mjai->line_buf, gui->res_mes);  // ラインバッファへのコピー
@@ -297,9 +314,11 @@ void MJSMjaiClient::CheckTakuStatus(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, 
 		if (sock.data_size > 0){
 
 			// ログ出力
-			clientlog->CorelogPrint(gui->res_mes);
-			wsprintf(clientlog_buf, "----\n");
-			clientlog->CorelogPrint(clientlog_buf);
+			if( gui->clientlog_output_flg == true){
+				clientlog->CorelogPrint(gui->res_mes);
+				wsprintf(clientlog_buf, "----\n");
+				clientlog->CorelogPrint(clientlog_buf);
+			}
 
 			// ライン解析
 			wsprintf(mjai->line_buf, gui->res_mes);  // ライン設定
@@ -352,23 +371,27 @@ void MJSMjaiClient::CheckTakuStatus(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, 
 		if (sock.data_size > 0){
 
 			// ログ出力
-			wsprintf(clientlog_buf, "RES:");
-			clientlog->CorelogPrint(clientlog_buf);
-			clientlog->CorelogPrint(gui->res_mes);
-			wsprintf(clientlog_buf, "----\n");
-			clientlog->CorelogPrint(clientlog_buf);
+			if( gui->clientlog_output_flg == true){
+				wsprintf(clientlog_buf, "RES:");
+				clientlog->CorelogPrint(clientlog_buf);
+				clientlog->CorelogPrint(gui->res_mes);
+				wsprintf(clientlog_buf, "----\n");
+				clientlog->CorelogPrint(clientlog_buf);
+			}
 
 			// ライン解析
 			wsprintf(mjai->line_buf, gui->res_mes);  // ラインの値設定
 			mjai->ReadlogExec(gui);                  // ライン解析(wk配列に値を代入)
 
 			// ログ出力(wk構造体)
-			for(int tmp_i = 0; tmp_i < gui->wk_str_count; tmp_i++){
-				wsprintf(clientlog_buf, "%d:%s\n", tmp_i, gui->wk_str[tmp_i]);
+			if( gui->clientlog_output_flg == true){
+				for(int tmp_i = 0; tmp_i < gui->wk_str_count; tmp_i++){
+					wsprintf(clientlog_buf, "%d:%s\n", tmp_i, gui->wk_str[tmp_i]);
+					clientlog->CorelogPrint(clientlog_buf);
+				}
+				wsprintf(clientlog_buf, "----\n");
 				clientlog->CorelogPrint(clientlog_buf);
 			}
-			wsprintf(clientlog_buf, "----\n");
-			clientlog->CorelogPrint(clientlog_buf);
 
 			// メッセージ確認(メイン処理)
 			ChkResMesMain(tk, ply, gui);
@@ -647,7 +670,9 @@ void MJSMjaiClient::SetActTsumo(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 			// ----------------------------------------
 			// アクション設定/ログ出力
 			// ----------------------------------------
-			Output_Actionlog(tk, tk->kyoku_index);
+			if( gui->clientlog_output_flg == true){
+				Output_Actionlog(tk, tk->kyoku_index);
+			}
 
 			// ----------------------------------------
 			// 手牌テーブルの更新(手牌捨ての無効化)
@@ -717,7 +742,9 @@ void MJSMjaiClient::SetActTsumo(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 			// ----------------------------------------
 			// アクション設定/ログ出力
 			// ----------------------------------------
-			Output_Actionlog(tk, tk->kyoku_index);
+			if( gui->clientlog_output_flg == true){
+				Output_Actionlog(tk, tk->kyoku_index);
+			}
 
 			// ----------------------------------------
 			// tkクラスのアクション情報の最新化
@@ -840,7 +867,9 @@ void MJSMjaiClient::SetActTsumo(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 			// ----------------------------------------
 			// アクション設定/ログ出力
 			// ----------------------------------------
-			Output_Actionlog(tk, tk->kyoku_index);
+			if( gui->clientlog_output_flg == true){
+				Output_Actionlog(tk, tk->kyoku_index);
+			}
 
 			// ----------------------------------------
 			// 晒し情報設定 - 加槓
@@ -922,7 +951,9 @@ void MJSMjaiClient::SetActTsumo(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 			// ----------------------------------------
 			// アクション設定/ログ出力
 			// ----------------------------------------
-			Output_Actionlog(tk, tk->kyoku_index);
+			if( gui->clientlog_output_flg == true){
+				Output_Actionlog(tk, tk->kyoku_index);
+			}
 
 		// -----------------------------------------------------------
 		// プレーヤーのアクション(自摸切り)
@@ -959,7 +990,9 @@ void MJSMjaiClient::SetActTsumo(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 			// ----------------------------------------
 			// アクション設定/ログ出力
 			// ----------------------------------------
-			Output_Actionlog(tk, tk->kyoku_index);
+			if( gui->clientlog_output_flg == true){
+				Output_Actionlog(tk, tk->kyoku_index);
+			}
 
 			// ----------------------------------------
 			// plyクラス捨牌後の処理
@@ -1076,7 +1109,9 @@ void MJSMjaiClient::SetActRiichi(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 			// ----------------------------------------
 			// アクション設定/ログ出力
 			// ----------------------------------------
-			Output_Actionlog(tk, tk->kyoku_index);
+			if( gui->clientlog_output_flg == true){
+				Output_Actionlog(tk, tk->kyoku_index);
+			}
 
 			// ----------------------------------------
 			// plyクラス捨牌後の処理
@@ -1152,7 +1187,9 @@ void MJSMjaiClient::SetActSute(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 	// ----------------------------------------
 	// アクション設定/ログ出力
 	// ----------------------------------------
-	Output_Actionlog(tk, tk->kyoku_index);
+	if( gui->clientlog_output_flg == true){
+		Output_Actionlog(tk, tk->kyoku_index);
+	}
 
 	// ----------------------------------------
 	// plyクラス捨牌後の処理
@@ -1221,7 +1258,9 @@ void MJSMjaiClient::SetActNakiSuteSub(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui
 	// ----------------------------------------
 	// アクション設定/ログ出力
 	// ----------------------------------------
-	Output_Actionlog(tk, tk->kyoku_index);
+	if( gui->clientlog_output_flg == true){
+		Output_Actionlog(tk, tk->kyoku_index);
+	}
 
 	// ----------------------------------------
 	// plyクラス捨牌後の処理
@@ -2047,7 +2086,9 @@ void MJSMjaiClient::Set_type_tsumo(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, i
 		// -----------------------------------------------------------
 		// アクション設定/ログ出力
 		// -----------------------------------------------------------
-		Output_Actionlog(tk, tk->kyoku_index);
+		if( gui->clientlog_output_flg == true){
+			Output_Actionlog(tk, tk->kyoku_index);
+		}
 
 		// ----------------------------------------
 		// pinfo設定(自摸処理)
@@ -2083,7 +2124,9 @@ void MJSMjaiClient::Set_type_tsumo(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, i
 		// -----------------------------------------------------------
 		// アクション設定/ログ出力
 		// -----------------------------------------------------------
-		Output_Actionlog(tk, tk->kyoku_index);
+		if( gui->clientlog_output_flg == true){
+			Output_Actionlog(tk, tk->kyoku_index);
+		}
 
 	}
 }
@@ -2206,7 +2249,9 @@ void MJSMjaiClient::Set_type_ankan(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, i
 		// ----------------------------------------
 		// アクション設定/ログ出力
 		// ----------------------------------------
-		Output_Actionlog(tk, tk->kyoku_index);
+		if( gui->clientlog_output_flg == true){
+			Output_Actionlog(tk, tk->kyoku_index);
+		}
 
 		// ----------------------------------------
 		// 晒し情報設定 - 暗槓
@@ -2309,7 +2354,9 @@ void MJSMjaiClient::Set_type_kakan(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, i
 		// ----------------------------------------
 		// アクション設定/ログ出力
 		// ----------------------------------------
-		Output_Actionlog(tk, tk->kyoku_index);
+		if( gui->clientlog_output_flg == true){
+			Output_Actionlog(tk, tk->kyoku_index);
+		}
 
 		// ----------------------------------------
 		// 晒し情報設定 - 暗槓
@@ -2364,7 +2411,9 @@ void MJSMjaiClient::Set_type_riichi(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, 
 		// ----------------------------------------
 		// アクション設定/ログ出力
 		// ----------------------------------------
-		Output_Actionlog(tk, tk->kyoku_index);
+		if( gui->clientlog_output_flg == true){
+			Output_Actionlog(tk, tk->kyoku_index);
+		}
 
 	// ----------------------------------------
 	// 自摸プレーヤが自分ならば
@@ -2537,7 +2586,9 @@ void MJSMjaiClient::Set_type_dahai(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, i
 		// ----------------------------------------
 		// アクション設定/ログ出力
 		// ----------------------------------------
-		Output_Actionlog(tk, tk->kyoku_index);
+		if( gui->clientlog_output_flg == true){
+			Output_Actionlog(tk, tk->kyoku_index);
+		}
 
 		// -----------------------------------------------------------
 		// 自分プレーヤー鳴きアクション定義
@@ -2666,7 +2717,9 @@ void MJSMjaiClient::Set_type_pon(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, int
 	// ----------------------------------------
 	// アクション設定/ログ出力
 	// ----------------------------------------
-	Output_Actionlog(tk, tk->kyoku_index);
+	if( gui->clientlog_output_flg == true){
+		Output_Actionlog(tk, tk->kyoku_index);
+	}
 
 	// ----------------------------------------
 	// 捨牌不可テーブル定義
@@ -2838,7 +2891,9 @@ void MJSMjaiClient::Set_type_chi(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, int
 	// ----------------------------------------
 	// アクション設定/ログ出力
 	// ----------------------------------------
-	Output_Actionlog(tk, tk->kyoku_index);
+	if( gui->clientlog_output_flg == true){
+		Output_Actionlog(tk, tk->kyoku_index);
+	}
 
 	// ----------------------------------------
 	// 捨牌不可有無の確認(鳴き捨牌時)
@@ -3031,7 +3086,9 @@ void MJSMjaiClient::Set_type_minkan(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui, 
 	// ----------------------------------------
 	// アクション設定/ログ出力
 	// ----------------------------------------
-	Output_Actionlog(tk, tk->kyoku_index);
+	if( gui->clientlog_output_flg == true){
+		Output_Actionlog(tk, tk->kyoku_index);
+	}
 
 	// ----------------------------------------
 	// 卓ステータス設定
@@ -3710,7 +3767,9 @@ void MJSMjaiClient::Set_type_ryukyoku(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui
 	// ----------------------------------------
 	// アクション設定/ログ出力
 	// ----------------------------------------
-	Output_Actionlog(tk, tk->kyoku_index);
+	if( gui->clientlog_output_flg == true){
+		Output_Actionlog(tk, tk->kyoku_index);
+	}
 
 	// ----------------------------------------
 	// 卓ステータス設定
@@ -3983,7 +4042,6 @@ void MJSMjaiClient::ActSndDahaiMes(MJSGui *gui, int ply_mjai_id, int hai, bool a
 	if( tsumogiri_flg == true ){
 		// アクション：自摸切り
 		wsprintf(gui->snd_mes, "{\"type\":\"dahai\",\"actor\":%d,\"pai\":\"%s\",\"tsumogiri\":true}\n", ply_mjai_id, tmp_hai_chr);
-		// wsprintf(gui->snd_mes, "{\"type\":\"dahai\",\"actor\":%d,\"pai\":\"%s\",\"tsumogiri\":true}\n", p->ply_id, mjai->wk_str[tmp_wk_num+5]);
 	}else{
 		// アクション：捨牌処理
 		wsprintf(gui->snd_mes, "{\"type\":\"dahai\",\"actor\":%d,\"pai\":\"%s\",\"tsumogiri\":false}\n", ply_mjai_id, tmp_hai_chr);

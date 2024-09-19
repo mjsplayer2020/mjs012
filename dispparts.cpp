@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.192(ボタン表示位置修正)
+ * バージョン     ： 0.1.2.0.194(GUI関数の共通化準備)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.cpp
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/09/13 20:53:47
+ * 最終更新日     ： 2024/09/15 15:28:15
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -426,7 +426,7 @@ void MJSDisplayParts::DispButton(int x, int y, LBPartsButColor but_color){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// ボタン表示(卓ゲームモード)
+// ラインボタン表示(卓ゲームモード)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispGameModeButton(){
 
@@ -439,15 +439,20 @@ void MJSDisplayParts::DispGameModeButton(){
 }
 
 /* ---------------------------------------------------------------------------------------------- */
-// ボタン表示(ビューアーモード)
+// ラインボタン表示(ビューアーモード)
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispViewerModeButton(){
 
-	// ビューアーモード用ボタン表示
-	DrawGraph( BUT01_X_STAT, BUT01_Y_STAT, but_green, TRUE );  // 卓ゲーム開始表示
-	DrawGraph( BUT02_X_STAT, BUT01_Y_STAT, but02, TRUE );      // 局変更
-	DrawGraph( BUT03_X_STAT, BUT01_Y_STAT, but03, TRUE );      // ActID変更
-	DrawGraph( BUT04_X_STAT, BUT01_Y_STAT, but_green, TRUE );  // 卓ゲーム終了表示
+	// ビューアーモード用ボタン表示(一段目)
+	DrawGraph( BUT02_X_STAT, BUT01_Y_STAT   , but02, TRUE );          // 局変更
+	DrawGraph( BUT03_X_STAT, BUT01_Y_STAT   , but03, TRUE );          // ActID変更
+
+	// ビューアーモード用ボタン表示(二段目)
+	DrawGraph( BUT01_X_STAT, BUT01_Y_STAT+40, but_green, TRUE );      // 卓ゲーム開始表示
+	DrawGraph( BUT04_X_STAT, BUT01_Y_STAT+40, but_green, TRUE );      // 卓ゲーム終了表示
+
+	// ビューアーモード用ボタン表示(三段目)
+	DrawGraph( BUT02_X_STAT, BUT01_Y_STAT+80, but02, TRUE );          // 席の左右移動
 
 	// 機能機能用ボタン表示
 	DrawGraph( THINFO_BUT_X_STAT,  BUT02_Y_STAT, but_blue, TRUE );

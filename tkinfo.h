@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.165(役情報パラメータの不要分削除)
+ * バージョン     ： 0.1.2.0.196(tklogクラス実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： tkinfo.h
  * クラス名       ： MJSTkinfo
@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/04/11 15:57:39
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/05/19 12:51:50
+ * 最終更新日     ： 2024/09/19 08:18:20
  * 
  * Copyright (c) 2010-2023 Techmilestone, All rights reserved.
  * 
@@ -73,9 +73,9 @@ struct MJSkyokuinfo{
 	// 手牌情報
 	// -----------------------------
 
-	int tehai[PLAYER_MAX][PAI_MAX];               // 配牌時の手牌
-	int tehai_mode[PLAYER_MAX][PAI_MAX];          // 配牌時の手牌種別モード(牌4種の区別=2の4乗=16)
-	int aka_count[PLAYER_MAX][AKA_TYPE_MAX_COUNT];  // 配牌時の赤牌の枚数
+	int tehai[PLAYER_MAX][PAI_MAX];                    // 配牌時の手牌
+	int tehai_mode[PLAYER_MAX][PAI_MAX];               // 配牌時の手牌種別モード(牌4種の区別=2の4乗=16)
+	int aka_count[PLAYER_MAX][AKA_TYPE_MAX_COUNT];     // 配牌時の赤牌の枚数
 
 	// -----------------------------
 	// 鳴き面子(晒し面子)情報
@@ -148,7 +148,7 @@ class MJSTkinfo
 	// ログ設定
 	// -----------------------------
 
-	bool log_flg;                       // ログ出力モード
+	// bool log_flg;                       // ログ出力モード
 
 	// -----------------------------
 	// GUIモードかPLYモードか？
@@ -193,7 +193,7 @@ class MJSTkinfo
 	/* ----------------------------- */
 
 	LBTstMD tk_test_mode;               // 局のゲーム種別(東風戦、半荘戦)
-	int aka_max[AKA_TYPE_MAX_COUNT];      // 赤牌の最大枚数
+	int aka_max[AKA_TYPE_MAX_COUNT];    // 赤牌の最大枚数
 
 	/* ----------------------------- */
 	// 各プレーヤー情報

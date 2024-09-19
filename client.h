@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： Newさくら麻雀(MJAIクライアント実装版)
- * バージョン     ： 0.1.2.0.157(クライアントモード_流局処理の修正)
+ * バージョン     ： 0.1.2.0.195(卓ログ、クライアントログの無効化)
  * プログラム名   ： mjs.exe
  * ファイル名     ： client.h
  * クラス名       ： MJSMjaiClient
  * 処理概要       ： Mjaiクライアント処理クラス
  * Ver0.1.2作成日 ： 2023/11/19 21:38:17
- * 最終更新日     ： 2024/05/06 06:48:14
+ * 最終更新日     ： 2024/09/16 15:51:09
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -39,9 +39,9 @@ class MJSMjaiClient
 	public:
 
 	// クラス定義
-	MJSSocket sock;
-	MJSReadMjai *mjai;
-	MJSCorelog  *clientlog;
+	MJSCorelog  *clientlog;   // コアログ処理クラス
+	MJSSocket sock;           // Socketクラス
+	MJSReadMjai *mjai;        // MJAIログ読込みクラス
 
 	// 固定メッセージ
 	const char* res_join = "{\"type\":\"join\",\"name\":\"tampopo\",\"room\":\"default\"}\n";
@@ -66,8 +66,8 @@ class MJSMjaiClient
 	// -----------------------------
 
 	// クライアントクラス初期化・終了処理
-	void ClientInit(MJSTkinfo *tk);          // Mjaiクライアントの処理開始
-	void ClientPost();                       // Mjaiクライアントの処理終了
+	void ClientInit(MJSTkinfo *tk, MJSGui *gui, MJSReadMjai *tmp_mjai);    // Mjaiクライアントの処理開始
+	void ClientPost(MJSGui *gui);                                          // Mjaiクライアントの処理終了
 
 	// Socket通信
 	void ClientResponseMes(MJSGui *gui);     // 受信処理

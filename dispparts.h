@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.189(gui->desp_tehai_mode実装)
+ * バージョン     ： 0.1.2.0.196(手牌上に名前表示)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.h
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/09/07 09:16:50
+ * 最終更新日     ： 2024/09/19 08:18:20
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -39,10 +39,10 @@
 // 牌色の番号設定
 #define DISP_HAI_COLOR_NUM_NOCOLOR        0       // 「無色」の番号
 
-#define DISP_HAI_COLOR_NUM_GRAY           1       // 「灰色」の番号
-#define DISP_HAI_COLOR_NUM_BLUE           2       // 「青色」の番号
-#define DISP_HAI_COLOR_NUM_YELLOW         3       // 「黄色」の番号
-#define DISP_HAI_COLOR_NUM_GREEN          4       // 「緑色」の番号
+#define DISP_HAI_COLOR_NUM_GRAY           1       // 「灰色」の番号：鳴き牌
+#define DISP_HAI_COLOR_NUM_BLUE           2       // 「青色」の番号：強調表示
+#define DISP_HAI_COLOR_NUM_YELLOW         3       // 「黄色」の番号：ドラ表示
+#define DISP_HAI_COLOR_NUM_GREEN          4       // 「緑色」の番号：自摸切り表示
 
 #define DISP_HAI_COLOR_NUM_DEEP_GRAY     11       // 「濃灰色」の番号
 #define DISP_HAI_COLOR_NUM_DEEP_BLUE     12       // 「濃青色」の番号
@@ -348,7 +348,7 @@ class MJSDisplayParts
 	                              int  sute_hai_num);       // 捨牌の位置番号
 
 
-	// 牌画パーツ/晒し牌情報
+	// 牌画パーツ/晒し牌
 	void DispActSarashiParts_up(int x,    int y, LBMen naki_stat, int hai_index, int aka_count);         // 晒し面子のパーツ表示：UPプレーヤ表示
 	// void DispActSarashiParts_down(int x, int y, LBMen naki_stat, int hai_index, int aka_count);       // 晒し面子のパーツ表示：DOWNプレーヤ表示→ライナーと共通
 	void DispActSarashiParts_left(int x,  int y, LBMen naki_stat, int hai_index, int aka_count);         // 晒し面子のパーツ表示：LEFTプレーヤ表示
@@ -359,6 +359,12 @@ class MJSDisplayParts
 	void DispActKawaParts_down(int x,  int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);          // 河パーツ表示：DOWNプレーヤ表示
 	void DispActKawaParts_left(int x,  int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);          // 河パーツ表示：LEFTプレーヤ表示
 	void DispActKawaParts_right(int x, int y, int kawa_tbl_count, int kawa_tbl[], bool kawa_tbl_aka[], int kawa_mode[]);          // 河パーツ表示：RIGHTプレーヤ表示
+
+	// 席情報
+	void DispName_up(int x, int y, char *str);              // 席情報表示：UPプレーヤ表示
+	// void DispName_down(int x, int y, char *str);         // 通常文字表示と同じ
+	void DispName_left(int x, int y, char *str);            // 席情報表示：LEFTプレーヤ表示
+	void DispName_right(int x, int y, char *str);           // 席情報表示：RIGHTプレーヤ表示
 
 };
 
