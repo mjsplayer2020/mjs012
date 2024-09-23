@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.196(手牌上に名前表示)
+ * バージョン     ： 0.1.2.0.197(アクションプレート実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： dispparts.h
  * クラス名       ： MJSDisplayParts
@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/09/19 08:18:20
+ * 最終更新日     ： 2024/09/21 15:04:45
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -365,6 +365,12 @@ class MJSDisplayParts
 	// void DispName_down(int x, int y, char *str);         // 通常文字表示と同じ
 	void DispName_left(int x, int y, char *str);            // 席情報表示：LEFTプレーヤ表示
 	void DispName_right(int x, int y, char *str);           // 席情報表示：RIGHTプレーヤ表示
+
+	// アクションプレート表示
+	void DispActplt_up(int x, int y, char *str);            // アクションプレート表示：UPプレーヤ表示
+	void DispActplt_down(int x, int y, char *str);          // アクションプレート表示：DOWNプレーヤ表示
+	void DispActplt_left(int x, int y, char *str);          // アクションプレート表示：LEFTプレーヤ表示
+	void DispActplt_right(int x, int y, char *str);         // アクションプレート表示：RIGHTプレーヤ表示
 
 };
 

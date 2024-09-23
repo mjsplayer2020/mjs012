@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.196(手牌上に名前表示)
+ * バージョン     ： 0.1.2.0.198(アクションプレート表示修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.cpp
  * クラス名       ： MJSDisplay
@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/09/19 08:18:20
+ * 最終更新日     ： 2024/09/23 20:53:08
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -1864,6 +1864,44 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 
 	// 牌のX位置表示用
 	int xstat = 0;
+
+	// ----------------------------------------
+	// 席情報表示
+	// ----------------------------------------
+
+	// 席情報設定
+	wsprintf(tmp_disp_msg,"[席%d]%s", pnum+1, tk->plyname[pnum]);
+
+	// 手牌パーツの表示(Right)
+	if( pnum == 0){
+
+		// 席情報_RIGHT
+		dparts->DispName_right( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE+10, 
+	                tmp_disp_msg);
+
+	}else if( pnum == 1){
+
+		// 席情報_UP
+		dparts->DispName_up( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX, 
+	             gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	             tmp_disp_msg);
+
+	}else if( pnum == 2){
+
+		// 席情報_LEFT
+		dparts->DispName_left( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	               gui->tehai_left_y,
+	               tmp_disp_msg);
+
+	}else if( pnum == 3){
+
+		// 席情報_DOWN
+		dparts->DispString( gui->tehai_x, 
+	                    gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                   tmp_disp_msg);
+
+	}
 
 	// ----------------------------------------
 	// 1.手牌表示：自摸時
@@ -4138,6 +4176,18 @@ void MJSDisplay::DispActTehaiHum(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, in
 	int tmp_sute_stat=0;                // 仮用の捨牌の位置番号
 
 	// -----------------------------------------------------------
+	// 席情報
+	// -----------------------------------------------------------
+
+	// 席情報設定
+	wsprintf(tmp_disp_msg,"[席%d]%s", pnum+1, tk->plyname[pnum]);
+
+	// 自プレーヤーの席情報定義
+	dparts->DispString( gui->tehai_x, 
+	                    gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                   tmp_disp_msg);
+
+	// -----------------------------------------------------------
 	// 1.手牌表示：自摸時
 	// -----------------------------------------------------------
 
@@ -4669,6 +4719,18 @@ void MJSDisplay::DispActTehaiHum(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, in
 void MJSDisplay::DispActTehaiCom(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum, int msx, int msy){
 
 	// -----------------------------------------------------------
+	// 席情報
+	// -----------------------------------------------------------
+
+	// 席情報設定
+	wsprintf(tmp_disp_msg,"[席%d]%s", pnum+1, tk->plyname[pnum]);
+
+	// 自プレーヤーの席情報定義
+	dparts->DispString( gui->tehai_x, 
+	                    gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                   tmp_disp_msg);
+
+	// -----------------------------------------------------------
 	// 1.手牌表示：自摸時
 	// -----------------------------------------------------------
 	if ( ( tk->kyoku[kyoku_index].act_stat[actid] == PLYACTTSUMO || 
@@ -4863,19 +4925,97 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 	dparts->DispCenterPlt( (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3,
 	               (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 );
 
+	// ----------------------------------------
+	// アクションプレート
+	// ----------------------------------------
+
+	// アクションプレート_UP
+	wsprintf(tmp_disp_msg,"リーチ");
+	dparts->DispActplt_up( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX + 56, 
+	                         gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                         tmp_disp_msg);
+
+/*
+	DrawBox( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX + 60 - 56, 
+	         gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE + 4 - 23, 
+	         gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX + 60, 
+	         gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE + 4, 
+	         GetColor( 128, 0, 0 ), TRUE ) ;
+
+	// アクションプレート(文字)_UP
+	wsprintf(tmp_disp_msg,"リーチ");
+	DrawRotaString( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX + 60 - 4, 
+	                gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                1.0, 1.0, 0, 0, PI, GetColor( 255, 255, 255 ), 0, FALSE, tmp_disp_msg);
+*/
+
+	// アクションプレート_DOWN
+	wsprintf(tmp_disp_msg,"リーチ");
+	dparts->DispActplt_down( gui->tehai_x - 56, 
+	                         gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                         tmp_disp_msg);
+
+/*
+	DrawBox( gui->tehai_x - 56 - 4, 
+	         gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE-4,
+	         gui->tehai_x - 56 + 56,
+	         gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE-4+23,
+	         GetColor( 128, 0, 0 ), TRUE ) ;
+
+	// アクションプレート(文字)_DOWN
+	dparts->DispString( gui->tehai_x - 56, gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, tmp_disp_msg);
+*/
+
+	// アクションプレート_LEFT
+	DrawBox( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE - 23 + 4 , 
+	         gui->tehai_left_y - 60,
+             gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE + 4 , 
+	         gui->tehai_left_y - 60 + 56,
+	         GetColor( 128, 0, 0 ), TRUE ) ;
+
+	// アクションプレート(文字)_LEFT
+	wsprintf(tmp_disp_msg,"チー　");
+	DrawRotaString( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                gui->tehai_left_y - 60 + 4,
+	                1.0, 1.0, 0, 0, PI / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, tmp_disp_msg);
+
+	// アクションプレート_RIGHT
+	DrawBox( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE - 4 , 
+	         gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10 + 60 - 56,
+             gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE - 4 + 23, 
+	         gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10 + 60 + 4,
+	         GetColor( 128, 0, 0 ), TRUE ) ;
+
+	// アクションプレート(文字)_RIGHT
+	wsprintf(tmp_disp_msg,"リーチ");
+	DrawRotaString( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10 + 60, 
+	                1.0, 1.0, 0, 0, PI*3.0 / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, tmp_disp_msg);
+
+	// ----------------------------------------
+	// 席情報の表示
+	// ----------------------------------------
+
 	// 席情報UP
-	DrawRotaString( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX, gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 1.0, 1.0, 0, 0, PI, GetColor( 255, 255, 255 ), 0, FALSE, "[席2]ひまわり青");
+	DrawRotaString( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX, 
+	                gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                1.0, 1.0, 0, 0, PI, GetColor( 255, 255, 255 ), 0, FALSE, "[席2]ひまわり青");
 
 	// 席情報DONW
-	// DrawFormatString( gui->tehai_x, gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, GetColor(255,255,255), "[席4]ひまわり緑"); 
 	wsprintf(tmp_disp_msg,"[席4]ひまわり緑");
-	dparts->DispString(  gui->tehai_x, gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, tmp_disp_msg);
-
-	// 席情報RIGHT
-	DrawRotaString( gui->tehai_right_x            - STRING_YSIZE - NAME_TEHAI_RANGE, gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE+10, 1.0, 1.0, 0, 0, PI*3.0 / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, "[席1]ひまわり赤");
+	dparts->DispString( gui->tehai_x, 
+	                    gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                    tmp_disp_msg);
 
 	// 席情報LEFT
-	DrawRotaString( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, gui->tehai_left_y,                                           1.0, 1.0, 0, 0, PI     / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, "[席3]ひまわり緑");
+	DrawRotaString( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                gui->tehai_left_y,                                           
+	                1.0, 1.0, 0, 0, PI / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, "[席3]ひまわり緑");
+
+	// 席情報RIGHT
+	DrawRotaString( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10, 
+	                1.0, 1.0, 0, 0, PI*3.0 / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, "[席1]ひまわり赤");
 
 	// ----------------------------------------
 	// 手牌の表示

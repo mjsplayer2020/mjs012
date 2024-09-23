@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.196(tklogクラス実装)
+ * バージョン     ： 0.1.2.0.197(アクションプレート実装)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/19 08:18:20
+ * 最終更新日     ： 2024/09/21 15:04:45
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  *  
@@ -89,7 +89,7 @@ void MJSGui::GuiInit(){
 		// LEFTプレーヤー手牌位置
 		sutehai_left_x       = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE;
 		sutehai_left_y       = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3;
-		tehai_left_x         = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE - HAI_YSIZE;;
+		tehai_left_x         = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE - HAI_YSIZE;
 		tehai_left_y         = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*8;
 		nakihai_line_left_x  = tehai_left_x;
 		nakihai_line_left_y  = tehai_left_x + NAKI_RANGE + HAI_XSIZE*4;

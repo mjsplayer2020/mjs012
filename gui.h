@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.196(tklogクラス実装)
+ * バージョン     ： 0.1.2.0.197(囲みモード名前表示)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/19 08:18:20
+ * 最終更新日     ： 2024/09/21 15:04:45
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -25,7 +25,7 @@
 /* ---------------------------------------------------------------------------------------------- */
 
 // 表示形式
-#define DISP_TEHAI_MODE_DEF             2    // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
+#define DISP_TEHAI_MODE_DEF             1    // デフォルトの手牌表示モード(0:ライナー表示、1:スクエア表示、2:テスト表示)
 #define DISP_SQUARE_NAKI_MENTSU_DEF     0    // 囲みモードでの鳴き面子表示形式(0:ライナー表示、1:縦表示)
 #define DISP_DEBUG_INFO                 0    // デバグ情報の表示(0:非表示)
 
@@ -86,7 +86,7 @@
 #define GAMESTAT_Y_STAT            50   // ゲームステータスのY位置
 
 // ゲームモードの表示位置(全体)
-#define STRING_YSIZE               17   // 文字サイズ
+#define STRING_YSIZE               16   // 文字サイズ
 #define SPACE_XSIZE                 5   // X軸の隙間サイズ
 #define SPACE_YSIZE                 5   // Y軸の隙間サイズ
 
@@ -106,16 +106,16 @@
 
 #define LINE_SUTEHAI_COUNT_MAX      6   // 1行あたりの捨牌数
 
-#define TAKU_PLT_X_SIZE           696    // 卓プレート_Xサイズ
-#define TAKU_PLT_Y_SIZE           696    // 卓プレート_Yサイズ
-#define TAKU_PLT_X_STAT            64    // 卓プレート_X開始位置
-#define TAKU_PLT_Y_STAT            64    // 卓プレート_Y開始位置
+#define TAKU_PLT_X_SIZE           696   // 卓プレート_Xサイズ
+#define TAKU_PLT_Y_SIZE           696   // 卓プレート_Yサイズ
+#define TAKU_PLT_X_STAT            64   // 卓プレート_X開始位置
+#define TAKU_PLT_Y_STAT            64   // 卓プレート_Y開始位置
 
-#define SUTEHAI_CENTERPLT_RANGE     8    // 捨牌レンジ
-#define SUTEHAI_TEHAI_RANGE        48    // 手牌レンジ
-#define NAME_TEHAI_RANGE            8    // 名前レンジ
-#define NAKI_RANGE                384    // 鳴き牌レンジ
-#define NAKI_MENTSU_RANGE         104    // 鳴き牌ごとのレンジ
+#define SUTEHAI_CENTERPLT_RANGE     8   // 捨牌レンジ
+#define SUTEHAI_TEHAI_RANGE        48   // 手牌レンジ
+#define NAME_TEHAI_RANGE            4   // 名前レンジ
+#define NAKI_RANGE                384   // 鳴き牌レンジ
+#define NAKI_MENTSU_RANGE         104   // 鳴き牌ごとのレンジ
 
 // ゲームモードの表示位置(手牌関連・囲みモード)
 
@@ -189,37 +189,37 @@
 // GUIメインステータス
 typedef enum {
 
-	GUI_NO_MAIN_STAT = 0, // 何もしていない
+	GUI_NO_MAIN_STAT = 0,     // 何もしていない
 
-	GUI_OPENING_INIT,     // タイトル画面
+	GUI_OPENING_INIT,         // タイトル画面
 	GUI_OPENING,
 	GUI_OPENING_POST,
 
-	GUI_PLAYING_INIT,     // 卓ゲームプレイモード
+	GUI_PLAYING_INIT,         // 卓ゲームプレイモード
 	GUI_PLAYING,
 	GUI_PLAYING_POST,
 
-	GUI_VIEWING_INIT,     // ビューワーモード
+	GUI_VIEWING_INIT,         // ビューワーモード
 	GUI_VIEWING,
 	GUI_VIEWING_POST,
 
-	GUI_RUNNING_INIT,     // 検証モード
+	GUI_RUNNING_INIT,         // 検証モード
 	GUI_RUNNING,
 	GUI_RUNNING_POST,
 
-	GUI_CLIENT_INIT,      // MJAIクライアントモード
+	GUI_CLIENT_INIT,          // MJAIクライアントモード
 	GUI_CLIENT,
 	GUI_CLIENT_POST,
 
-	GUI_MJAISERVER_INIT,  // MJAIサーバモード
+	GUI_MJAISERVER_INIT,      // MJAIサーバモード
 	GUI_MJAISERVER,
 	GUI_MJAISERVER_POST,
 
-	GUI_SETTING_INIT,     // 設定画面
+	GUI_SETTING_INIT,         // 設定画面
 	GUI_SETTING,
 	GUI_SETTING_POST,
 
-	GUI_DEMO_INIT,        // デモ画面
+	GUI_DEMO_INIT,            // デモ画面
 	GUI_DEMO,
 	GUI_DEMO_POST,
 
