@@ -1,7 +1,7 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.194(DispActSarashi_square関数修正)
+ * バージョン     ： 0.1.2.0.198(アクションプレート表示修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： display.h
  * クラス名       ： MJSDisplay
@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/09/07 09:16:50
+ * 最終更新日     ： 2024/09/24 15:08:23
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -157,6 +157,7 @@ class MJSDisplay
 	void DispActTehaiCom(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum, int msx, int msy);           // アクション手牌COM向け
 	void DispActSarashi(MJSTkinfo *tk, int kyoku_index, int pnum, int actid);                                           // アクション番号を考慮したさらし牌の表示(ライナー) 
 	void DispActKawa(MJSTkinfo *tk, int kyoku_index, int actid, int pnum);                                              // アクション手牌の河牌(ライナー) 
+	void DispTakuActplt(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum);                                  // アクションプレート表示
 
 	// ------------------------------------------------------------------- 
 	// 関数定義(アクション手牌表示・スクエア表示)

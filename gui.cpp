@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.197(アクションプレート実装)
+ * バージョン     ： 0.1.2.0.198(アクションプレート表示修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.cpp
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/21 15:04:45
+ * 最終更新日     ： 2024/09/24 15:08:23
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  *  
@@ -70,7 +70,7 @@ void MJSGui::GuiInit(){
 		sutehai_up_x         = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*3;
 		sutehai_up_y         = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4;
 		tehai_up_x           = (TAKU_PLT_X_SIZE + TAKU_PLT_X_STAT)/2 - HAI_XSIZE*6; // 自摸分だけ右に移動する
-		tehai_up_y           = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE - HAI_YSIZE;
+		tehai_up_y           = (TAKU_PLT_Y_SIZE + TAKU_PLT_Y_STAT)/2 - HAI_XSIZE*3 - SUTEHAI_CENTERPLT_RANGE - HAI_YSIZE*4 - SUTEHAI_TEHAI_RANGE;
 		nakihai_line_up_x    = tehai_up_x - NAKI_RANGE + HAI_XSIZE*TEHAI_MAX - HAI_XSIZE;
 		nakihai_line_up_y    = tehai_up_y;
 		nakihai_up_x         = 0;

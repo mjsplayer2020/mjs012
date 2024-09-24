@@ -10,7 +10,7 @@
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
  * Ver0.1.1作成日 ： 2022/06/30 21:19:01
  * Ver0.1.2作成日 ： 2022/08/31 22:19:54
- * 最終更新日     ： 2024/09/23 20:53:08
+ * 最終更新日     ： 2024/09/24 15:08:23
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -430,6 +430,9 @@ void MJSDisplay::DispNormalTakuStat(MJSTkinfo *tk, MJSPlayer *ply, MJSGui *gui){
 		// 「手牌囲み」モード表示
 		// -----------------------------------------------------------
 		}else if( gui->disp_tehai_mode == 1 ){
+
+			// アクションプレート表示
+			
 
 			// 卓プレート表示
 			DrawBox( TAKU_PLT_X_STAT, TAKU_PLT_Y_STAT, TAKU_PLT_X_SIZE-1, TAKU_PLT_Y_SIZE-1, GetColor( 0, 64, 0 ), TRUE ) ;
@@ -1866,6 +1869,11 @@ void MJSDisplay::DispActTehaiCom_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_in
 	int xstat = 0;
 
 	// ----------------------------------------
+	// アクションプレート表示
+	// ----------------------------------------
+	DispTakuActplt(tk, gui, kyoku_index, actid, pnum);
+
+	// ----------------------------------------
 	// 席情報表示
 	// ----------------------------------------
 
@@ -2495,6 +2503,7 @@ void MJSDisplay::DispActSarashi_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_ind
 					                     tk->kyoku[kyoku_index].naki_stat[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_idx[pnum][tmp_i], 
 					                     tk->kyoku[kyoku_index].naki_aka[pnum][tmp_i]);
+
 						// ----------------------------------------
 						// 手牌パーツの表示(Left)
 						// ----------------------------------------
@@ -2602,6 +2611,87 @@ void MJSDisplay::DispActKawa_square(MJSTkinfo *tk, MJSGui *gui, int kyoku_index,
 	                            tk->ply_act_kawa_aka[pnum], 
 	                            tk->ply_act_kawa_mode[pnum]);
 
+	}
+
+}
+
+/* ---------------------------------------------------------------------------------------------- */
+// アクションプレート表示
+/* ---------------------------------------------------------------------------------------------- */
+void MJSDisplay::DispTakuActplt(MJSTkinfo *tk, MJSGui *gui, int kyoku_index, int actid, int pnum){
+
+	// ----------------------------------------
+	// アクションプレートを表示するアクション確認
+	// ----------------------------------------
+	if (tk->kyoku[kyoku_index].act_stat[actid] == PLYACTRIICH   ||  // リーチ
+	    tk->kyoku[kyoku_index].act_stat[actid] == PLYACTPON     ||  // ポン
+	    tk->kyoku[kyoku_index].act_stat[actid] == PLYACTCHI     ||  // チー
+	    tk->kyoku[kyoku_index].act_stat[actid] == PLYACTMINKAN  ||  // 明カン
+	    tk->kyoku[kyoku_index].act_stat[actid] == PLYACTANKAN   ||  // 暗カン
+	    tk->kyoku[kyoku_index].act_stat[actid] == PLYACTKAKAN   ||  // 加カン
+	    tk->kyoku[kyoku_index].act_stat[actid] == PLYTSUMOAGARI ||  // 自摸和了
+	    tk->kyoku[kyoku_index].act_stat[actid] == PLYACTRON     ){  // ロン和了
+
+		// ----------------------------------------
+		// アクションメッセージの定義
+		// ----------------------------------------
+		if (tk->kyoku[kyoku_index].act_stat[actid] == PLYACTRIICH){
+			// リーチ
+			wsprintf(tmp_disp_msg,"リーチ");
+		}else if(tk->kyoku[kyoku_index].act_stat[actid] == PLYACTPON){
+			// ポン
+			wsprintf(tmp_disp_msg,"ポン！");
+		}else if(tk->kyoku[kyoku_index].act_stat[actid] == PLYACTCHI){
+			// チー
+			wsprintf(tmp_disp_msg,"チー！");
+		}else if(tk->kyoku[kyoku_index].act_stat[actid] == PLYACTMINKAN){
+			// 明カン
+			wsprintf(tmp_disp_msg,"明カン");
+		}else if(tk->kyoku[kyoku_index].act_stat[actid] == PLYACTANKAN){
+			// 暗カン
+			wsprintf(tmp_disp_msg,"暗カン");
+		}else if(tk->kyoku[kyoku_index].act_stat[actid] == PLYACTKAKAN){
+			// 加カン
+			wsprintf(tmp_disp_msg,"加カン");
+		}else if(tk->kyoku[kyoku_index].act_stat[actid] == PLYTSUMOAGARI){
+			// 自摸和了
+			wsprintf(tmp_disp_msg,"自摸！");
+		}else if(tk->kyoku[kyoku_index].act_stat[actid] == PLYACTRON){
+			// ロン和了
+			wsprintf(tmp_disp_msg,"ロン！");
+		}else{
+			// 不明
+			wsprintf(tmp_disp_msg,"不明");
+		}
+
+		// ----------------------------------------
+		// アクションプレーヤーの確認
+		// ----------------------------------------
+		if (tk->kyoku[kyoku_index].act_ply[actid] == 0 ){
+			// RIGHTプレートの表示
+			dparts->DispActplt_right( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                          gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10 + 56, 
+	                          tmp_disp_msg);
+
+		}else if (tk->kyoku[kyoku_index].act_ply[actid] == 1 ){
+			// UPプレートの表示
+			dparts->DispActplt_up( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX + 56, 
+	                       gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                       tmp_disp_msg);
+
+		}else if (tk->kyoku[kyoku_index].act_ply[actid] == 2 ){
+			// UPプレートの表示
+			dparts->DispActplt_left( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                         gui->tehai_left_y - 56,
+	                         tmp_disp_msg);
+
+		}else if (tk->kyoku[kyoku_index].act_ply[actid] == 3 ){
+			// DOWNプレートの表示
+			dparts->DispActplt_down( gui->tehai_x - 56, 
+	                         gui->tehai_y - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                         tmp_disp_msg);
+
+		}
 	}
 
 }
@@ -4932,8 +5022,8 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 	// アクションプレート_UP
 	wsprintf(tmp_disp_msg,"リーチ");
 	dparts->DispActplt_up( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX + 56, 
-	                         gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
-	                         tmp_disp_msg);
+	                       gui->tehai_up_y + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                       tmp_disp_msg);
 
 /*
 	DrawBox( gui->tehai_up_x + HAI_XSIZE * TEHAI_MAX + 60 - 56, 
@@ -4967,6 +5057,12 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 */
 
 	// アクションプレート_LEFT
+	wsprintf(tmp_disp_msg,"リーチ");
+	dparts->DispActplt_left( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
+	                         gui->tehai_left_y - 56,
+	                         tmp_disp_msg);
+
+/*
 	DrawBox( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE - 23 + 4 , 
 	         gui->tehai_left_y - 60,
              gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE + 4 , 
@@ -4974,12 +5070,18 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 	         GetColor( 128, 0, 0 ), TRUE ) ;
 
 	// アクションプレート(文字)_LEFT
-	wsprintf(tmp_disp_msg,"チー　");
 	DrawRotaString( gui->tehai_left_x + HAI_YSIZE + STRING_YSIZE + NAME_TEHAI_RANGE, 
 	                gui->tehai_left_y - 60 + 4,
 	                1.0, 1.0, 0, 0, PI / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, tmp_disp_msg);
+*/
 
 	// アクションプレート_RIGHT
+	wsprintf(tmp_disp_msg,"リーチ");
+	dparts->DispActplt_right( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE, 
+	                          gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10 + 56, 
+	                          tmp_disp_msg);
+
+/*
 	DrawBox( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE - 4 , 
 	         gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10 + 60 - 56,
              gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE - 4 + 23, 
@@ -4991,6 +5093,7 @@ void MJSDisplay::DispActTehai_test_square(MJSGui *gui){
 	DrawRotaString( gui->tehai_right_x - STRING_YSIZE - NAME_TEHAI_RANGE, 
 	                gui->tehai_right_y + HAI_XSIZE * TEHAI_MAX + HAI_XSIZE + 10 + 60, 
 	                1.0, 1.0, 0, 0, PI*3.0 / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, tmp_disp_msg);
+*/
 
 	// ----------------------------------------
 	// 席情報の表示

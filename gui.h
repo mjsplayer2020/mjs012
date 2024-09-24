@@ -1,13 +1,13 @@
 /* ---------------------------------------------------------------------------------------------- 
  * 
  * プログラム概要 ： さくら麻雀(Ver0.1.2：開発版)
- * バージョン     ： 0.1.2.0.197(囲みモード名前表示)
+ * バージョン     ： 0.1.2.0.198(アクションプレート表示修正)
  * プログラム名   ： mjs.exe
  * ファイル名     ： gui.h
  * クラス名       ： MJSGui
  * 処理概要       ： GUI操作クラス
  * Ver0.1.0作成日 ： 2022/05/03 18:50:06
- * 最終更新日     ： 2024/09/21 15:04:45
+ * 最終更新日     ： 2024/09/24 15:08:23
  * 
  * Copyright (c) 2010-2024 Techmilestone, All rights reserved.
  * 
@@ -112,8 +112,8 @@
 #define TAKU_PLT_Y_STAT            64   // 卓プレート_Y開始位置
 
 #define SUTEHAI_CENTERPLT_RANGE     8   // 捨牌レンジ
-#define SUTEHAI_TEHAI_RANGE        48   // 手牌レンジ
-#define NAME_TEHAI_RANGE            4   // 名前レンジ
+#define SUTEHAI_TEHAI_RANGE        64   // 手牌レンジ
+#define NAME_TEHAI_RANGE            8   // 名前レンジ
 #define NAKI_RANGE                384   // 鳴き牌レンジ
 #define NAKI_MENTSU_RANGE         104   // 鳴き牌ごとのレンジ
 

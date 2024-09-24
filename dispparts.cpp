@@ -10,7 +10,7 @@
  * Ver0.1.2作成日 ： 2023/05/20 10:59:12
  * Ver0.1.3.0pre  ： 2024/03/19 23:55:27
  * Ver0.1.3.1pre  ： 2024/04/05 19:50:22
- * 最終更新日     ： 2024/09/23 20:53:08
+ * 最終更新日     ： 2024/09/24 15:08:23
  * 
  * Copyright (c) 2010-2024 TechMileStoraJP, All rights reserved.
  * 
@@ -2502,12 +2502,34 @@ void MJSDisplayParts::DispActplt_down(int x, int y, char *str){
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispActplt_left(int x, int y, char *str){
 
+	// アクションプレート_LEFT
+	DrawBox( x + 4 - 23, 
+	         y - 4 ,
+	         x + 4 ,
+	         y - 4 + 56,
+	         GetColor( 128, 0, 0 ), TRUE ) ;
+
+	// 文字表示_LEFT
+	DrawRotaString( x, y,
+	                1.0, 1.0, 0, 0, PI / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, str);
+
 }
 
 /* ---------------------------------------------------------------------------------------------- */
 // アクションプレート表示：RIGHTプレーヤ表示
 /* ---------------------------------------------------------------------------------------------- */
 void MJSDisplayParts::DispActplt_right(int x, int y, char *str){
+
+	// アクションプレート_RIGHT
+	DrawBox( x - 4, 
+	         y + 4 - 56,
+	         x - 4 + 23,
+	         y + 4 ,
+	         GetColor( 128, 0, 0 ), TRUE ) ;
+
+	// 文字表示_RIGHT
+	DrawRotaString( x, y,
+	                1.0, 1.0, 0, 0, PI * 3.0 / 2.0, GetColor( 255, 255, 255 ), 0, FALSE, str);
 
 }
 
